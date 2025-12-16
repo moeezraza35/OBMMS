@@ -1,0 +1,196 @@
+@import "./index.css";
+
+/* Page Styling */
+*::selection{
+  @apply bg-(--highlight-color) text-(--secondary-color);
+}
+main{
+  @apply mt-16 overflow-hidden;
+}
+h1{
+  @apply text-4xl font-serif;
+}
+h3{
+  @apply text-lg font-serif;
+}
+button, a{
+  @apply hover:cursor-pointer text-(--accent-color) hover:text-(--secondary-color);
+}
+@media screen and (max-width: 572px){
+  h1{
+    @apply text-2xl;
+  }
+  p{
+    @apply text-sm;
+  }
+}
+/* End Page  */
+
+/* Header Styling */
+header{
+  @apply flex w-full border-b-4 items-center justify-between fixed top-0 border-(--accent-color) bg-(--background-color) shadow-lg z-10;
+}
+header div.brand{
+  @apply py-2 pl-2;
+}
+header div.brand img{
+  @apply h-12 w-auto;
+}
+header nav{
+  @apply flex justify-center flex-1;
+}
+header nav ul li{
+  @apply mx-2 text-(--accent-color) hover:text-(--secondary-color) hover:cursor-pointer;
+}
+header div.profile{
+  @apply pr-2 flex;
+}
+header div.profile button img{
+  @apply h-7 w-7;
+}
+header div.profile menu{
+  @apply h-0 w-0 p-0 right-0 top-full absolute overflow-hidden transition-all duration-500;
+}
+header div.profile menu.active{
+  @apply h-max w-max block bg-(--background-color) border-(--accent-color) border-b-4 border-l-4 p-4;
+}
+header div.profile menu ul li a{
+  @apply w-28 inline-block;
+}
+@media screen and (min-width: 768px){
+  header div.toggle{
+    @apply hidden;
+  }
+  header nav ul li{
+    @apply float-left;
+  }
+}
+@media screen and (max-width: 768px){
+  header div.toggle{
+    @apply flex flex-1 pr-2 justify-end;
+  }
+  header div.toggle button img{
+    @apply h-8 w-8;
+  }
+  header nav{
+    @apply absolute top-16 block h-0 w-full overflow-hidden transition-all duration-500;
+  }
+  header nav.active{
+    @apply h-51 bg-(--background-color) border-b-(--accent-color) border-b-4 shadow-lg;
+  }
+  header nav ul li{
+    @apply float-none p-2;
+  }
+}
+/* End Header */
+
+/* Slider Styling  */
+.slider{
+  @apply relative overflow-hidden;
+}
+.slider > img{
+  @apply opacity-0 transition-opacity duration-500 w-0 h-full;
+}
+.slider > img.active{
+  @apply opacity-100 w-full h-auto;
+}
+.slider button img{
+  @apply w-12 h-auto z-10;
+}
+.slider .left-btn{
+  @apply absolute left-0 h-full z-1;
+}
+.slider .left-btn img{
+  @apply rotate-270;
+}
+.slider .right-btn{
+  @apply absolute right-0 h-full z-1;
+}
+.slider .right-btn img{
+  @apply rotate-90;
+}
+@media screen and (max-width: 768px){
+  .slider > img{
+    @apply h-[50%];
+  }
+  .slider > img.active{
+    @apply h-96 w-full object-cover object-center;
+  }
+}
+/* End Slider */
+
+/* 2-Sided content Styling */
+.two-sided-content{
+  @apply flex justify-between border-b-4 border-(--accent-color);
+}
+.two-sided-content div{
+  @apply flex-1;
+}
+.two-sided-content img{
+  @apply w-full h-auto object-cover;
+}
+@media screen and (min-width: 768px){
+  .two-sided-content{
+    @apply max-w-3xl w-full mx-auto;
+  }
+  .two-sided-content.reverse{
+    @apply flex-row-reverse;
+  }
+}
+@media screen and (max-width: 688px){
+  .two-sided-content{
+    @apply flex-col items-center max-w-md w-full m-auto gap-4;
+  }
+  .two-sided-content div{
+    @apply w-full flex-none px-4;
+  }
+  .two-sided-content button img{
+    @apply w-7;
+  }
+}
+@media screen and (min-width: 688px){
+  .two-sided-content{
+    @apply w-full;
+  }
+}
+/* End 2-Sided content */
+
+/* Card content Styling */
+.card{
+  @apply w-full max-w-2xs border border-(--highlight-color) rounded-xs;
+}
+/* End Car content */
+
+/* List Box content Styling */
+.listBox {
+  @apply w-max;
+}
+.listBox h3{
+  @apply my-1;
+}
+@media screen and (max-width: 573px){
+  .listBox{
+    @apply w-71 text-center mb-4;
+  }
+}
+/* End List Box content */
+
+/* Footer Styling */
+footer{
+  @apply min-h-screen bg-(--accent-color) pt-7 flex flex-col justify-between text-white;
+}
+footer > img{
+  @apply w-full max-w-xs rounded-sm mx-auto mt-7;
+}
+footer .lists{
+  @apply flex justify-evenly items-start;
+}
+footer .social{
+  @apply flex mx-auto justify-center gap-1;
+}
+@media screen and (max-width: 573px){
+  footer .lists{
+    @apply flex-wrap;
+  }
+}
+/* End Footer */

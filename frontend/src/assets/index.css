@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+:root{
+  --background-color: var(--color-white);
+  --text-color: var(--color-black);
+  --accent-color: #185079;
+  --secondary-color: var(--color-yellow-500);
+  --highlight-color: var(--color-gray-200);
+  
+  background-color: var(--background-color);
+  color: var(--text-color);
+  accent-color: var(--accent-color);
+}

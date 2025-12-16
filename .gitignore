@@ -1,9 +1,9 @@
+# Python
 venv/
 __pycache__/
+
 # OSX
-#
 .DS_Store
-# 
 
 *.log
 npm-debug.log*
@@ -12,13 +12,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -27,8 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
 # Xcode
-#
 build/
 *.pbxuser
 !default.pbxuser
@@ -48,7 +43,6 @@ DerivedData
 **/.xcode.env.local
 
 # Android/IntelliJ
-#
 build/
 .idea
 .gradle
@@ -61,16 +55,12 @@ local.properties
 .kotlin/
 
 # node.js
-
-
+node_modules
+dist
+dist-ssr
+*.local
 
 # fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
-
 **/fastlane/report.xml
 **/fastlane/Preview.html
 **/fastlane/screenshots

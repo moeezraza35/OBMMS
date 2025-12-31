@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router"
+import { AuthProvider } from "./context/auth"
+import { LoadinProvider } from "./context/loading"
 import Home from "./pages/home"
 import Login from "./pages/login"
 import Dashboard from "./pages/dashboard"
@@ -11,15 +13,20 @@ import "./assets/App.css"
 function App() {
   return (
     <BrowserRouter>
-      <Header/>
-      <Routes>
-        <Route path='' element={<Home/>}/>
-        <Route path="/login/" element={<Login/>}/>
-        <Route path="/dashboard/" element={<Dashboard/>}/>
-        <Route path="/profile/" element={<Profile/>}/>
-        <Route path="/settings/" element={<Settings/>}/>
-      </Routes>
-      <Footer/>
+      <LoadinProvider>
+        <AuthProvider>
+          <Header/>
+          <Routes>
+            <Route path='' element={<Home/>}/>
+            <Route path="/login/" element={<Login/>}/>
+            <Route path="/dashboard/" element={<Dashboard/>}/>
+            <Route path="/dashboard/:model/" element={<Dashboard/>}/>
+            <Route path="/profile/" element={<Profile/>}/>
+            <Route path="/settings/" element={<Settings/>}/>
+          </Routes>
+          <Footer/>
+        </AuthProvider>
+      </LoadinProvider>
     </BrowserRouter>
   )
 }

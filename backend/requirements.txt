@@ -1,4 +1,9 @@
 fastapi
 uvicorn
+aiofiles
+itsdangerous
 sqlalchemy
 PyMySQL
+pyjwt
+passlib[bcrypt]
+bcrypt==4.3.0

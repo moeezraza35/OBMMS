@@ -4,10 +4,19 @@ PORT = 8000
 RELOAD = True
 
 # Session Settings
-SECRET_KEY = "63856-OBMMS$66688-&-66566",
-SESSION_COOKIE = "session_id",
-SAME_SITE = "lax",
-HTTPS_ONLY = False,  # Set to True if using HTTPS
+SECRET_KEY = "63856-OBMMS$66688-&-66566"
+SESSION_COOKIE = "session_id"
+SAME_SITE = "lax"
+HTTPS_ONLY = False # Set to True if using HTTPS
+
+# JWT Settings
+JWT_ALGORITHM = "HS256"
+JWT_EXIPRE = False
+JWT_EXP_TIME = 30   # Days
+
+# Encryption settings
+SCHEMES = ["bcrypt"]
+DEPRECATED = "auto"
 
 # CORS Settings
 ALLOW_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]

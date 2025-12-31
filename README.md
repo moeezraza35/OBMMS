@@ -28,6 +28,8 @@ Following technologies are used in the development of this project
 #### Integrated Development Environments (IDE)
 - Visual Studio Code
 - Android Studio
+#### Version Control
+- Git/GitHub
 #### Frontend Tools
 - ReactJS
 - ViteJS
@@ -42,10 +44,12 @@ Following technologies are used in the development of this project
 
 ## Requirements
 Here are the following requirements need to be installed to run this project
-- NodeJS v22.12.0
-- Python 3.13.7
-- Android Studio with latest SDK
-- Android Emulator (minimum Android 7)
+- NodeJS LTS
+- Python 3
+- Git Bash
+- MySQL
+- Android Studio + latest SDK
+- Android Device (minimum Android 7)
 
 ## Run Development Environment
 These points will help you run the project only in the development environment. Please contact developers for production environment.
@@ -76,7 +80,12 @@ source ./venv/bin/activate
 ```
 ```
 pip install -r requirements.txt
-python main.py
+python main.py migrate
+python main.py createsuperuser
+```
+Here, `migrate` command is used to initialize the database by creating all the required tables in the database and `createsuperuser` is used to create an admin user. It will ask you few questions like user ID and name. If user ID is kept empty it will assign any available ID number. After creating super user run the following command:
+```
+python main.py runservers
 ```
 These commands will run the backend server on port *:8000. You can access it using http://localhost:8000.
 
@@ -88,6 +97,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 ## Refrences
 - https://vite.dev/guide/
 - https://www.w3schools.com/react/
+- https://reactrouter.com/home
 - https://tailwindcss.com/docs/installation/using-vite
 - https://www.geeksforgeeks.org/python/fastapi-introduction/
 - https://www.tutorialspoint.com/fastapi/fastapi_uvicorn.htm
@@ -96,3 +106,8 @@ These commands will run the backend server on port *:8000. You can access it usi
 - https://planetscale.com/blog/using-mysql-with-sql-alchemy-hands-on-examples
 - https://www.tutorialspoint.com/sqlalchemy/
 - https://www.svgrepo.com/
+- https://www.tutorialspoint.com/fastapi/fastapi_static_files.htm
+- https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal#:~:text=termcolor.COLORS%20gives%20you%20a,other%20platforms%2C%20Colorama%20does%20nothing.
+- https://pyjwt.readthedocs.io/en/stable/
+- https://www.w3schools.com/tags/ref_httpmessages.asp
+- https://medium.com/@farhanahmedindia/complete-guide-deploying-a-flask-app-on-apache-ubuntu-c2f5d7b17e20

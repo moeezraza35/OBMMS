@@ -5,7 +5,7 @@
   @apply bg-(--highlight-color) text-(--secondary-color);
 }
 main{
-  @apply mt-16 overflow-hidden;
+  @apply mt-16 overflow-hidden min-h-screen;
 }
 h1{
   @apply text-4xl font-serif;
@@ -15,6 +15,9 @@ h3{
 }
 button, a{
   @apply hover:cursor-pointer text-(--accent-color) hover:text-(--secondary-color);
+}
+label{
+  @apply block;
 }
 @media screen and (max-width: 572px){
   h1{
@@ -100,13 +103,13 @@ header div.profile menu ul li a{
 .slider .left-btn{
   @apply absolute left-0 h-full z-1;
 }
-.slider .left-btn img{
+.left-btn img{
   @apply rotate-270;
 }
 .slider .right-btn{
   @apply absolute right-0 h-full z-1;
 }
-.slider .right-btn img{
+.right-btn img{
   @apply rotate-90;
 }
 @media screen and (max-width: 768px){
@@ -177,7 +180,7 @@ header div.profile menu ul li a{
 
 /* Footer Styling */
 footer{
-  @apply min-h-screen bg-(--accent-color) pt-7 flex flex-col justify-between text-white;
+  @apply min-h-screen bg-(--accent-color) pt-7 flex flex-col justify-between text-(--layer-text-color);
 }
 footer > img{
   @apply w-full max-w-xs rounded-sm mx-auto mt-7;
@@ -194,3 +197,69 @@ footer .social{
   }
 }
 /* End Footer */
+
+
+/* Loading screen Styling */
+.loading{
+  @apply fixed bg-[#00000099] top-0 left-0 h-screen w-screen z-20 flex justify-center items-center;
+}
+.loading img{
+  @apply animate-spin h-24 w-24 block;
+}
+/* End Loading screen */
+
+/* Aside Styling */
+aside > div{
+  @apply border border-(--highlight-color) p-4 w-3xs m-2 rounded;
+}
+aside h3, aside li{
+  @apply px-1;
+}
+aside li{
+  @apply w-full hover:bg-(--highlight-color);
+}
+aside li a{
+  @apply w-full py-2 block;
+}
+aside li.active{
+  @apply bg-(--accent-color);
+}
+aside li.active a{
+  @apply text-white;
+}
+@media screen and (min-width: 573px){
+  aside button{
+    @apply hidden;
+  }
+}
+@media screen and (max-width: 572px){
+  aside{
+    @apply absolute top-0 left-0 transition-all h-full flex;
+  }
+  aside > div{
+    @apply w-0 p-0 m-0 overflow-hidden;
+  }
+  aside > button{
+    @apply w-4 flex items-center h-full;
+  }
+  aside.active{
+    @apply w-full bg-(--background-color);
+  }
+  aside.active > div{
+    @apply w-[90%] max-w-3xs border p-4 m-2;
+    box-shadow: 4px 0 12px rgba(0,0,0,0.15);
+  }
+}
+/* End Aside */
+
+/* Title bar Styling */
+.titlebar{
+  @apply bg-(--accent-color) w-full my-2 p-4 rounded text-(--layer-text-color);
+}
+/* End Title bar */
+
+/* Input Styling */
+.text-input{
+  @apply block w-full p-2 bg-(--highlight-color) mb-2 rounded-md border-2 outline-none border-transparent focus:border-(--accent-color);
+}
+/* End Input */

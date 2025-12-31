@@ -1,9 +1,10 @@
+import { static_dir } from "../config"
 import { ListBox_Content } from "./content"
 
 function Footer(){
   return (
     <footer id="contact">
-      <img src="/images/riphah-logo.jpg" />
+      <img src={static_dir+"images/riphah-logo.jpg"} />
       <div className="lists">
         <ListBox_Content title={"Group Member"}>
           <ul>
@@ -31,11 +32,11 @@ function Footer(){
         </ListBox_Content>
       </div>
       <div className="social">
-        <img src="/images/icons/facebook.svg" />
-        <img src="/images/icons/instagram.svg" />
-        <img src="/images/icons/linkedin.svg" />
-        <img src="/images/icons/twiter.svg" />
-        <img src="/images/icons/whatsapp.svg" />
+        <img src={static_dir+"images/icons/facebook.svg"} />
+        <img src={static_dir+"images/icons/instagram.svg"} />
+        <img src={static_dir+"images/icons/linkedin.svg"} />
+        <img src={static_dir+"images/icons/twiter.svg"} />
+        <img src={static_dir+"images/icons/whatsapp.svg"} />
       </div>
     </footer>
   )

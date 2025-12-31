@@ -13,11 +13,12 @@ if __name__ == "__main__":
   )
   parser.add_argument("command", help="runserver | migrate | createsuperuser")
   args = parser.parse_args()
+
   if args.command == "runserver":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
   elif args.command == "migrate":
     obmms.create_tables()
   elif args.command == "createsuperuser":
-    pass
+    obmms.create_super_user()
   else:
     raise NotImplementedError(args.command+" is not recognized")

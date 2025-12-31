@@ -1,0 +1,1 @@
+from obmms.database import Base

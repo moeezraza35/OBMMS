@@ -1,0 +1,48 @@
+import { useState, createContext, useEffect, useContext } from "react";
+import { backend, api_prefix } from "../config";
+import { LoadingContext } from "./loading";
+
+const AuthContext = createContext({
+  session_id: "",
+  user: Object(null),
+  loginCheck: () => {}
+})
+
+function AuthProvider({ children }){
+  const [user, setUser] = useState(null)
+  let session_id = ""
+  const {setLoading} = useContext(LoadingContext)
+  const loginCheck = () => {
+    setLoading(true)
+    fetch(backend+api_prefix+"auth/login/check/?session_id="+session_id, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type" : "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      if (data["user"] != null){
+        session_id = data["session_id"]
+        setUser(data["user"])
+      } else {
+        session_id = ""
+        setUser(null)
+      }
+      setLoading(false)
+    })
+    .catch(e => console.log("Error in checking session",e))
+  }
+  useEffect(() => {
+    loginCheck()
+  }, [])
+  return (
+    <AuthContext.Provider value={{session_id, user, loginCheck}}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+export {AuthContext, AuthProvider}

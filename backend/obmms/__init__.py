@@ -33,7 +33,7 @@ class OBMMS:
       Base.metadata.create_all(ENGINE)
       return True
     except:
-      print("\033[91mConnectionError: Unable to create tables")
+      print("\033[91mConnectionError: Unable to create tables\033[0m")
       return False
   
   def create_super_user(self) -> bool:

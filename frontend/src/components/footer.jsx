@@ -14,20 +14,20 @@ function Footer(){
             <li>Taqadus Noor</li>
           </ul>
         </ListBox_Content>
+        <ListBox_Content title={"Experties"}>
+          <ul>
+            <li>Backend</li>
+            <li>Frontend</li>
+            <li>Debugging</li>
+            <li>Documentation</li>
+          </ul>
+        </ListBox_Content>
         <ListBox_Content title={"Campuses"}>
           <ul>
             <li>Gulberg III, Lahore</li>
             <li>Raiwand road, Lahore</li>
             <li>Thokar Niaz Baig, Lahore</li>
             <li>Township, Lahore</li>
-          </ul>
-        </ListBox_Content>
-        <ListBox_Content title={"Contact"}>
-          <ul>
-            <li>+92 3** *******</li>
-            <li>+92 3** *******</li>
-            <li>+92 3** *******</li>
-            <li>+92 3** *******</li>
           </ul>
         </ListBox_Content>
       </div>

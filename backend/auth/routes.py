@@ -35,6 +35,7 @@ async def login_submit(request:Request) -> dict:
 
 @router.get("/login/check/", status_code=status.HTTP_200_OK)
 async def login_check(request:Request) -> dict:
+  session_id = ""
   session = get_session()
   user = check_session(request, session)
   if user is not None:
@@ -46,8 +47,9 @@ async def login_check(request:Request) -> dict:
       "session_id" : session_id,
       "user" : user.serialize()
     }
-  session_id = request.query_params.get("session_id")
-  if session_id is not None:
+  auth_header = request.headers.get("Authorization")
+  if auth_header and auth_header.startswith("Bearer "):
+    session_id = auth_header.split(" ")[1]
     user = check_session_id(session_id, session)
     session.close()
   
@@ -70,3 +72,19 @@ def logout(request:Request) -> dict:
   return {
     "session_id" : ""
   }
+
+@router.get("/permissions/")
+def permissions(request:Request) -> dict:
+  session = get_session()
+  try:
+    user = authenticate(request, session)
+    if user is None:
+      raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Login Required"
+      )
+    return {
+      "permissions":getPermissions(user, session)
+    }
+  finally:
+    session.close()

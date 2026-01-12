@@ -210,7 +210,10 @@ footer .social{
 
 /* Aside Styling */
 aside > div{
-  @apply border border-(--highlight-color) p-4 w-3xs m-2 rounded;
+  @apply border border-(--highlight-color) p-2 w-3xs m-2 rounded;
+}
+aside h3{
+  @apply mt-2;
 }
 aside h3, aside li{
   @apply px-1;
@@ -219,7 +222,7 @@ aside li{
   @apply w-full hover:bg-(--highlight-color);
 }
 aside li a{
-  @apply w-full py-2 block;
+  @apply w-full py-2 block capitalize;
 }
 aside li.active{
   @apply bg-(--accent-color);
@@ -246,7 +249,7 @@ aside li.active a{
     @apply w-full bg-(--background-color);
   }
   aside.active > div{
-    @apply w-[90%] max-w-3xs border p-4 m-2;
+    @apply w-[90%] max-w-3xs border p-2 m-2;
     box-shadow: 4px 0 12px rgba(0,0,0,0.15);
   }
 }
@@ -262,4 +265,22 @@ aside li.active a{
 .text-input{
   @apply block w-full p-2 bg-(--highlight-color) mb-2 rounded-md border-2 outline-none border-transparent focus:border-(--accent-color);
 }
+.submit-input{
+  @apply bg-(--accent-color) text-(--layer-text-color) w-full p-2 rounded;
+}
+.reset-input{
+  @apply bg-(--highlight-color) w-min p-2 rounded;
+}
 /* End Input */
+
+/* Dialog Styling */
+.dialog{
+  @apply fixed top-16 left-0 w-full h-screen hidden bg-[#00000099];
+}
+.dialog.active{
+  @apply flex justify-center;
+}
+.dialog form{
+  @apply bg-(--background-color) p-4 h-max w-[90%] max-w-2xs mt-2 rounded;
+}
+/* End Dialog */

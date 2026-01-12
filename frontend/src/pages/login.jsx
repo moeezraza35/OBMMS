@@ -80,7 +80,7 @@ function Login(){
         <input
           type="submit"
           value="Login"
-          className="w-full p-2 bg-(--accent-color) text-white rounded-md"
+          className="submit-input"
         />
       </form>
     </main>

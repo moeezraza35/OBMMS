@@ -38,9 +38,15 @@ class OBMMS:
   
   def create_super_user(self) -> bool:
     user_id = input("Enter user id (Press enter to auto-assign): ")
-    name = input("Enter user's name: ")
-    password = input("Enter Password: ")
-    confirm_password = input("Enter Password again: ")
+    name = ""
+    while name == "":
+      name = input("Enter user's name: ")
+    password = ""
+    while password == "":
+      password = input("Enter Password: ")
+    confirm_password = ""
+    while confirm_password == "":
+      confirm_password = input("Enter Password again: ")
 
     if password != confirm_password:
       print("\033[91mValueError: Password and confirm password does not match\033[0m")

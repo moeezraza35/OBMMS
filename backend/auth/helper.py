@@ -1,5 +1,5 @@
 from datetime import datetime, timezone, timedelta
-from fastapi import Request
+from fastapi import Request, HTTPException, status
 from sqlalchemy.orm import Session
 from obmms.settings import SECRET_KEY, JWT_ALGORITHM, JWT_EXIPRE, JWT_EXP_TIME
 from auth.models import Users, Group
@@ -39,17 +39,36 @@ def create_session_id(user: Users) -> str:
 def authenticate(request:Request, session: Session) -> None | Users:
   user = check_session(request, session)
   if user is None:
-    session_id = request.query_params.get("session_id")
-    if session_id is not None:
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+      session_id = auth_header.split(" ")[1]
       user = check_session_id(session_id, session)
   return user
+
+def getPermissions(user:Users, session:Session) -> dict:
+  group = session.get(Group, user.group)
+  permission = group.permissions  # type:ignore
+  return permission # type:ignore
 
 def authorize(user: Users, session: Session, model:str, readonly=True) -> bool:
   if user.is_admin: # type:ignore
     return True
-  group = session.get(Group, user.group)
-  permission = json.load(group.permissions) # type:ignore
+  permission = getPermissions(user, session)
   if model in permission:
     if readonly or permission[model] == 'w':
       return True
   return False
+
+def require_auth(request:Request, session:Session, model:str, readonly=True) -> Users:
+  user = authenticate(request, session)
+  if user is None:
+    raise HTTPException(
+      status_code=status.HTTP_401_UNAUTHORIZED,
+      detail="Login Required"
+    )
+  if not authorize(user, session, model, readonly):
+    raise HTTPException(
+      status_code=status.HTTP_403_FORBIDDEN,
+      detail="Not Allowed"
+    )
+  return user

@@ -9,21 +9,21 @@ const AuthContext = createContext({
 })
 
 function AuthProvider({ children }){
-  const [user, setUser] = useState(null)
   let session_id = ""
+  const [user, setUser] = useState(null)
   const {setLoading} = useContext(LoadingContext)
   const loginCheck = () => {
     setLoading(true)
-    fetch(backend+api_prefix+"auth/login/check/?session_id="+session_id, {
+    fetch(backend+api_prefix+"auth/login/check/", {
       method: "GET",
       credentials: "include",
       headers: {
-        "Content-Type" : "application/json"
+        "Content-Type" : "application/json",
+        "Authorization" : "Bearer "+session_id
       }
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data)
       if (data["user"] != null){
         session_id = data["session_id"]
         setUser(data["user"])

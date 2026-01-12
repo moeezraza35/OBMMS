@@ -47,5 +47,12 @@ class Group(Base):
   name = Column(name="name", type_=String(64))
   permissions = Column(name="permissions", type_=JSON)
 
+  def serialize(self)-> dict:
+    return {
+      "id" : self.id,
+      "name" : self.name,
+      "permissions" : self.permissions
+    }
+
   def __repr__(self) -> str:
     return f"({self.id}) {self.name}"

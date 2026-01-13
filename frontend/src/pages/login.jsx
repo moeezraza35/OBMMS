@@ -29,16 +29,27 @@ function Login(){
               "password":password
             })
           })
-          .then(res => res.json())
-          .then(data => {
-            console.log(data)
-            if (data["session_id"] !== ""){
-              loginCheck()
+          .then(async (res) => {
+            let data = null
+            try { data = await res.json() } catch (err) { data = null }
+            if (!res.ok) {
+              let msg = data && data.detail ? data.detail : null
+              alert(msg)
+              setLoading(false)
+            }
+            else if (data && data.session_id) {
+              await loginCheck()
               navigate("/dashboard/")
+            } else {
+              alert("Login failed. Please try again.")
             }
             setLoading(false)
           })
-          .catch((e) => console.log("Unable to fetch data", e))
+          .catch((e) => {
+            setLoading(false)
+            alert("Network error. Please check your connection.")
+            console.log("Unable to fetch data", e)
+          })
         }}>
         <label>
           <input

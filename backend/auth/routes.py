@@ -12,26 +12,19 @@ router = APIRouter(
 async def login_submit(request:Request) -> dict:
   data = await request.json()
   session = get_session()
-  user = session.get(Users, ident=int(data["sap"]))
-  session.close()
-  if user is None:
-    raise HTTPException(
-      status_code=status.HTTP_404_NOT_FOUND,
-      detail="User with SAP# {} not found.".format(data["sap"])
-    )
-  session_id = ""
-  if user.checkPassword(data["password"]):
-    session_id = create_session_id(user)
-  
-  if session_id == "":
-    raise HTTPException(
-      status_code=status.HTTP_403_FORBIDDEN,
-      detail="Incorrect password"
-    )
-  request.session["user"] = session_id
-  return {
-    "session_id" : session_id,
-  }
+  try:
+    user = session.get(Users, ident=int(data["sap"]))
+    if user is None:
+      raise HTTPException(status.HTTP_404_NOT_FOUND,"User with SAP# {} not found.".format(data["sap"]))
+    session_id = ""
+    if user.checkPassword(data["password"]):
+      session_id = create_session_id(user)
+    if session_id == "":
+      raise HTTPException(status.HTTP_403_FORBIDDEN,"Incorrect password")
+    request.session["user"] = session_id
+    return {"session_id" : session_id,}
+  finally:
+    session.close()
 
 @router.get("/login/check/", status_code=status.HTTP_200_OK)
 async def login_check(request:Request) -> dict:

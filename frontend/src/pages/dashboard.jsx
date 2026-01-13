@@ -1,32 +1,33 @@
 import { useContext, useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { api_prefix, backend, frontend } from "../config"
 import UsersTable from "../components/tables/usertable"
 import GroupTable from "../components/tables/grouptable"
 import Aside from "../components/aside"
 import TitleBar from "../components/titlebar"
 import { LoadingContext } from "../context/loading"
+import { AuthContext } from "../context/auth"
+import { getModels } from "../utils/models"
 
 function Dashboard(){
   const params = useParams()
   const [models, setModels] = useState([])
-  const {setLoading} = useContext(LoadingContext)
+  const {loading, setLoading} = useContext(LoadingContext)
+  const {user} = useContext(AuthContext)
+  const navigate = useNavigate()
   useEffect(() => {
+    if (loading) return
+    if (user == null) {
+      console.log("returning back to login")
+      navigate("/login/")}
     setLoading(true)
-    fetch(backend+api_prefix+"admin/models/", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type" : "application/json"
-      }
-    })
-    .then(res => res.json())
+    getModels()
     .then(data => {
       setModels(data.models)
       setLoading(false)
     })
     .catch(e => console.log("Unable to fetch models.",e))
-  }, [])
+  }, [user])
   return (
     <main className="flex relative">
       <Aside title="Activities">

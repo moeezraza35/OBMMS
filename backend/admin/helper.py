@@ -38,9 +38,11 @@ def assignGroup(user:Users, edit_user:Users, group:str|int):
     else:
       edit_user.group = group # type:ignore
 
-def setPermission(user:Users, data:dict):
+def setPermission(user:Users, session:Session, data:dict):
+  user_permissions = getPermissions(user, session)
   permissions:dict = {}
   for key, value in data.items():
     if not key in ["id", "name"] and value:
-      permissions[key] = value
+      if user.is_admin is True or value in user_permissions:
+        permissions[key] = value
   return str(permissions)  # type: ignore

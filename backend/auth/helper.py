@@ -1,10 +1,9 @@
 from datetime import datetime, timezone, timedelta
 from fastapi import Request, HTTPException, status
 from sqlalchemy.orm import Session
-from obmms.settings import SECRET_KEY, JWT_ALGORITHM, JWT_EXIPRE, JWT_EXP_TIME
 from auth.models import Users, Group
+from obmms.settings import SECRET_KEY, JWT_ALGORITHM, JWT_EXIPRE, JWT_EXP_TIME
 import jwt
-import json
 
 def check_session(request:Request, session:Session) -> Users | None:
   if not "user" in request.session:
@@ -62,13 +61,7 @@ def authorize(user: Users, session: Session, model:str, readonly=True) -> bool:
 def require_auth(request:Request, session:Session, model:str, readonly=True) -> Users:
   user = authenticate(request, session)
   if user is None:
-    raise HTTPException(
-      status_code=status.HTTP_401_UNAUTHORIZED,
-      detail="Login Required"
-    )
+    raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
   if not authorize(user, session, model, readonly):
-    raise HTTPException(
-      status_code=status.HTTP_403_FORBIDDEN,
-      detail="Not Allowed"
-    )
+    raise HTTPException(status.HTTP_403_FORBIDDEN, "Not Allowed")
   return user

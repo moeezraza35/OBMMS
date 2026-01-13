@@ -12,9 +12,9 @@ function AuthProvider({ children }){
   let session_id = ""
   const [user, setUser] = useState(null)
   const {setLoading} = useContext(LoadingContext)
-  const loginCheck = () => {
+  const loginCheck = async () => {
     setLoading(true)
-    fetch(backend+api_prefix+"auth/login/check/", {
+    const res = await fetch(backend+api_prefix+"auth/login/check/", {
       method: "GET",
       credentials: "include",
       headers: {
@@ -22,19 +22,16 @@ function AuthProvider({ children }){
         "Authorization" : "Bearer "+session_id
       }
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data["user"] != null){
-        session_id = data["session_id"]
-        setUser(data["user"])
-      } else {
-        session_id = ""
-        setUser(null)
-      }
+    const data = await res.json()
+    if (data["user"] != null){
+      session_id = data["session_id"]
+      setUser(data["user"])
+    } else {
+      session_id = ""
+      setUser(null)
+    }
       setLoading(false)
-    })
-    .catch(e => console.log("Error in checking session",e))
-  }
+    }
   useEffect(() => {
     loginCheck()
   }, [])

@@ -17,9 +17,10 @@ def save(session:Session, obj:DeclarativeBase):
 
 def allowedModels(session:Session, user:Users) -> list[str]:
   models = ["users", "group"]
-  if user.is_admin: # type:ignore
+  if user.is_admin is True:
     return models
   permissions = getPermissions(user, session)
+  print(permissions)  # Debug print
   allowed_models = []
   for model in models:
     if model in permissions:

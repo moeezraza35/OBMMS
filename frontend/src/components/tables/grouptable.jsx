@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react"
 import { LoadingContext } from "../../context/loading"
 import { AuthContext } from "../../context/auth"
 import { addGroup, getGroups, updateGroup } from "../../utils/group"
+import { useNavigate } from "react-router-dom"
 
 function GroupTable({ models }){
   const [rows, setRows] = useState([])
@@ -12,8 +13,9 @@ function GroupTable({ models }){
     "id" : "",
     "name" : "",
   })
-  const { loading, setLoading } = useContext(LoadingContext)
+  const { setLoading } = useContext(LoadingContext)
   const {session_id} = useContext(AuthContext)
+  const navigate = useNavigate()
   const handleChange = (e) => {
     const name = e.target.name
     const value = e.target.value
@@ -31,31 +33,36 @@ function GroupTable({ models }){
   }, [models])
   useEffect(() => {
     setLoading(true)
-    getGroups(session_id).then(data => {
-      console.log(data.groups)
-      setRows(data.groups)
+    getGroups(session_id, data => {
+      setRows(data)
       setLoading(false)
+    }, (status) => {
+      switch(status){
+        case 401:
+          navigate("/login/")
+          break
+        default:
+          navigate("/dashboard/")
+          break
+      }
     })
   }, [])
   return (
     <>
       <div className={"dialog"+(dialog?" active":"")}>
-        <form onSubmit={e => {
+        <form onSubmit={async e => {
           setLoading(true)
           e.preventDefault()
-          formMode===0?addGroup(formData, session_id)
-          .then(data => {
+          formMode===0?await addGroup(formData, session_id, data => {
             setDialog(false)
-            setRows(rows.concat([data.group]))
-            setLoading(false)
-          }):updateGroup(formData, session_id)
-          .then(data => {
+            setRows(rows.concat([data]))
+          }):await updateGroup(formData, session_id, data => {
             setDialog(false)
             setRows(rows.filter(group => {
-              return group.id !== data.group.id
-            }).concat(data.group))
-            setLoading(false)
+              return group.id !== data.id
+            }).concat(data))
           })
+          setLoading(false)
         }}>
           <h3 className="mb-2">
             {formMode===0?"Add Group":"Edit Group"}

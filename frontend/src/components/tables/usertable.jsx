@@ -3,6 +3,7 @@ import { LoadingContext } from "../../context/loading"
 import { AuthContext} from "../../context/auth"
 import { getGroups } from "../../utils/group"
 import { addUser, getUsers, updateUser } from "../../utils/users"
+import { useNavigate } from "react-router-dom"
 
 function UsersTable(){
   const [rows, setRows] = useState([])
@@ -19,6 +20,7 @@ function UsersTable(){
   })
   const {setLoading} = useContext(LoadingContext)
   const {session_id} = useContext(AuthContext)
+  const navigate = useNavigate()
   const handleChange = (e) => {
     const name = e.target.name
     const value = e.target.value
@@ -26,34 +28,50 @@ function UsersTable(){
   }
   useEffect(() => {
     setLoading(true)
-    getUsers(session_id).then(data => {
-      setRows(data.users)
-    })
-    getGroups(session_id).then(data => {
-      setGroups(data.groups)
+    getUsers(session_id, (data => {
+      setRows(data)
+    }), ((status) => {
       setLoading(false)
+      switch(status){
+        case 401:
+          navigate("/login/")
+          break
+        default:
+          navigate("/dashboard/")
+          break
+      }
+    }))
+    getGroups(session_id, data => {
+      setGroups(data)
+      setLoading(false)
+    }, (status) => {
+      setLoading(false)
+      switch(status){
+        case 401:
+          navigate("/login/")
+          break
+        default:
+          navigate("/dashboard/")
+          break
+      }
     })
   }, [])
   return (
     <>
       <div className={"dialog"+(dialog?" active":"")}>
-        <form onSubmit={e => {
+        <form onSubmit={async e => {
           setLoading(true)
           e.preventDefault()
-          formMode===0?addUser(formData, session_id)
-          .then(data => {
-            console.log(data) // Debug Print
-            setRows(rows.concat([data.user]))
+          formMode===0?await addUser(formData, session_id, data => {
+            setRows(rows.concat([data]))
             setdialog(false)
-            setLoading(false)
-          }):updateUser(formData, session_id)
-          .then(data => {
+          }):await updateUser(formData, session_id, data => {
             setdialog(false)
             setRows(rows.filter(user => {
-              return user.id !== data.user.id
-            }).concat([data.user]))
-            setLoading(false)
+              return user.id !== data.id
+            }).concat([data]))
           })
+          setLoading(false)
         }}>
         <h3 className="mb-2">
           {formMode==0?"Add User":"Edit User"}

@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from auth.models import Users, Group
 from obmms.settings import SECRET_KEY, JWT_ALGORITHM, JWT_EXIPRE, JWT_EXP_TIME
 import jwt
+import json
 
 def check_session(request:Request, session:Session) -> Users | None:
   if not "user" in request.session:
@@ -45,15 +46,21 @@ def authenticate(request:Request, session: Session) -> None | Users:
   return user
 
 def getPermissions(user:Users, session:Session) -> dict:
+  if user.is_admin is True:
+    return {}
   group = session.get(Group, user.group)
-  permission = group.permissions  # type:ignore
-  return permission # type:ignore
+  try:
+    return json.loads(group.permissions.replace("'", '"'))  # type:ignore
+  except json.JSONDecodeError:
+    return {}
 
 def authorize(user: Users, session: Session, model:str, readonly=True) -> bool:
   if user.is_admin: # type:ignore
     return True
   permission = getPermissions(user, session)
+  print(permission) # Debug print
   if model in permission:
+    print(model)  # Debug print
     if readonly or permission[model] == 'w':
       return True
   return False

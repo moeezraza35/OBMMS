@@ -29,19 +29,15 @@ async def get_allowed_models(request:Request) -> dict:
 @router.get("/users/all/")
 async def get_all_users(request:Request) -> dict:
   session = get_session()
-  user = authenticate(request, session)
-  if user is None:
+  try:
+    user = require_auth(request, session, "users")
+    result = {"users" : []}
+    users = session.query(Users).all()
+    for record in users:
+      result["users"].append(record.serialize())
+    return result
+  finally:
     session.close()
-    raise HTTPException(status.HTTP_401_UNAUTHORIZED,"Login required")
-  if not authorize(user, session, "users"):
-    session.close()
-    raise HTTPException(status.HTTP_403_FORBIDDEN, "Not Allowed")
-  result = {"users" : []}
-  users = session.query(Users).all()
-  for record in users:
-    result["users"].append(record.serialize())
-  session.close()
-  return result
 
 @router.get("/group/all/")
 async def get_all_groups(request:Request) -> dict:
@@ -70,7 +66,7 @@ async def add_user(request:Request) -> dict:
   data = await request.json()
   session = get_session()
   try:
-    user = require_auth(request, session, "user", False)
+    user = require_auth(request, session, "users", False)
     if data["id"] == "":
       new_user = Users()
     else:
@@ -121,7 +117,7 @@ async def update_user(request:Request) -> dict:
   data = await request.json()
   session = get_session()
   try:
-    user = require_auth(request, session, "user", False)
+    user = require_auth(request, session, "users", False)
     edit_user = session.get(Users, data["id"])
     if edit_user is None:
       raise HTTPException(status.HTTP_404_NOT_FOUND,"Not Exists")

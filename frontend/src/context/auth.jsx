@@ -30,8 +30,8 @@ function AuthProvider({ children }){
       session_id = ""
       setUser(null)
     }
-      setLoading(false)
-    }
+    setLoading(false)
+  }
   useEffect(() => {
     loginCheck()
   }, [])

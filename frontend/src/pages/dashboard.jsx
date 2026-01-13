@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { api_prefix, backend, frontend } from "../config"
+import { frontend } from "../config"
 import UsersTable from "../components/tables/usertable"
 import GroupTable from "../components/tables/grouptable"
 import Aside from "../components/aside"
@@ -16,10 +16,15 @@ function Dashboard(){
   const {user} = useContext(AuthContext)
   const navigate = useNavigate()
   useEffect(() => {
-    if (loading) return
+    console.log("Dashboard working...") // Debug print
+    if (loading) {
+      console.log("Dashboard is blocked by loading")  // Debug print
+      return
+    }
     if (user == null) {
-      console.log("returning back to login")
-      navigate("/login/")}
+      console.log("returning back to login")  // Debug print
+      navigate("/login/")
+    }
     setLoading(true)
     getModels()
     .then(data => {

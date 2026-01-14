@@ -62,9 +62,7 @@ async def login_check(request:Request) -> dict:
 def logout(request:Request) -> dict:
   if "user" in request.session:
     del request.session["user"]
-  return {
-    "session_id" : ""
-  }
+  return {"session_id" : ""}
 
 @router.get("/permissions/")
 def permissions(request:Request) -> dict:
@@ -72,12 +70,7 @@ def permissions(request:Request) -> dict:
   try:
     user = authenticate(request, session)
     if user is None:
-      raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Login Required"
-      )
-    return {
-      "permissions":getPermissions(user, session)
-    }
+      raise HTTPException(status.HTTP_401_UNAUTHORIZED,"Login Required")
+    return {"permissions":getPermissions(user, session)}
   finally:
     session.close()

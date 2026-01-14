@@ -95,7 +95,8 @@ These commands will run the backend server on port *:8000. You can access it usi
 - Main page UI design - 16 Dec 2025
 - Drafted an Auth app - 31 Dec 2025
 - Drafted an Admin app - 12 Jan 2026
-- Fixed Login Exeception - 12 Jan 2026
+- Fixed Login Exception - 13 Jan 2026
+- Fixed Permission Exceptions - 14 Jan 2026
 
 ## Refrences
 - https://vite.dev/guide/

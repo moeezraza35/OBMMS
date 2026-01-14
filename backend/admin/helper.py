@@ -20,7 +20,6 @@ def allowedModels(session:Session, user:Users) -> list[str]:
   if user.is_admin is True:
     return models
   permissions = getPermissions(user, session)
-  print(permissions)  # Debug print
   allowed_models = []
   for model in models:
     if model in permissions:
@@ -39,11 +38,20 @@ def assignGroup(user:Users, edit_user:Users, group:str|int):
     else:
       edit_user.group = group # type:ignore
 
-def setPermission(user:Users, session:Session, data:dict):
+def setPermission(user:Users, session:Session, data:dict, existing_permissions:dict = {}):
   user_permissions = getPermissions(user, session)
-  permissions:dict = {}
+  permissions = existing_permissions.copy()
   for key, value in data.items():
-    if not key in ["id", "name"] and value:
-      if user.is_admin is True or value in user_permissions:
-        permissions[key] = value
+    if not key in ["id", "name"]:
+      if user.is_admin is True:
+        if value:
+          permissions[key] = value
+        else:
+          del permissions[key]
+      elif key in user_permissions:
+        if user_permissions[key] == "w":
+          if value:
+            permissions[key] = value
+          else:
+            del permissions[key]
   return str(permissions)  # type: ignore

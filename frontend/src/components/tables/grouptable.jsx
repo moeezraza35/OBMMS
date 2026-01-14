@@ -14,7 +14,7 @@ function GroupTable({ models }){
     "name" : "",
   })
   const { setLoading } = useContext(LoadingContext)
-  const {session_id} = useContext(AuthContext)
+  const {user, permissions, session_id} = useContext(AuthContext)
   const navigate = useNavigate()
   const handleChange = (e) => {
     const name = e.target.name
@@ -112,7 +112,7 @@ function GroupTable({ models }){
           <tr>
             <th>ID</th>
             <th>Name</th>
-            <th><button onClick={() => {
+            {user?.is_admin || permissions.group==='w'?<th><button onClick={() => {
               setData({
                 "id": "",
                 "name": ""
@@ -120,7 +120,7 @@ function GroupTable({ models }){
               setModelData()
               setMode(0)
               setDialog(true)
-            }}>Add</button></th>
+            }}>Add</button></th>:""}
           </tr>
         </thead>
         <tbody className="text-center">
@@ -131,7 +131,7 @@ function GroupTable({ models }){
             <tr key={group.id}>
               <td>{group.id}</td>
               <td>{group.name}</td>
-              <td><button onClick={() => {
+              {user?.is_admin || permissions.group==='w'?<td><button onClick={() => {
                 setMode(group.id)
                 var p = JSON.parse(group.permissions.replace(/'/g, '"'))
                 setData({
@@ -140,7 +140,7 @@ function GroupTable({ models }){
                   ...p
                 })
                 setDialog(true)
-              }}>Edit</button></td>
+              }}>Edit</button></td>:""}
             </tr>
           ))}
         </tbody>

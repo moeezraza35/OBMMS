@@ -19,7 +19,7 @@ function UsersTable(){
     group: ""
   })
   const {setLoading} = useContext(LoadingContext)
-  const {session_id} = useContext(AuthContext)
+  const {user, session_id, permissions} = useContext(AuthContext)
   const navigate = useNavigate()
   const handleChange = (e) => {
     const name = e.target.name
@@ -131,10 +131,10 @@ function UsersTable(){
             <th>Name</th>
             <th>Group</th>
             <th>Active</th>
-            <th><button onClick={() => {
+            {user?.is_admin || permissions.users==='w'?<th><button onClick={() => {
               setMode(0)
               setdialog(true)
-            }}>Add</button></th>
+            }}>Add</button></th>:""}
           </tr>
         </thead>
         <tbody className="text-center">
@@ -142,22 +142,22 @@ function UsersTable(){
             const matchSearch = search === "" || user.name.toLowerCase().includes(search.toLowerCase()) || String(user.id).includes(search)
             const matchSelect = select === "All" || (select === "Admin" && user.is_admin) || (select === user.group)
             return matchSearch && matchSelect
-          }).map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.is_admin?"Admin":(groups.find(group => group.id == user.group)?.name ?? "")}</td>
-              <td>{user.active?'🟢':'🔴'}</td>
-              <td><button onClick={() => {
-                setMode(user.id)
+          }).map((row) => (
+            <tr key={row.id}>
+              <td>{row.id}</td>
+              <td>{row.name}</td>
+              <td>{row.is_admin?"Admin":(groups.find(group => group.id == row.group)?.name ?? "")}</td>
+              <td>{row.active?'🟢':'🔴'}</td>
+              {user?.is_admin || permissions.users==='w'?<td><button onClick={() => {
+                setMode(row.id)
                 setData({
-                  "id": user.id,
-                  "name": user.name,
+                  "id": row.id,
+                  "name": row.name,
                   "password": "",
-                  "group": user.is_admin ? "Admin" : String(user.group)
+                  "group": row.is_admin ? "Admin" : String(row.group)
                 })
                 setdialog(true)
-              }}>Edit</button></td>
+              }}>Edit</button></td>:""}
             </tr>
           ))}
         </tbody>

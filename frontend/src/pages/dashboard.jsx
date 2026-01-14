@@ -12,17 +12,14 @@ import { getModels } from "../utils/models"
 function Dashboard(){
   const params = useParams()
   const [models, setModels] = useState([])
-  const {loading, setLoading} = useContext(LoadingContext)
-  const {user} = useContext(AuthContext)
+  const {setLoading} = useContext(LoadingContext)
+  const {user, checkFlag} = useContext(AuthContext)
   const navigate = useNavigate()
   useEffect(() => {
-    console.log("Dashboard working...") // Debug print
-    if (loading) {
-      console.log("Dashboard is blocked by loading")  // Debug print
+    if (!checkFlag) {
       return
     }
     if (user == null) {
-      console.log("returning back to login")  // Debug print
       navigate("/login/")
     }
     setLoading(true)
@@ -32,7 +29,7 @@ function Dashboard(){
       setLoading(false)
     })
     .catch(e => console.log("Unable to fetch models.",e))
-  }, [user])
+  }, [checkFlag])
   return (
     <main className="flex relative">
       <Aside title="Activities">

@@ -3,6 +3,7 @@ from auth.models import Users, Group
 from obmms.database import get_session
 from auth.helper import authenticate, authorize, require_auth
 from admin.helper import save, allowedModels, assignGroup, setPermission
+import json
 
 router = APIRouter(
   prefix="/api/admin",
@@ -143,11 +144,15 @@ async def update_group(request:Request) -> dict:
     user = require_auth(request, session, "group", False)
     group = session.get(Group, data["id"])
     if group is None:
-      raise HTTPException(status.HTTP_404_NOT_FOUND,"Not Exists")
+      raise HTTPException(status.HTTP_404_NOT_FOUND,"Group with ID# {} not found".format(data["id"]))
     if not "name" in data or data["name"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST,"Invalid Data")
+      raise HTTPException(status.HTTP_400_BAD_REQUEST,"Invalid Data. Please enter a valid group name")
     group.name = data["name"]
-    group.permissions = setPermission(user, session, data)  # type: ignore
+    group.permissions = setPermission(  # type:ignore
+      user,
+      session,
+      data,
+      json.loads(group.permissions.replace("'",'"')))
     save(session, group)
     return {"group": group.serialize()}
   finally:

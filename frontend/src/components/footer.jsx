@@ -4,8 +4,20 @@ import { ListBox_Content } from "./content"
 function Footer(){
   return (
     <footer id="contact">
-      <img src={static_dir+"images/riphah-logo.jpg"} />
+ 
       <div className="lists">
+        <div className="listBox">
+          <img src={static_dir+"images/riphah-title-white.png"} alt="" />
+          <div className="text-justify">
+            <div className="social">
+              <img src={static_dir+"images/icons/facebook.svg"} />
+              <img src={static_dir+"images/icons/instagram.svg"} />
+              <img src={static_dir+"images/icons/linkedin.svg"} />
+              <img src={static_dir+"images/icons/twiter.svg"} />
+              <img src={static_dir+"images/icons/whatsapp.svg"} />
+            </div>
+          </div>
+        </div>
         <ListBox_Content title={"Group Member"}>
           <ul>
             <li>Moeez Raza</li>
@@ -31,13 +43,7 @@ function Footer(){
           </ul>
         </ListBox_Content>
       </div>
-      <div className="social">
-        <img src={static_dir+"images/icons/facebook.svg"} />
-        <img src={static_dir+"images/icons/instagram.svg"} />
-        <img src={static_dir+"images/icons/linkedin.svg"} />
-        <img src={static_dir+"images/icons/twiter.svg"} />
-        <img src={static_dir+"images/icons/whatsapp.svg"} />
-      </div>
+      <p>© 2026 Riphah International University. All rights reserved.</p>
     </footer>
   )
 }

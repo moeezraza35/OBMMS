@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException, status
 from auth.models import Users, Group
+from obmms.settings import MODELS
 from obmms.database import get_session
 from auth.helper import authenticate, authorize, require_auth
 from admin.helper import save, allowedModels, assignGroup, setPermission
@@ -14,18 +15,18 @@ router = APIRouter(
 
 @router.get("/models/")
 async def get_allowed_models(request:Request) -> dict:
-  models = ["users", "group"]
+  models = MODELS
   session = get_session()
-  user = authenticate(request, session)
-  if user is None:
+  try:
+    user = authenticate(request, session)
+    if user is None:
+      raise HTTPException(status.HTTP_401_UNAUTHORIZED,"Login Required")
+    if user.is_admin is True:
+      return {"models" : models}
+    allowed_models = allowedModels(session, user)
+    return {"models" : allowed_models}
+  finally:
     session.close()
-    raise HTTPException(status.HTTP_401_UNAUTHORIZED,"Login Required")
-  if user.is_admin is True:
-    session.close()
-    return {"models" : models}
-  allowed_models = allowedModels(session, user)
-  session.close()
-  return {"models" : allowed_models}
 
 @router.get("/users/all/")
 async def get_all_users(request:Request) -> dict:

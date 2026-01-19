@@ -90,13 +90,14 @@ python main.py runservers
 These commands will run the backend server on port *:8000. You can access it using http://localhost:8000.
 
 ## Timeline
-- Requirement gathering - 24 Nov 2025
-- Analysis - 10 Dec 2025
-- Main page UI design - 16 Dec 2025
-- Drafted an Auth app - 31 Dec 2025
-- Drafted an Admin app - 12 Jan 2026
-- Fixed Login Exception - 13 Jan 2026
-- Fixed Permission Exceptions - 14 Jan 2026
+- 24 Nov 2025 - Requirement gathering
+- 10 Dec 2025 - Analysis
+- 16 Dec 2025 - Main page UI design
+- 31 Dec 2025 - Drafted an Auth app
+- 12 Jan 2026 - Drafted an Admin app
+- 13 Jan 2026 - Fixed Login Exception
+- 14 Jan 2026 - Fixed Permission Exceptions
+- 19 Jan 2026 - Drafted a Tracking app
 
 ## Refrences
 - https://vite.dev/guide/
@@ -113,5 +114,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - https://www.tutorialspoint.com/fastapi/fastapi_static_files.htm
 - https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal#:~:text=termcolor.COLORS%20gives%20you%20a,other%20platforms%2C%20Colorama%20does%20nothing.
 - https://pyjwt.readthedocs.io/en/stable/
+- https://react-leaflet.js.org
+- https://www.openstreetmap.org
 - https://www.w3schools.com/tags/ref_httpmessages.asp
 - https://medium.com/@farhanahmedindia/complete-guide-deploying-a-flask-app-on-apache-ubuntu-c2f5d7b17e20

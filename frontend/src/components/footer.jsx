@@ -1,5 +1,4 @@
 import { static_dir } from "../config"
-import { ListBox_Content } from "./content"
 
 function Footer(){
   return (
@@ -18,30 +17,33 @@ function Footer(){
             </div>
           </div>
         </div>
-        <ListBox_Content title={"Group Member"}>
+        <div className="listBox">
+          <h3>Group Members</h3>
           <ul>
             <li>Moeez Raza</li>
             <li>Muneeba Munir</li>
             <li>Maham Maqsood</li>
             <li>Taqadus Noor</li>
           </ul>
-        </ListBox_Content>
-        <ListBox_Content title={"Experties"}>
+        </div>
+        <div className="listBox">
+          <h3>Experties</h3>
           <ul>
             <li>Backend</li>
             <li>Frontend</li>
             <li>Debugging</li>
             <li>Documentation</li>
           </ul>
-        </ListBox_Content>
-        <ListBox_Content title={"Campuses"}>
+        </div>
+        <div className="listBox">
+          <h3>Campuses</h3>
           <ul>
             <li>Gulberg III, Lahore</li>
             <li>Raiwand road, Lahore</li>
             <li>Thokar Niaz Baig, Lahore</li>
             <li>Township, Lahore</li>
           </ul>
-        </ListBox_Content>
+        </div>
       </div>
       <p>© 2026 Riphah International University. All rights reserved.</p>
     </footer>

@@ -19,6 +19,12 @@ button, a{
 label{
   @apply block;
 }
+table{
+  @apply w-full;
+}
+tr{
+  @apply text-center;
+}
 @media screen and (max-width: 572px){
   h1{
     @apply text-2xl;
@@ -31,7 +37,7 @@ label{
 
 /* Header Styling */
 header{
-  @apply flex w-full border-b-4 items-center justify-between fixed top-0 border-(--accent-color) bg-(--background-color) shadow-lg z-10;
+  @apply flex w-full border-b-4 items-center justify-between fixed top-0 border-(--accent-color) bg-(--background-color) shadow-lg z-20;
 }
 header div.brand{
   @apply py-2 pl-2;
@@ -160,26 +166,15 @@ header div.profile menu ul li a{
 
 /* Card content Styling */
 .card{
-  @apply w-full max-w-2xs border border-(--highlight-color) rounded-xs;
+  @apply border border-(--highlight-color) rounded-xs shadow-lg;
+}
+.card-vertical{
+  @apply w-full max-w-2xs;
+}
+.card-horizontal {
+  @apply w-3xs shrink-0;
 }
 /* End Car content */
-
-/* List Box content Styling */
-.listBox {
-  @apply w-max max-w-3xs;
-}
-.listBox h3{
-  @apply my-1;
-}
-.listBox img{
-  @apply w-full h-auto;
-}
-@media screen and (max-width: 573px){
-  .listBox{
-    @apply w-71 text-center mb-4;
-  }
-}
-/* End List Box content */
 
 /* Footer Styling */
 footer{
@@ -194,9 +189,21 @@ footer .social{
 footer > p{
   @apply text-center mt-20 opacity-90;
 }
+.listBox {
+  @apply w-max max-w-3xs;
+}
+.listBox h3{
+  @apply my-1;
+}
+.listBox img{
+  @apply w-full h-auto;
+}
 @media screen and (max-width: 573px){
   footer .lists{
     @apply flex-wrap;
+  }
+  .listBox{
+    @apply w-71 text-center mb-4;
   }
 }
 /* End Footer */
@@ -257,6 +264,15 @@ aside li.active a{
   }
 }
 /* End Aside */
+
+/* Horizontal slider Styling */
+.horizontal-slider {
+  @apply flex flex-1 overflow-x-auto gap-2 w-3xs;
+}
+.horizontal-slider .card {
+  @apply w-2xs;
+}
+/* End Horizontal slider */
 
 /* Title bar Styling */
 .titlebar{

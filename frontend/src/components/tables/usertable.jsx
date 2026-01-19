@@ -122,9 +122,12 @@ function UsersTable(){
         <select className="text-input" value={select} onChange={(e) => setSelect(e.target.value)}>
           <option value="All" defaultChecked>All</option>
           <option value="Admin">Admin</option>
+          {groups.map((group) => (
+            <option key={group.id} value={group.id}>{group.name}</option>
+          ))}
         </select>
       </div>
-      <table className="w-full">
+      <table>
         <thead>
           <tr>
             <th>ID</th>
@@ -137,10 +140,10 @@ function UsersTable(){
             }}>Add</button></th>:""}
           </tr>
         </thead>
-        <tbody className="text-center">
+        <tbody>
           {rows.filter((user) => {
             const matchSearch = search === "" || user.name.toLowerCase().includes(search.toLowerCase()) || String(user.id).includes(search)
-            const matchSelect = select === "All" || (select === "Admin" && user.is_admin) || (select === user.group)
+            const matchSelect = select === "All" || (select === "Admin" && user.is_admin) || (select == user.group)
             return matchSearch && matchSelect
           }).map((row) => (
             <tr key={row.id}>

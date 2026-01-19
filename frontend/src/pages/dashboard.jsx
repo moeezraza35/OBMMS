@@ -8,6 +8,8 @@ import TitleBar from "../components/titlebar"
 import { LoadingContext } from "../context/loading"
 import { AuthContext } from "../context/auth"
 import { getModels } from "../utils/models"
+import BusTable from "../components/tables/bustable"
+import Location from "../components/tables/location"
 
 function Dashboard(){
   const params = useParams()
@@ -41,8 +43,10 @@ function Dashboard(){
       </Aside>
       <section className="flex-1 min-w-max mr-2 overflow-x-auto">
         <TitleBar>Dashboard</TitleBar>
-        {params.model=="users"?<UsersTable/>
-        :params.model=="group"?<GroupTable models={models}/>
+        {params.model==="users"?<UsersTable/>
+        :params.model==="group"?<GroupTable models={models}/>
+        :params.model==="buses"?<BusTable/>
+        :params.model === "location" || params.model === "stops"?<Location/>
         :""}
       </section>
     </main>

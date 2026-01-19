@@ -32,7 +32,10 @@ DB_NAME = "test"
 DB_DRIVER = "pymysql"
 DB_USERNAME = "root"
 DB_PASSWORD = ""
-DB_ECHO = True
+DB_ECHO = False
+
+# Models settings
+MODELS = ["users", "group", "buses", "location", "stops"]
 
 # Email Settings
 EMAIL = "moeezrazaseven@gmail.com"

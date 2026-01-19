@@ -107,7 +107,7 @@ function GroupTable({ models }){
       <div className="p-4">
         <input type="search" className="text-input" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/>
       </div>
-      <table className="w-full">
+      <table>
         <thead>
           <tr>
             <th>ID</th>
@@ -123,7 +123,7 @@ function GroupTable({ models }){
             }}>Add</button></th>:""}
           </tr>
         </thead>
-        <tbody className="text-center">
+        <tbody>
           {rows.filter((group) => {
             const matchSearch = search === "" || group.name.toLowerCase().includes(search.toLowerCase()) || String(group.id).includes(search)
             return matchSearch

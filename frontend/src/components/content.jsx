@@ -13,7 +13,7 @@ function Two_Sided_Content({ imgsrc, title, reverse=false, id, children }){
 }
 function Card_Content({img, children}){
   return (
-    <div className="card">
+    <div className="card card-vertical">
       <img src={img} alt="" />
       <div className="p-3">
         {children}
@@ -21,14 +21,11 @@ function Card_Content({img, children}){
     </div>
   )
 }
-function ListBox_Content({title, children}){
+function Horizontal_Card_Content({children}){
   return (
-    <div className="listBox">
-      <h3>{title}</h3>
-      <div>
-        {children}
-      </div>
+    <div className="card card-horizontal">
+      {children}
     </div>
   )
 }
-export {Two_Sided_Content, Card_Content, ListBox_Content}
+export {Two_Sided_Content, Card_Content, Horizontal_Card_Content}

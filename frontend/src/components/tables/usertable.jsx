@@ -11,7 +11,7 @@ function UsersTable(){
   const [search, setSearch] = useState("")
   const [select, setSelect] = useState("All")
   const [dialog, setdialog] = useState(false)
-  const [formMode, setMode] = useState(0) // 0 for add new and number for ID
+  const [formMode, setMode] = useState(0) // 0 for add new and number for edit
   const [formData, setData] = useState({
     id: "",
     name: "",
@@ -19,43 +19,33 @@ function UsersTable(){
     group: ""
   })
   const {setLoading} = useContext(LoadingContext)
-  const {user, session_id, permissions} = useContext(AuthContext)
+  const {user, session_id, permissions, checkFlag} = useContext(AuthContext)
   const navigate = useNavigate()
   const handleChange = (e) => {
     const name = e.target.name
     const value = e.target.value
     setData(values => ({...values, [name]: value}))
   }
-  useEffect(() => {
+  const loadData = async () => {
+    if (!checkFlag) return
     setLoading(true)
-    getUsers(session_id, (data => {
-      setRows(data)
-    }), ((status) => {
-      setLoading(false)
-      switch(status){
-        case 401:
-          navigate("/login/")
-          break
-        default:
-          navigate("/dashboard/")
-          break
-      }
-    }))
-    getGroups(session_id, data => {
-      setGroups(data)
-      setLoading(false)
-    }, (status) => {
-      setLoading(false)
-      switch(status){
-        case 401:
-          navigate("/login/")
-          break
-        default:
-          navigate("/dashboard/")
-          break
-      }
-    })
-  }, [])
+    await getUsers(
+      session_id,
+      data => setRows(data),
+      null,
+      navigate
+    )
+    await getGroups(
+      session_id,
+      data => setGroups(data),
+      null,
+      navigate
+    )
+  }
+  useEffect(() => {
+    loadData()
+    .then(() => setLoading(false))
+  }, [checkFlag])
   return (
     <>
       <div className={"dialog"+(dialog?" active":"")}>

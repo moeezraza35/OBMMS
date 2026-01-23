@@ -13,7 +13,10 @@ def check_session(request:Request, session:Session) -> Users | None:
   if request.session["user"] is None or request.session == "":
     return None
   
-  return check_session_id(request.session["user"], session)
+  user = check_session_id(request.session["user"], session)
+  if user is None or user.active is False:
+    return None
+  return user
 
 def check_session_id(session_id:str, session:Session) -> Users | None:
   data = None
@@ -43,6 +46,10 @@ def authenticate(request:Request, session: Session) -> None | Users:
     if auth_header and auth_header.startswith("Bearer "):
       session_id = auth_header.split(" ")[1]
       user = check_session_id(session_id, session)
+  
+  if user is None or user.reset_required is True:
+    return None
+  
   return user
 
 def getPermissions(user:Users, session:Session) -> dict:

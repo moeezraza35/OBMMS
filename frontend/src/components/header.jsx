@@ -1,15 +1,17 @@
 import { useContext, useEffect, useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { api_prefix, backend, frontend, static_dir } from "../config";
 import { AuthContext } from "../context/auth";
 import { LoadingContext } from "../context/loading";
+import makeRequest from "../utils/request";
 
 function Header(){
   const [nav, setNav] = useState("");
   const [profmenu, setProfmenu] = useState("");
-  const { user, loginCheck } = useContext(AuthContext)
+  const { user, session_id, require_auth } = useContext(AuthContext)
   const { setLoading } = useContext(LoadingContext)
   const location = useLocation()
+  const navigate = useNavigate()
   useEffect(() => {
     setProfmenu("")
     setNav("")
@@ -60,20 +62,19 @@ function Header(){
           <ul>
             <li><Link to={frontend+"/profile/"}>Profile</Link></li>
             <li><Link to={frontend+"/dashboard/"}>Dashboard</Link></li>
-            <li><a onClick={() => {
+            <li><a onClick={async () => {
               setLoading(true)
-              fetch(backend+api_prefix+"auth/logout/", {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                  "Content-Type" : "application/json"
-                }
-              })
-              .then(() => {
-                loginCheck()
-                setLoading(false)
-              })
-              .catch((e) => console.log("Unable to logout", e))
+              await makeRequest(
+                "auth/logout/",
+                "GET",
+                session_id,
+                null,
+                require_auth,
+                null,
+                navigate
+              )
+              navigate("/login/")
+              setLoading(false)
             }}>Logout</a></li>
           </ul>:
           <ul>

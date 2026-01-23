@@ -4,7 +4,7 @@ import { LoadinProvider } from "./context/loading"
 import Home from "./pages/home"
 import Login from "./pages/login"
 import Dashboard from "./pages/dashboard"
-import Settings from "./pages/settings"
+import Password from "./pages/password"
 import Profile from "./pages/profile"
 import Header from "./components/header"
 import Footer from "./components/footer"
@@ -22,7 +22,7 @@ function App() {
             <Route path="/dashboard/" element={<Dashboard/>}/>
             <Route path="/dashboard/:model/" element={<Dashboard/>}/>
             <Route path="/profile/" element={<Profile/>}/>
-            <Route path="/settings/" element={<Settings/>}/>
+            <Route path="/change_password/" element={<Password/>}/>
           </Routes>
           <Footer/>
         </AuthProvider>

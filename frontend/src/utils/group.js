@@ -1,68 +1,41 @@
-import { api_prefix, backend } from "../config";
+import makeRequest from "./request";
 
-async function getGroups(session_id="", callBack = () => {}, errorCase = () => {}){
-  const res = await fetch(backend+api_prefix+"admin/group/all/", {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": session_id
-    }
-  })
-  let data
-  try{data = await res.json()} catch (e) {data = null}
-  if (!res.ok){
-    let msg = data.detail? data.detail : null
-    alert(msg)
-    errorCase()
-  }
-  if (data && data.groups){
-    callBack(data.groups)
-  }
+async function getGroups(session_id="", callBack = () => {}, errorCase=null, navigate=null){
+  const data = await makeRequest(
+    "admin/group/all/",
+    "GET",
+    session_id,
+    null,
+    data => callBack(data.groups),
+    errorCase,
+    navigate
+  )
   return data
 }
 
-async function addGroup(formData, session_id="", callback = () => {}, errorCase = () => {}){
-  const res = await fetch(backend+api_prefix+"admin/group/add/", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer "+session_id
-    },
-    body: JSON.stringify(formData)
-  })
-  let data;
-  try{data = await res.json()} catch (e) {data = null}
-  if (!res.ok){
-    let msg = data.detail? data.detail : null
-    alert(msg)
-    errorCase(res.status)
-  } else  if (data && data.group){
-    callback(data.group)
-  }
+async function addGroup(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  const data = await makeRequest(
+    "admin/group/add/",
+    "POST",
+    session_id,
+    formData,
+    data => callback(data.group),
+    errorCase,
+    navigate
+  )
   return data
 }
 
-async function updateGroup(formData, session_id="", callback = () => {}, errorCase = () => {}){
-  const res = await fetch(backend+api_prefix+"admin/group/update", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": session_id
-    },
-    body: JSON.stringify(formData)
-  })
-  let data;
-  try{data = await res.json()} catch (e) {data = null}
-  if (!res.ok){
-    let msg = data.detail? data.detail : null
-    alert(msg)
-    errorCase(res.status)
-  } else  if (data && data.group){
-    callback(data.group)
-  }
+async function updateGroup(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  const data = await makeRequest(
+    "admin/group/update/",
+    "POST",
+    session_id,
+    formData,
+    data => callback(data.group),
+    errorCase,
+    navigate
+  )
   return data
 }
 

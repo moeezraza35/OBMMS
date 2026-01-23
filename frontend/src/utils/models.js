@@ -1,15 +1,15 @@
-import { api_prefix, backend } from "../config";
+import makeRequest from "./request";
 
-async function getModels(session_id=""){
-  const res = await fetch(backend+api_prefix+"admin/models/", {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": session_id
-    }
-  })
-  const data = await res.json()
+async function getModels(session_id="", callback=()=>{}, errorCase=null, navigate=null){
+  const data = await makeRequest(
+    "admin/models/",
+    "GET",
+    session_id,
+    null,
+    data => callback(data.models),
+    errorCase,
+    navigate
+  )
   return data
 }
 export {getModels}

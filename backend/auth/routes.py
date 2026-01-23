@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException, status
 from obmms.database import get_session
+from admin.helper import save
 from auth.models import Users
 from auth.helper import *
 
@@ -59,18 +60,38 @@ async def login_check(request:Request) -> dict:
   }
 
 @router.get("/logout/")
-def logout(request:Request) -> dict:
+async def logout(request:Request) -> dict:
   if "user" in request.session:
     del request.session["user"]
   return {"session_id" : ""}
 
 @router.get("/permissions/")
-def permissions(request:Request) -> dict:
+async def permissions(request:Request) -> dict:
   session = get_session()
   try:
     user = authenticate(request, session)
     if user is None:
       raise HTTPException(status.HTTP_401_UNAUTHORIZED,"Login Required")
     return {"permissions":getPermissions(user, session)}
+  finally:
+    session.close()
+
+@router.post("/change_password/")
+async def change_password(request:Request) -> dict:
+  data = await request.json()
+  session = get_session()
+  try:
+    user = check_session(request, session)
+    if user is None:
+      auth_header = request.headers.get("Authorization")
+      if auth_header and auth_header.startswith("Bearer "):
+        session_id = auth_header.split(" ")[1]
+        user = check_session_id(session_id, session)
+    if user is None:
+      raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
+    user.password = data["password"]
+    user.reset_required = False # type:ignore
+    save(session, user)
+    return {"message": "Password changed successfully"}
   finally:
     session.close()

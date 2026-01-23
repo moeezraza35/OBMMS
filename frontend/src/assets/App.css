@@ -280,9 +280,15 @@ aside li.active a{
 }
 /* End Title bar */
 
-/* Input Styling */
+/* Form Styling */
+.form{
+  @apply w-full max-w-sm border border-(--highlight-color) mx-auto shadow-lg p-10 rounded;
+}
 .text-input{
   @apply block w-full p-2 bg-(--highlight-color) mb-2 rounded-md border-2 outline-none border-transparent focus:border-(--accent-color);
+}
+.checkbox-input{
+  @apply mr-2 align-baseline;
 }
 .submit-input{
   @apply bg-(--accent-color) text-(--layer-text-color) w-full p-2 rounded;
@@ -290,7 +296,7 @@ aside li.active a{
 .reset-input{
   @apply bg-(--highlight-color) w-min p-2 rounded;
 }
-/* End Input */
+/* End Form */
 
 /* Dialog Styling */
 .dialog{

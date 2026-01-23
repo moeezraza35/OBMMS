@@ -14,7 +14,7 @@ function GroupTable({ models }){
     "name" : "",
   })
   const { setLoading } = useContext(LoadingContext)
-  const {user, permissions, session_id} = useContext(AuthContext)
+  const {user, permissions, session_id, checkFlag} = useContext(AuthContext)
   const navigate = useNavigate()
   const handleChange = (e) => {
     const name = e.target.name
@@ -28,25 +28,18 @@ function GroupTable({ models }){
       return next
     })
   }
+  const loadData = async () => {
+    if (!checkFlag) return
+    setLoading(true)
+    await getGroups(session_id, data => setRows(data), null, navigate)
+  }
   useEffect(() => {
     setModelData()
   }, [models])
   useEffect(() => {
-    setLoading(true)
-    getGroups(session_id, data => {
-      setRows(data)
-      setLoading(false)
-    }, (status) => {
-      switch(status){
-        case 401:
-          navigate("/login/")
-          break
-        default:
-          navigate("/dashboard/")
-          break
-      }
-    })
-  }, [])
+    loadData()
+    .then(() => setLoading(false))
+  }, [checkFlag])
   return (
     <>
       <div className={"dialog"+(dialog?" active":"")}>
@@ -56,12 +49,12 @@ function GroupTable({ models }){
           formMode===0?await addGroup(formData, session_id, data => {
             setDialog(false)
             setRows(rows.concat([data]))
-          }):await updateGroup(formData, session_id, data => {
+          }, null, navigate):await updateGroup(formData, session_id, data => {
             setDialog(false)
             setRows(rows.filter(group => {
               return group.id !== data.id
             }).concat(data))
-          })
+          }, null, navigate)
           setLoading(false)
         }}>
           <h3 className="mb-2">

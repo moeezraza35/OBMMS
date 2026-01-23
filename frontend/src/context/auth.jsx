@@ -1,11 +1,14 @@
 import { useState, createContext, useEffect, useContext } from "react";
-import { backend, api_prefix } from "../config";
 import { LoadingContext } from "./loading";
+import makeRequest from "../utils/request";
 
 const AuthContext = createContext({
   session_id: "",
   user: Object(null),
-  loginCheck: () => {}
+  permissions: Object(null),
+  checkFlag: false,
+  require_auth: async () => {},
+  getPermission: async () => {}
 })
 
 function AuthProvider({ children }){
@@ -13,59 +16,56 @@ function AuthProvider({ children }){
   const [user, setUser] = useState(null)
   const [permissions, setPermissions] = useState({})
   const [checkFlag, setCheck] = useState(false)
-  const {setLoading} = useContext(LoadingContext)
-  const loginCheck = async () => {
-    setLoading(true)
-    const res = await fetch(backend+api_prefix+"auth/login/check/", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type" : "application/json",
-        "Authorization" : "Bearer "+session_id
-      }
-    })
-    let data
-    try{data = await res.json()} catch (e) {data = null}
-    if (!res.ok){
-      let msg = data.detail? data.detail : "Unexpected error occur. Please try again"
-      alert(msg)
-    } else if (data.user){
-      session_id = data.session_id
-      setUser(data.user)
-      await getPermission()
-    } else {
-      session_id = ""
-      setUser(null)
-    }
-    setLoading(false)
-  }
+  const {loading, setLoading} = useContext(LoadingContext)
   const getPermission = async () => {
-    const res = await fetch(backend+api_prefix+"auth/permissions/", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer "+session_id
-      }
-    })
-    let data
-    try {data = await res.json()} catch (e) {data = null}
-    if (!res.ok){
-      let msg = data.detail? data.detail : "Unexpected error occur. Please try again"
-      alert(msg)
-    } else if (data.permissions) {
-      setPermissions(data.permissions)
-    } else {
-      setPermissions({})
+    const resData = await makeRequest(
+      "auth/permissions/",
+      "GET",
+      session_id,
+      null,
+      (data) => {
+        if (data.permissions) {
+          setPermissions(data.permissions)
+        } else {
+          setPermissions({})
+        }
+      },
+      (res) => alert(res.detail)
+    )
+    return resData
+  }
+  const require_auth = async () => {
+    setLoading(true)
+    await makeRequest(
+      "auth/login/check/",
+      "GET",
+      session_id,
+      null,
+      (data) => {
+        if (data.user){
+          session_id = data.session_id
+          setUser(data.user)
+        } else {
+          session_id = ""
+          setUser(null)
+        }
+      },
+      (res) => alert(res.detail)
+    )
+    if (user==null || user.reset_required){
+      return
     }
-    return data
+    await getPermission()
   }
   useEffect(() => {
-    loginCheck()
-    .then(() => setCheck(true))
+    require_auth()
+    .then(() => {
+      setCheck(true)
+      setLoading(false)
+    })
   }, [])
   return (
-    <AuthContext.Provider value={{session_id, user, permissions, checkFlag, loginCheck, getPermission}}>
+    <AuthContext.Provider value={{session_id, user, permissions, checkFlag, require_auth, getPermission}}>
       {children}
     </AuthContext.Provider>
   )

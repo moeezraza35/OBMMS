@@ -1,36 +1,41 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { LoadingContext } from "../context/loading"
+import { AuthContext } from "../context/auth"
+import { getModels } from "../utils/models"
 import { frontend } from "../config"
 import UsersTable from "../components/tables/usertable"
 import GroupTable from "../components/tables/grouptable"
 import Aside from "../components/aside"
 import TitleBar from "../components/titlebar"
-import { LoadingContext } from "../context/loading"
-import { AuthContext } from "../context/auth"
-import { getModels } from "../utils/models"
 import BusTable from "../components/tables/bustable"
 import Location from "../components/tables/location"
+import redirect from "../utils/redirect"
 
 function Dashboard(){
   const params = useParams()
   const [models, setModels] = useState([])
   const {setLoading} = useContext(LoadingContext)
-  const {user, checkFlag} = useContext(AuthContext)
+  const {user, checkFlag, session_id} = useContext(AuthContext)
   const navigate = useNavigate()
-  useEffect(() => {
+  const loadData = async () => {
     if (!checkFlag) {
       return
     }
-    if (user == null) {
-      navigate("/login/")
-    }
+    await redirect(user, navigate)
     setLoading(true)
-    getModels()
-    .then(data => {
-      setModels(data.models)
-      setLoading(false)
-    })
-    .catch(e => console.log("Unable to fetch models.",e))
+    getModels(
+      session_id,
+      data => {
+        setModels(data)
+      },
+      null,
+      navigate
+    )
+  }
+  useEffect(() => {
+    loadData()
+    .then(() => setLoading(false))
   }, [checkFlag])
   return (
     <main className="flex relative">

@@ -89,6 +89,11 @@ python main.py runservers
 ```
 These commands will run the backend server on port *:8000. You can access it using http://localhost:8000.
 
+## Challenges
+- Cross Origin Resource Sharing (CORS)
+- Permission Model
+- Redirecting
+
 ## Timeline
 - 24 Nov 2025 - Requirement gathering
 - 10 Dec 2025 - Analysis
@@ -98,6 +103,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - 13 Jan 2026 - Fixed Login Exception
 - 14 Jan 2026 - Fixed Permission Exceptions
 - 19 Jan 2026 - Drafted a Tracking app
+- 23 Jan 2026 - Improved redirecting
 
 ## Refrences
 - https://vite.dev/guide/

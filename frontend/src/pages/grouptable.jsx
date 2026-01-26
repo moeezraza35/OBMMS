@@ -1,8 +1,8 @@
 import { useContext, useState, useEffect } from "react"
-import { LoadingContext } from "../../context/loading"
-import { AuthContext } from "../../context/auth"
-import { addGroup, getGroups, updateGroup } from "../../utils/group"
 import { useNavigate } from "react-router-dom"
+import { LoadingContext } from "../context/loading"
+import { AuthContext } from "../context/auth"
+import { addGroup, getGroups, updateGroup } from "../utils/group"
 
 function GroupTable({ models }){
   const [rows, setRows] = useState([])

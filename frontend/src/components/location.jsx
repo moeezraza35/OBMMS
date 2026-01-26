@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { Horizontal_Card_Content } from './content'
 import L from "leaflet"
-import { Horizontal_Card_Content } from '../content'
-import "../../assets/leaflet.css"
+import "../assets/leaflet.css"
 
 function Location(){
   const icon = L.icon({

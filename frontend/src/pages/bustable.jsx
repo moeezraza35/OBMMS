@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react"
-import { LoadingContext } from "../../context/loading"
-import { AuthContext } from "../../context/auth"
-import { addBus, getBuses, updateBus } from "../../utils/buses"
 import { useNavigate } from "react-router-dom"
-import handleChange from "../../utils/form"
-import makeRequest from "../../utils/request"
+import { LoadingContext } from "../context/loading"
+import { AuthContext } from "../context/auth"
+import { addBus, getBuses, updateBus } from "../utils/buses"
+import handleChange from "../utils/form"
 
 function BusTable(){
   const [rows, setRows] = useState([])

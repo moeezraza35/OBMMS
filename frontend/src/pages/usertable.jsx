@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react"
-import { LoadingContext } from "../../context/loading"
-import { AuthContext} from "../../context/auth"
-import { getGroups } from "../../utils/group"
-import { addUser, getUsers, updateUser } from "../../utils/users"
 import { useNavigate } from "react-router-dom"
+import { LoadingContext } from "../context/loading"
+import { AuthContext} from "../context/auth"
+import { getGroups } from "../utils/group"
+import { addUser, getUsers, updateUser } from "../utils/users"
 
 function UsersTable(){
   const [rows, setRows] = useState([])

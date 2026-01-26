@@ -104,6 +104,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - 14 Jan 2026 - Fixed Permission Exceptions
 - 19 Jan 2026 - Drafted a Tracking app
 - 23 Jan 2026 - Improved redirecting
+- 26 Jan 2026 - Add Bus management
 
 ## Refrences
 - https://vite.dev/guide/

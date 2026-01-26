@@ -16,6 +16,7 @@ class Bus(Base):
       "id": self.id,
       "license": self.license,
       "capacity": self.capacity,
+      "passengers": self.passengers,
       "location": self.location,
       "active": self.active
     }

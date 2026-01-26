@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException, status
 from auth.models import Users, Group
+from tracking.models import Bus
 from obmms.settings import MODELS
 from obmms.database import get_session
 from auth.helper import authenticate, authorize, require_auth
@@ -61,6 +62,24 @@ async def get_all_groups(request:Request) -> dict:
   finally:
     session.close()
 
+@router.get("/buses/all/")
+def get_all_buses(request: Request) -> dict:
+  session = get_session()
+  try:
+    user = authenticate(request, session)
+    if user is None:
+      raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
+    if not authorize(user, session, "buses"):
+      if not authorize(user, session, "location"):
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Not Allowed")
+    result = {"buses": []}
+    buses = session.query(Bus)
+    for bus in buses:
+      result["buses"].append(bus.serialize())
+    return result
+  finally:
+    session.close()
+
 # Adding Routes
 
 @router.post("/users/add/")
@@ -112,6 +131,30 @@ async def add_group(request:Request) -> dict:
   finally:
     session.close()
 
+@router.post("/buses/add/")
+async def add_bus(request:Request) -> dict:
+  data = await request.json()
+  session = get_session()
+  try:
+    user = require_auth(request, session, "buses", False)
+    if not "id" in data or data["id"] == "":
+      bus = Bus()
+    else:
+      existing_bus = session.get(Bus, data["id"])
+      if existing_bus is not None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "Already Exists")
+      bus = Bus(id=data["id"])
+    if not "license" in data or data["license"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Incomplete Data")
+    bus.license = data["license"]
+    if not "capacity" in data or data["capacity"] == "" or data["capacity"] == 0:
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Incomplete Data")
+    bus.capacity = data["capacity"]
+    save(session, bus)
+    return {"bus": bus.serialize()}
+  finally:
+    session.close()
+
 # Updating Routes
 
 @router.post("/users/update/")
@@ -156,5 +199,23 @@ async def update_group(request:Request) -> dict:
       json.loads(group.permissions.replace("'",'"')))
     save(session, group)
     return {"group": group.serialize()}
+  finally:
+    session.close()
+
+@router.post("/buses/update/")
+async def update_bus(request:Request) -> dict:
+  data = await request.json()
+  session = get_session()
+  try:
+    user = require_auth(request, session, "buses", False)
+    bus = session.get(Bus, data["id"])
+    if bus is None:
+      raise HTTPException(status.HTTP_404_NOT_FOUND,"Bus with ID# {} not found".format(data["id"]))
+    if "license" in data and data["license"] != "":
+      bus.license = data["license"]
+    if "capacity" in data and data["capacity"] != "" and data["capacity"] != 0:
+      bus.capacity = data["capacity"]
+    save(session, bus)
+    return {"bus": bus.serialize()}
   finally:
     session.close()

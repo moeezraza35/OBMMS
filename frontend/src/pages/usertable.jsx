@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { getGroups, updateGroup } from "../utils/group"
-import { addUser, getUsers } from "../utils/users"
+import { addUser, getUsers, updateUser } from "../utils/users"
 import Table from "../components/table"
 
 function UsersTable(){
@@ -37,7 +37,7 @@ function UsersTable(){
         ]}
       ]}
       addRow={addUser}
-      updateRow={updateGroup}
+      updateRow={updateUser}
       fetchData={loadData}
       renderRows={(rows, user, permissions, setMode, setData, setDialog) => {return rows.filter((user) => {
         const matchSearch = search === "" || user.name.toLowerCase().includes(search.toLowerCase()) || String(user.id).includes(search)
@@ -55,6 +55,7 @@ function UsersTable(){
               "id": row.id,
               "name": row.name,
               "password": "",
+              "active": row.active,
               "group": row.is_admin ? "Admin" : String(row.group)
             })
             setDialog(true)

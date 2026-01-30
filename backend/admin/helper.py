@@ -47,11 +47,13 @@ def setPermission(user:Users, session:Session, data:dict, existing_permissions:d
         if value:
           permissions[key] = value
         else:
-          del permissions[key]
+          if key in permissions:
+            del permissions[key]
       elif key in user_permissions:
         if user_permissions[key] == "w":
           if value:
             permissions[key] = value
           else:
-            del permissions[key]
+            if key in permissions:
+              del permissions[key]
   return str(permissions)  # type: ignore

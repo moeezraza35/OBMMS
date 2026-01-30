@@ -31,7 +31,8 @@ function Table({children, cols=[], model="", inputs=[], addRow=()=>{}, updateRow
         addRow={addRow}
         updateRow={updateRow}
         setData={setData}
-        setDialog={setDialog}/>
+        setDialog={setDialog}
+        setRows={setRows}/>
       { children }
       <table>
         <thead>

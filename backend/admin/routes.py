@@ -88,22 +88,32 @@ async def add_user(request:Request) -> dict:
   session = get_session()
   try:
     user = require_auth(request, session, "users", False)
-    if data["id"] == "":
+
+    if not "id" in data or data["id"] == "":
       new_user = Users()
     else:
       existing_user = session.get(Users, data["id"])
       if existing_user is not None:
         raise HTTPException(status.HTTP_409_CONFLICT,"ID Exists")
       new_user = Users(id=data["id"])
-    assignGroup(user, new_user, data["group"])
+    
+    if "group" in data and data["group"] != "":
+      assignGroup(user, new_user, data["group"])
+    
     if not "name" in data or data["name"] == "":
       raise HTTPException(status.HTTP_400_BAD_REQUEST, "User name not given")
     new_user.name = data["name"]
+    
     if not "password" in data or data["password"] == "":
       raise HTTPException(status.HTTP_400_BAD_REQUEST, "Password not given")
     new_user.password = data["password"]
     new_user.reset_required = True  # type:ignore
-    new_user.active = True # type: ignore
+
+    if not "active" in data or data["active"] == False:
+      new_user.active = False # type:ignore
+    else:
+      new_user.active = True  # type:ignore
+
     save(session, new_user)
     return {"user": new_user.serialize()}
   finally:
@@ -115,17 +125,20 @@ async def add_group(request:Request) -> dict:
   session = get_session()
   try:
     user = require_auth(request, session, "group", False)
-    if data["id"] == "":
+    if not "id" in data or data["id"] == "":
       group = Group()
     else:
       existing_group = session.get(Group, data["id"])
       if existing_group is not None:
         raise HTTPException(status.HTTP_409_CONFLICT,"ID Exists")
       group = Group(id=data["id"])
+    
     if not "name" in data or data["name"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST,"Invalid Data")
+      raise HTTPException(status.HTTP_400_BAD_REQUEST,"Group name not given")
     group.name = data["name"]
+
     group.permissions = setPermission(user, session, data)  # type: ignore
+
     save(session, group)
     return {"group" : group.serialize()}
   finally:
@@ -144,12 +157,15 @@ async def add_bus(request:Request) -> dict:
       if existing_bus is not None:
         raise HTTPException(status.HTTP_409_CONFLICT, "Already Exists")
       bus = Bus(id=data["id"])
+    
     if not "license" in data or data["license"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Incomplete Data")
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "License No. not given")
     bus.license = data["license"]
+
     if not "capacity" in data or data["capacity"] == "" or data["capacity"] == 0:
-      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Incomplete Data")
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Bus capacity not given")
     bus.capacity = data["capacity"]
+
     save(session, bus)
     return {"bus": bus.serialize()}
   finally:
@@ -163,18 +179,27 @@ async def update_user(request:Request) -> dict:
   session = get_session()
   try:
     user = require_auth(request, session, "users", False)
+    if not "id" in data or data["id"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "User ID not given")
     edit_user = session.get(Users, data["id"])
     if edit_user is None:
-      raise HTTPException(status.HTTP_404_NOT_FOUND,"Not Exists")
-    edit_user.is_admin = None # type:ignore
-    edit_user.group = None  # type:ignore
-    assignGroup(user, edit_user, data["group"])
-    if data["password"] != "":
+      raise HTTPException(status.HTTP_404_NOT_FOUND,"No user found with ID {}".format(data["id"]))
+    
+    if "group" in data:
+      edit_user.is_admin = None # type:ignore
+      edit_user.group = None  # type:ignore
+      assignGroup(user, edit_user, data["group"])
+
+    if "passwrod" in data and data["password"] != "":
       edit_user.password = data["password"]
       edit_user.reset_required = True # type:ignore
-    if not "name" in data or data["name"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST,"Invalid Data")
-    edit_user.name = data["name"]
+
+    if "name" in data and data["name"] != "":
+      edit_user.name = data["name"]
+    
+    if "active" in data:
+      edit_user.active = data["active"]
+
     save(session, edit_user)
     return {"user": edit_user.serialize()}
   finally:
@@ -186,17 +211,21 @@ async def update_group(request:Request) -> dict:
   session = get_session()
   try:
     user = require_auth(request, session, "group", False)
+    if not "id" in data or data["id"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Group ID not given")
     group = session.get(Group, data["id"])
     if group is None:
-      raise HTTPException(status.HTTP_404_NOT_FOUND,"Group with ID# {} not found".format(data["id"]))
-    if not "name" in data or data["name"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST,"Invalid Data. Please enter a valid group name")
-    group.name = data["name"]
+      raise HTTPException(status.HTTP_404_NOT_FOUND,"No group found with ID# {}".format(data["id"]))
+    
+    if "name" in data or data["name"] != "":
+      group.name = data["name"]
+    
     group.permissions = setPermission(  # type:ignore
       user,
       session,
       data,
       json.loads(group.permissions.replace("'",'"')))
+    
     save(session, group)
     return {"group": group.serialize()}
   finally:
@@ -208,13 +237,18 @@ async def update_bus(request:Request) -> dict:
   session = get_session()
   try:
     user = require_auth(request, session, "buses", False)
+    if not "id" in data or data["id"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Bus ID not given")
     bus = session.get(Bus, data["id"])
     if bus is None:
       raise HTTPException(status.HTTP_404_NOT_FOUND,"Bus with ID# {} not found".format(data["id"]))
+    
     if "license" in data and data["license"] != "":
       bus.license = data["license"]
+    
     if "capacity" in data and data["capacity"] != "" and data["capacity"] != 0:
       bus.capacity = data["capacity"]
+    
     save(session, bus)
     return {"bus": bus.serialize()}
   finally:

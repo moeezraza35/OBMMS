@@ -4,7 +4,7 @@ import { LoadingContext } from "../context/loading"
 import { AuthContext } from "../context/auth"
 import handleChange from "../utils/form"
 
-function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRow, setData, setDialog}){
+function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRow, setData, setDialog, setRows}){
   const {setLoading} = useContext(LoadingContext)
   const {session_id} = useContext(AuthContext)
   return (
@@ -12,16 +12,15 @@ function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRo
       <form onSubmit={async e => {
         e.preventDefault()
         setLoading(true)
-        console.log(formData)
-        /*formMode===0?await addRow(formData, session_id, data => {
+        formMode===0?await addRow(formData, session_id, data => {
           setRows(prevRows => [...prevRows, data])
           setDialog(false)
         }):await updateRow(formData, session_id, data => {
           setDialog(false)
           setRows(prevRows => prevRows.map(item => item.id === data.id ? data : item))
-        })*/
+        })
         setLoading(false)
-        }}>
+      }}>
         <h3 className="mb-2">
           {formMode==0?"Add User":"Edit User"}
         </h3>

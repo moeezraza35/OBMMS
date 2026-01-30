@@ -10,7 +10,7 @@ async function getGroups(session_id="", callBack = () => {}, errorCase=null, nav
     errorCase,
     navigate
   )
-  return data
+  return data.groups || []
 }
 
 async function addGroup(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
@@ -23,7 +23,7 @@ async function addGroup(formData, session_id="", callback = () => {}, errorCase=
     errorCase,
     navigate
   )
-  return data
+  return data.group
 }
 
 async function updateGroup(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
@@ -36,7 +36,7 @@ async function updateGroup(formData, session_id="", callback = () => {}, errorCa
     errorCase,
     navigate
   )
-  return data
+  return data.group
 }
 
 export {getGroups, addGroup, updateGroup}

@@ -24,18 +24,16 @@ function Dashboard(){
     }
     await redirect(user, navigate)
     setLoading(true)
-    getModels(
+    await getModels(
       session_id,
-      data => {
-        setModels(data)
-      },
+      data => setModels(data),
       null,
       navigate
     )
+    setLoading(false)
   }
   useEffect(() => {
     loadData()
-    .then(() => setLoading(false))
   }, [checkFlag])
   return (
     <main className="flex relative">

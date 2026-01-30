@@ -24,7 +24,7 @@ function Location(){
           <Popup>Bus Location</Popup>
         </Marker>
       </MapContainer>
-      <div className='flex w-full'>
+      <div className='flex w-full py-2'>
         <div className='horizontal-slider'>
           <Horizontal_Card_Content>
             <h3>Thokar Stop</h3>

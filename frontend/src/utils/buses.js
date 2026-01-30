@@ -10,7 +10,7 @@ async function getBuses(session_id="", callback = () => {}, errorCase=null, navi
     errorCase,
     navigate
   )
-  return data
+  return data.buses || []
 }
 async function addBus(session_id="", formData={}, callback=()=>{}, errorCase=null, navigate=null){
   const data = await makeRequest(
@@ -22,6 +22,7 @@ async function addBus(session_id="", formData={}, callback=()=>{}, errorCase=nul
     errorCase,
     navigate
   )
+  return data.bus
 }
 async function updateBus(session_id="", formData={}, callback=()=>{}, errorCase=null, navigate=null){
   const data = await makeRequest(
@@ -33,6 +34,6 @@ async function updateBus(session_id="", formData={}, callback=()=>{}, errorCase=
     errorCase,
     navigate
   )
-  return data
+  return data.bus
 }
 export {getBuses, addBus, updateBus}

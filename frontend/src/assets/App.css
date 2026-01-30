@@ -172,7 +172,7 @@ header div.profile menu ul li a{
   @apply w-full max-w-2xs;
 }
 .card-horizontal {
-  @apply w-3xs shrink-0;
+  @apply w-3xs shrink-0 p-2;
 }
 /* End Car content */
 

@@ -10,7 +10,7 @@ async function getUsers(session_id="", callback = () => {}, errorCase=null, navi
     errorCase,
     navigate
   )
-  return data
+  return data?.users || []
 }
 
 async function addUser(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
@@ -23,7 +23,7 @@ async function addUser(formData, session_id="", callback = () => {}, errorCase=n
     errorCase,
     navigate
   )
-  return data
+  return data.user
 }
 
 async function updateUser(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
@@ -36,7 +36,7 @@ async function updateUser(formData, session_id="", callback = () => {}, errorCas
     errorCase,
     navigate
   )
-  return data
+  return data.user
 }
 
 export {getUsers, addUser, updateUser}

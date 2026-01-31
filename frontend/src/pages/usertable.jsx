@@ -2,6 +2,7 @@ import { useState } from "react"
 import { getGroups, updateGroup } from "../utils/group"
 import { addUser, getUsers, updateUser } from "../utils/users"
 import Table from "../components/table"
+import { static_dir } from "../config"
 
 function UsersTable(){
   const [groups, setGroups] = useState([])
@@ -49,17 +50,20 @@ function UsersTable(){
           <td>{row.name}</td>
           <td>{row.is_admin?"Admin":(groups.find(group => group.id == row.group)?.name ?? "")}</td>
           <td>{row.active?'🟢':'🔴'}</td>
-          {user?.is_admin || permissions.users==='w'?<td><button onClick={() => {
-            setMode(row.id)
-            setData({
-              "id": row.id,
-              "name": row.name,
-              "password": "",
-              "active": row.active,
-              "group": row.is_admin ? "Admin" : String(row.group)
-            })
-            setDialog(true)
-          }}>Edit</button></td>:""}
+          {user?.is_admin || permissions.users==='w'?<td>
+            <button className="edit-btn" onClick={() => {
+              setMode(row.id)
+              setData({
+                "id": row.id,
+                "name": row.name,
+                "password": "",
+                "active": row.active,
+                "group": row.is_admin ? "Admin" : String(row.group)
+              })
+              setDialog(true)
+            }}><img src={static_dir+"images/icons/edit.svg"}/></button>
+            <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
+          </td>:""}
         </tr>
       ))}}>
       <div className="flex gap-4 p-4">

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { addGroup, getGroups, updateGroup } from "../utils/group"
 import Table from "../components/table"
+import { static_dir } from "../config"
 
 function GroupTable({ models }){
   const [search, setSearch] = useState("")
@@ -32,16 +33,19 @@ function GroupTable({ models }){
           <tr key={group.id}>
             <td>{group.id}</td>
             <td>{group.name}</td>
-            {user?.is_admin || permissions.group==='w'?<td><button onClick={() => {
-              setMode(group.id)
-              var p = JSON.parse(group.permissions.replace(/'/g, '"'))
-              setData({
-                "id": group.id,
-                "name": group.name,
-                ...p
-              })
-              setDialog(true)
-            }}>Edit</button></td>:""}
+            {user?.is_admin || permissions.group==='w'?<td>
+              <button className="edit-btn" onClick={() => {
+                setMode(group.id)
+                var p = JSON.parse(group.permissions.replace(/'/g, '"'))
+                setData({
+                  "id": group.id,
+                  "name": group.name,
+                  ...p
+                })
+                setDialog(true)
+              }}><img src={static_dir+"images/icons/edit.svg"}/></button>
+              <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
+            </td>:""}
           </tr>
         ))}}>
       <div className="p-4">

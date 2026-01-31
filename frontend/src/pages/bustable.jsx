@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { addBus, getBuses, updateBus } from "../utils/buses"
 import Table from "../components/table"
+import { static_dir } from "../config"
 
 function BusTable(){
   const [search, setSearch] = useState("")
@@ -38,7 +39,7 @@ function BusTable(){
             <td>{bus.passengers}</td>
             <td>{bus.active?'🟢':'🔴'}</td>
             {user?.is_admin || permissions.buses === 'w'?<td>
-              <button onClick={() => {
+              <button className="edit-btn" onClick={() => {
                 setData({
                   "id": bus.id,
                   "license": bus.license,
@@ -46,7 +47,8 @@ function BusTable(){
                 })
                 setMode(bus.id)
                 setDialog(true)
-              }}>Edit</button>
+              }}><img src={static_dir+"images/icons/edit.svg"}/></button>
+              <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
             </td>:""}
           </tr>
         ))

@@ -296,6 +296,15 @@ aside li.active a{
 .reset-input{
   @apply bg-(--highlight-color) w-min p-2 rounded;
 }
+.add-btn{
+  @apply bg-yellow-500 p-2 m-1 rounded-md;
+}
+.edit-btn{
+  @apply bg-blue-500 p-2 m-1 rounded-md;
+}
+.del-btn{
+  @apply bg-red-500 p-2 m-1 rounded-md;
+}
 /* End Form */
 
 /* Dialog Styling */

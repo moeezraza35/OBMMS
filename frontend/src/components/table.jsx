@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../context/auth"
 import { LoadingContext } from "../context/loading"
 import { useNavigate } from "react-router-dom"
+import { static_dir } from "../config"
 import Dialog from "./dialog"
 
 function Table({children, cols=[], model="", inputs=[], addRow=()=>{}, updateRow=()=>{}, fetchData=async()=>{}, renderRows=()=>{}}){
@@ -40,10 +41,12 @@ function Table({children, cols=[], model="", inputs=[], addRow=()=>{}, updateRow
             {cols.map(col => (
             <th key={col}>{col}</th>
             ))}
-            {user?.is_admin || permissions[model]==='w'?<th><button onClick={() => {
-              setMode(0)
-              setDialog(true)
-            }}>Add</button></th>:""}
+            {user?.is_admin || permissions[model]==='w'?<th>
+              <button className="add-btn" onClick={() => {
+                setMode(0)
+                setDialog(true)
+              }}><img src={static_dir+"images/icons/add.svg"}/></button>
+            </th>:""}
           </tr>
         </thead>
         <tbody>

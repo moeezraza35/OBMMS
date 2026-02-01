@@ -57,7 +57,8 @@ function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRo
             placeholder={i.placeholder}
             handleChange={e => handleChange(e, setData)}
             value={formData[i.name]}
-            required={i.required}/>
+            required={i.required}
+            disabled={i.disabled}/>
         ))}
         <div className="flex gap-2">
           <input type="submit" value="Save" className="submit-input" />

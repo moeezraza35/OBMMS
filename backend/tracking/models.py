@@ -59,6 +59,7 @@ class Stop(Base):
     return {
       "id": self.id,
       "name": self.name,
+      "description": self.description,
       "location": (self.latitude, self.longitude),
       "is_campus": self.is_campus,
       "active": self.active

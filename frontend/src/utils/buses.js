@@ -12,7 +12,7 @@ async function getBuses(session_id="", callback = () => {}, errorCase=null, navi
   )
   return data.buses || []
 }
-async function addBus(session_id="", formData={}, callback=()=>{}, errorCase=null, navigate=null){
+async function addBus(formData={}, session_id="", callback=()=>{}, errorCase=null, navigate=null){
   const data = await makeRequest(
     "admin/buses/add/",
     "POST",
@@ -24,7 +24,7 @@ async function addBus(session_id="", formData={}, callback=()=>{}, errorCase=nul
   )
   return data.bus
 }
-async function updateBus(session_id="", formData={}, callback=()=>{}, errorCase=null, navigate=null){
+async function updateBus(formData={}, session_id="", callback=()=>{}, errorCase=null, navigate=null){
   const data = await makeRequest(
     "admin/buses/update/",
     "POST",

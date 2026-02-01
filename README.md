@@ -106,6 +106,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - 23 Jan 2026 - Improved redirecting
 - 26 Jan 2026 - Add Bus management
 - 30 Jan 2026 - Reduced code repeatation
+- 01 Feb 2026 - Developed Stop Management
 
 ## Refrences
 - https://vite.dev/guide/
@@ -120,7 +121,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - https://www.tutorialspoint.com/sqlalchemy/
 - https://www.svgrepo.com/
 - https://www.tutorialspoint.com/fastapi/fastapi_static_files.htm
-- https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal#:~:text=termcolor.COLORS%20gives%20you%20a,other%20platforms%2C%20Colorama%20does%20nothing.
+- https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal#:~:text=termcolor.COLORS%20gives%20you%20a,other%20platforms%2C%20Colorama%20does%20nothing
 - https://pyjwt.readthedocs.io/en/stable/
 - https://react-leaflet.js.org
 - https://www.openstreetmap.org

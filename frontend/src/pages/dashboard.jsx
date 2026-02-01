@@ -9,7 +9,8 @@ import GroupTable from "./grouptable"
 import Aside from "../components/aside"
 import TitleBar from "../components/titlebar"
 import BusTable from "./bustable"
-import Location from "../components/location"
+import LocationTable from "./locationtable"
+import StopsTable from "./stopstable"
 import redirect from "../utils/redirect"
 
 function Dashboard(){
@@ -49,7 +50,8 @@ function Dashboard(){
         {params.model==="users"?<UsersTable/>
         :params.model==="group"?<GroupTable models={models}/>
         :params.model==="buses"?<BusTable/>
-        :params.model === "location" || params.model === "stops"?<Location/>
+        :params.model==="location"?<LocationTable/>
+        :params.model==="stops"?<StopsTable/>
         :""}
       </section>
     </main>

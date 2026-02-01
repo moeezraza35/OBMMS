@@ -312,7 +312,7 @@ aside li.active a{
   @apply fixed top-16 left-0 w-full h-screen hidden bg-[#00000099];
 }
 .dialog.active{
-  @apply flex justify-center;
+  @apply flex justify-center z-11;
 }
 .dialog form{
   @apply bg-(--background-color) p-4 h-max w-[90%] max-w-2xs mt-2 rounded;

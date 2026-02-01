@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException, status
 from auth.models import Users, Group
-from tracking.models import Bus
+from tracking.models import Bus, Stop
 from obmms.settings import MODELS
 from obmms.database import get_session
 from auth.helper import authenticate, authorize, require_auth
@@ -76,6 +76,19 @@ def get_all_buses(request: Request) -> dict:
     buses = session.query(Bus)
     for bus in buses:
       result["buses"].append(bus.serialize())
+    return result
+  finally:
+    session.close()
+
+@router.get("/stops/all/")
+def get_all_stops(request:Request) -> dict:
+  session = get_session()
+  try:
+    user = require_auth(request, session, "stops")
+    result = {"stops": []}
+    stops = session.query(Stop).all()
+    for stop in stops:
+      result["stops"].append(stop.serialize())
     return result
   finally:
     session.close()
@@ -171,6 +184,51 @@ async def add_bus(request:Request) -> dict:
   finally:
     session.close()
 
+@router.post("/stops/add/")
+async def add_stop(request: Request) -> dict:
+  data = await request.json()
+  session = get_session()
+  try:
+    user = require_auth(request, session, "stops", False)
+    if not "id" in data or data["id"] == "":
+      stop = Stop()
+    else:
+      existing_stop = session.get(Bus, data["id"])
+      if existing_stop is not None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "Already Exists")
+      stop = Stop(id=data["id"])
+    
+    if not "name" in data or data["name"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Stop name not given")
+    stop.name = data["name"]
+
+    if not "description" in data or data["description"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Stop description not given")
+    stop.description = data["description"]
+
+    if not "latitudes" in data or data["latitudes"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Stop Latitudes not given")
+    stop.latitude = data["latitudes"]
+
+    if not "longitudes" in data or data["longitudes"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Stop Longitudes not given")
+    stop.longitude = data["longitudes"]
+
+    if not "active" in data or data["active"] == False:
+      stop.active = False # type:ignore
+    else:
+      stop.active = True  # type:ignore
+
+    if not "campus" in data or data["campus"] == False:
+      stop.is_campus = False  # type:ignore
+    else:
+      stop.is_campus = True   # type:ignore
+    
+    save(session, stop)
+    return {"stop": stop.serialize()}
+  finally:
+    session.close()
+
 # Updating Routes
 
 @router.post("/users/update/")
@@ -251,5 +309,40 @@ async def update_bus(request:Request) -> dict:
     
     save(session, bus)
     return {"bus": bus.serialize()}
+  finally:
+    session.close()
+
+@router.post("/stops/update/")
+async def update_stop(request: Request) -> dict:
+  data = await request.json()
+  session = get_session()
+  try:
+    user = require_auth(request, session, "stops", False)
+    if not "id" in data or data["id"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Stop ID not given")
+    stop = session.get(Stop, data["id"])
+    if stop is None:
+      raise HTTPException(status.HTTP_404_NOT_FOUND, "Stop with ID# {} not found".format(data["id"]))
+    
+    if "name" in data and data["name"] != "":
+      stop.name = data["name"]
+
+    if "description" in data and data["description"] != "":
+      stop.description = data["description"]
+
+    if "latitudes" in data and data["latitudes"] != "":
+      stop.latitude = data["latitudes"]
+
+    if "longitudes" in data and data["longitudes"] != "":
+      stop.longitude = data["longitudes"]
+
+    if "active" in data:
+      stop.active = data["active"]
+
+    if "campus" in data:
+      stop.is_campus = data["campus"]
+
+    save(session, stop)
+    return {"stop": stop.serialize()}
   finally:
     session.close()

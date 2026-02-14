@@ -27,7 +27,7 @@ function StopsTable(){
     iconAnchor: [12, 30],
     popupAnchor: [7, -34],
     shadowSize: [41, 41]
-  }, [])
+  })
   const setPosition = (position) => {
     setData(values => ({...values, latitudes: position[0], longitudes: position[1]}))
   }
@@ -67,7 +67,15 @@ function StopsTable(){
         setRows={setRows}/>
       <Location cursor="pointer">
         {rows.map(item => (
-          <Marker key={item.id} position={item.location} icon={icon}>
+          <Marker key={item.id} position={item.location} icon={L.icon({
+            iconUrl: '/images/icons/stop'+(item.active?"":"-disabled")+'.svg',
+            iconRetinaUrl: '',
+            shadowUrl: '',
+            iconSize: [38, 38],
+            iconAnchor: [12, 30],
+            popupAnchor: [7, -34],
+            shadowSize: [41, 41]
+          })}>
             <Popup>{item.name}</Popup>
           </Marker>
         ))}

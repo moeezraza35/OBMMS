@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+
+<svg
+   width="64"
+   height="64"
+   viewBox="0 0 1024 1024"
+   class="icon"
+   version="1.1"
+   fill="#000000"
+   id="svg24"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs24">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter24"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feColorMatrix
+         values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.21 -0.72 -0.072 1 0 "
+         id="feColorMatrix24"
+         result="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix25" />
+      <feColorMatrix
+         id="feColorMatrix26"
+         values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.21 -0.72 -0.072 1 0 "
+         in="fbSourceGraphic" />
+    </filter>
+  </defs>
+  <g
+     id="SVGRepo_iconCarrier"
+     style="filter:url(#filter24)">
+    <path
+       d="M 758.3,266.2 H 946.8 V 482.7 H 758.3 Z"
+       fill="#ffb819"
+       id="path1" />
+    <path
+       d="m 862,345.9 m -40.5,0 a 40.5,40.5 0 1 0 81,0 40.5,40.5 0 1 0 -81,0 z"
+       fill="#0071ce"
+       id="path2" />
+    <path
+       d="m 120.4,242.6 h 638 v 240.1 h -638 z"
+       fill="#00b3e3"
+       id="path3" />
+    <path
+       d="m 98.7,246.5 h 43.4 V 788.4 H 98.7 Z"
+       fill="#333e48"
+       id="path4" />
+    <path
+       d="m 98.7,246.5 h 43.4 V 310 H 98.7 Z"
+       fill=""
+       id="path5" />
+    <path
+       d="m 416.2,246.5 h 43.4 v 236.2 h -43.4 z"
+       fill="#333e48"
+       id="path6" />
+    <path
+       d="m 142,266.2 h 591.7 v 54.7 H 142 Z"
+       fill=""
+       id="path7" />
+    <path
+       d="m 733.8,246.5 h 43.4 v 541.9 h -43.4 z"
+       fill="#333e48"
+       id="path8" />
+    <path
+       d="m 733.8,246.5 h 43.4 V 310 h -43.4 z"
+       fill=""
+       id="path9" />
+    <path
+       d="m 228.8,689 h 37.5 v 99.4 h -37.5 z"
+       fill="#a4a9ad"
+       id="path10" />
+    <path
+       d="m 228.8,767.3 h 37.5 v 21.1 h -37.5 z"
+       fill=""
+       id="path11" />
+    <path
+       d="m 609.6,689 h 37.5 v 99.4 h -37.5 z"
+       fill="#a4a9ad"
+       id="path12" />
+    <path
+       d="m 609.6,767.3 h 37.5 v 21.1 h -37.5 z"
+       fill=""
+       id="path13" />
+    <path
+       d="m 673.3,662 v -93.5 c 0,-17.9 -14.7,-32.6 -32.6,-32.6 H 235.2 c -17.9,0 -32.6,14.7 -32.6,32.6 V 662 Z"
+       fill="#a4a9ad"
+       id="path14" />
+    <path
+       d="m 437.9,575.5 m -10.6,0 a 10.6,10.6 0 1 0 21.2,0 10.6,10.6 0 1 0 -21.2,0 z"
+       fill=""
+       id="path15" />
+    <path
+       d="m 361.3,575.5 m -10.6,0 a 10.6,10.6 0 1 0 21.2,0 10.6,10.6 0 1 0 -21.2,0 z"
+       fill=""
+       id="path16" />
+    <path
+       d="m 284.7,575.5 m -10.6,0 a 10.6,10.6 0 1 0 21.2,0 10.6,10.6 0 1 0 -21.2,0 z"
+       fill=""
+       id="path17" />
+    <path
+       d="m 514.5,575.5 m -10.6,0 a 10.6,10.6 0 1 0 21.2,0 10.6,10.6 0 1 0 -21.2,0 z"
+       fill=""
+       id="path18" />
+    <path
+       d="m 591.1,575.5 m -10.6,0 a 10.6,10.6 0 1 0 21.2,0 10.6,10.6 0 1 0 -21.2,0 z"
+       fill=""
+       id="path19" />
+    <path
+       d="M 202.6,609.7 H 673.3 V 662 H 202.6 Z"
+       fill=""
+       id="path20" />
+    <path
+       d="M 673.3,695.4 H 202.6 c -18.5,0 -33.4,-15 -33.4,-33.4 0,-18.5 15,-33.4 33.4,-33.4 h 470.7 c 18.5,0 33.4,15 33.4,33.4 0,18.4 -15,33.4 -33.4,33.4 z"
+       fill="#d1d3d3"
+       id="path21" />
+    <path
+       d="m 800.5,223.8 c 0,-11 -9,-20 -20,-20 H 95.3 c -11,0 -20,9 -20,20 v 22.4 c 0,11 9,20 20,20 h 685.2 c 11,0 20,-9 20,-20 z"
+       fill="#0071ce"
+       id="path22" />
+    <path
+       d="m 905.5,442 h -87.1 c -8,0 -14.5,-6.5 -14.5,-14.5 0,-8 6.5,-14.5 14.5,-14.5 h 87.1 c 8,0 14.5,6.5 14.5,14.5 0,8 -6.5,14.5 -14.5,14.5 z"
+       fill="#ffffff"
+       id="path23" />
+    <path
+       d="m 959.4,820.4 c 0,4.2 -3.5,7.7 -7.7,7.7 H 70.4 c -4.3,0 -7.7,-3.5 -7.7,-7.7 v -27.7 c 0,-4.3 3.5,-7.7 7.7,-7.7 h 881.2 c 4.3,0 7.7,3.5 7.7,7.7 z"
+       fill="#a4a9ad"
+       id="path24" />
+  </g>
+</svg>

@@ -3,10 +3,12 @@ import { Input, Checkbox, SelectBox } from "../components/input"
 import { LoadingContext } from "../context/loading"
 import { AuthContext } from "../context/auth"
 import handleChange from "../utils/form"
+import { useNavigate } from "react-router-dom"
 
 function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRow, setData, setDialog, setRows}){
   const {setLoading} = useContext(LoadingContext)
   const {session_id} = useContext(AuthContext)
+  const navigate = useNavigate()
   return (
     <div className={"dialog"+(dialog?" active":"")}>
       <form onSubmit={async e => {
@@ -15,10 +17,10 @@ function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRo
         formMode===0?await addRow(formData, session_id, data => {
           setRows(prevRows => [...prevRows, data])
           setDialog(false)
-        }):await updateRow(formData, session_id, data => {
+        }, null, navigate):await updateRow(formData, session_id, data => {
           setDialog(false)
           setRows(prevRows => prevRows.map(item => item.id === data.id ? data : item))
-        })
+        }, null, navigate)
         setLoading(false)
       }}>
         <h3 className="mb-2">

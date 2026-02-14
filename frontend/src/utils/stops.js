@@ -24,5 +24,16 @@ async function addStop(formData={}, session_id="", callback=()=>{}, errorCase=nu
   )
   return data.stop
 }
-async function updateStop(session_id="", formData={}, callback=()=>{}, errorCase=null, navigate=null){}
+async function updateStop(formData={}, session_id="", callback=()=>{}, errorCase=null, navigate=null){
+  const data = await makeRequest(
+    "admin/stops/update/",
+    "POST",
+    session_id,
+    formData,
+    (data) => callback(data.stop),
+    errorCase,
+    navigate
+  )
+  return data.stop
+}
 export {getStops, addStop, updateStop}

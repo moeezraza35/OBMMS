@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Float
+from sqlalchemy import Column, Integer, String, Boolean, Float, Time
 from obmms.database import Base
 
 class Bus(Base):
@@ -69,3 +69,24 @@ class Stop(Base):
 
   def __repr__(self) -> str:
     return f"({self.id}) {self.name}"
+
+class Route(Base):
+  __tablename__ = "route"
+
+  id = Column(name="id", type_=Integer, primary_key=True, autoincrement=True)
+  departure = Column(name="departure", type_=Integer)
+  destination = Column(name="destination", type_=Integer)
+  bus = Column(name="bus", type_=Integer)
+  time = Column(name="time", type_=Time)
+
+  def serialize(self) -> dict:
+    return {
+      "id": self.id,
+      "departure": self.departure,
+      "destination": self.destination,
+      "bus": self.bus,
+      "time": self.time
+    }
+  
+  def __repr__(self) -> str:
+    return f"({self.id}) {self.departure} -> {self.destination} at {self.time}"

@@ -32,7 +32,7 @@ class History(Base):
   __tablename__ = "history"
 
   id = Column(name="id", type_=Integer, primary_key=True, autoincrement=True)
-  user = Column(name="user", type_=Integer)
+  package = Column(name="package", type_=Integer)
   amount = Column(name="amount", type_=Float)
   date = Column(name="date", type_=Date)
   time = Column(name="time", type_=Time)
@@ -40,10 +40,11 @@ class History(Base):
   def serialize(self) -> dict:
     return {
       "id": self.id,
-      "user": self.user,
+      "package": self.package,
       "amount": self.amount,
-      "date": self.date.isoformat()
+      "date": self.date.isoformat(),
+      "time": self.time.isoformat()
     }
   
   def __repr__(self) -> str:
-    return f"({self.id}) User: {self.user}, Amount: {self.amount}, Date: {self.date}"
+    return f"({self.id}) Package: {self.package}, Amount: {self.amount}, Date: {self.date}, Time: {self.time}"

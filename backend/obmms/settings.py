@@ -35,7 +35,7 @@ DB_PASSWORD = ""
 DB_ECHO = False
 
 # Models settings
-MODELS = ["users", "group", "buses", "location", "stops"]
+MODELS = ["users", "group", "buses", "location", "stops", "routes", "packages", "history"]
 
 # Email Settings
 EMAIL = "moeezrazaseven@gmail.com"

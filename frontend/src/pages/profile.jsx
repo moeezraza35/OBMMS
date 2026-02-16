@@ -13,7 +13,9 @@ function Profile(){
     await redirect(user, navigate)
     // setLoading(true)
   }
-  useEffect(loadData, [checkFlag])
+  useEffect(() => {
+    loadData()
+  }, [checkFlag])
   return (
     <main><h1>Profile Page</h1></main>
   )

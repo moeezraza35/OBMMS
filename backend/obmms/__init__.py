@@ -6,6 +6,8 @@ from obmms.models import *
 from obmms.settings import SECRET_KEY, SESSION_COOKIE, SAME_SITE, HTTPS_ONLY, ALLOW_ORIGINS, ALLOW_CREDENTIALS, ALLOW_METHODS, ALLOW_HEADERS
 from auth import Auth
 from admin import Admin
+from tracking import Tracking
+from accounts import Accounts
 import sys
 
 class OBMMS:
@@ -27,6 +29,8 @@ class OBMMS:
     )
     Auth(self.app)
     Admin(self.app)
+    Tracking(self.app)
+    Accounts(self.app)
 
   def create_tables(self) -> bool:
     try:

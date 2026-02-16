@@ -8,8 +8,8 @@ function LocationPicker({position, setPosition}){
     iconRetinaUrl: '',
     shadowUrl: '',
     iconSize: [38, 38],
-    iconAnchor: [20, 30],
-    popupAnchor: [7, -34],
+    iconAnchor: [19, 30],
+    popupAnchor: [0, -20],
     shadowSize: [41, 41]
   }, [])
   useMapEvent({
@@ -26,15 +26,6 @@ function LocationPicker({position, setPosition}){
 }
 
 function Location({ children }){
-  const icon = L.icon({
-    iconUrl: '/images/riphah-logo.jpg',
-    iconRetinaUrl: '',
-    shadowUrl: '',
-    iconSize: [38, 38],
-    iconAnchor: [12, 41],
-    popupAnchor: [8, -34],
-    shadowSize: [41, 41]
-  })
   return(
     <MapContainer
       center={[31.4886, 74.3392]}
@@ -45,12 +36,8 @@ function Location({ children }){
         url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       />
-      <Marker position={[31.4886, 74.3392]} icon={icon}>
-        <Popup>Campus</Popup>
-      </Marker>
       { children }
     </MapContainer>
-    // </div>
   )
 }
 export { LocationPicker }

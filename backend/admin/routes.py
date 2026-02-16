@@ -318,7 +318,6 @@ async def update_stop(request: Request) -> dict:
   session = get_session()
   try:
     user = require_auth(request, session, "stops", False)
-    print(data)
     if not "id" in data or data["id"] == "":
       raise HTTPException(status.HTTP_400_BAD_REQUEST, "Stop ID not given")
     stop = session.get(Stop, data["id"])

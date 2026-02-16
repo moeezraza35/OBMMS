@@ -67,13 +67,21 @@ function StopsTable(){
         setRows={setRows}/>
       <Location cursor="pointer">
         {rows.map(item => (
-          <Marker key={item.id} position={item.location} icon={L.icon({
+          <Marker key={item.id} position={item.location} icon={item.is_campus?L.icon({
+            iconUrl: '/images/riphah-logo.png',
+            iconRetinaUrl: '',
+            shadowUrl: '',
+            iconSize: [38, 38],
+            iconAnchor: [20, 25],
+            popupAnchor: [0, -20],
+            shadowSize: [41, 41]
+          }):L.icon({
             iconUrl: '/images/icons/stop'+(item.active?"":"-disabled")+'.svg',
             iconRetinaUrl: '',
             shadowUrl: '',
             iconSize: [38, 38],
-            iconAnchor: [12, 30],
-            popupAnchor: [7, -34],
+            iconAnchor: [16, 28],
+            popupAnchor: [0, -18],
             shadowSize: [41, 41]
           })}>
             <Popup>{item.name}</Popup>
@@ -97,7 +105,7 @@ function StopsTable(){
                   "latitudes": item.location[0],
                   "longitudes": item.location[1],
                   "active": item.active,
-                  "campus": item.campus
+                  "campus": item.is_campus
                 })
                 setMode(item.id)
                 setDialog(true)

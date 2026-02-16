@@ -9,6 +9,7 @@ class Bus(Base):
   capacity = Column(name="capacity", type_=Integer)
   passengers = Column(name="passengers", type_=Integer, default=0)
   location = Column(name="location", type_=Integer)
+  driver = Column(name="driver", type_=Integer)
   active = Column(name="active", type_=Boolean)
 
   def serialize(self) -> dict:
@@ -18,6 +19,7 @@ class Bus(Base):
       "capacity": self.capacity,
       "passengers": self.passengers,
       "location": self.location,
+      "driver": self.driver,
       "active": self.active
     }
 

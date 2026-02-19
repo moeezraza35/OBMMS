@@ -1,9 +1,9 @@
 import { useContext } from "react"
-import { Input, Checkbox, SelectBox } from "../components/input"
+import { useNavigate } from "react-router-dom"
 import { LoadingContext } from "../context/loading"
 import { AuthContext } from "../context/auth"
+import { Input, Checkbox, SelectBox } from "../components/input"
 import handleChange from "../utils/form"
-import { useNavigate } from "react-router-dom"
 
 function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRow, setData, setDialog, setRows}){
   const {setLoading} = useContext(LoadingContext)

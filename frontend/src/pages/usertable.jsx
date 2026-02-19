@@ -1,8 +1,8 @@
 import { useState } from "react"
-import { getGroups, updateGroup } from "../utils/group"
+import { getGroups } from "../utils/group"
 import { addUser, getUsers, updateUser } from "../utils/users"
-import Table from "../components/table"
 import { static_dir } from "../config"
+import Table from "../components/table"
 
 function UsersTable(){
   const [groups, setGroups] = useState([])

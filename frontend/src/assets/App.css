@@ -315,6 +315,6 @@ aside li.active a{
   @apply flex justify-center z-11;
 }
 .dialog form{
-  @apply bg-(--background-color) p-4 h-max w-[90%] max-w-2xs mt-2 rounded;
+  @apply bg-(--background-color) p-4 max-h-[calc(100vh-100px)] h-max w-[90%] max-w-2xs mt-2 rounded overflow-y-auto;
 }
 /* End Dialog */

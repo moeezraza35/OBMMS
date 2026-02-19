@@ -11,6 +11,10 @@ import TitleBar from "../components/titlebar"
 import BusTable from "./bustable"
 import LocationTable from "./locationtable"
 import StopsTable from "./stopstable"
+import RoutesTable from "./routestable"
+import PackagesTable from "./packagestable"
+import HistoryTable from "./historytable"
+import LogsTable from "./logstable"
 import redirect from "../utils/redirect"
 
 function Dashboard(){
@@ -52,7 +56,10 @@ function Dashboard(){
         :params.model==="buses"?<BusTable/>
         :params.model==="location"?<LocationTable/>
         :params.model==="stops"?<StopsTable/>
-        :""}
+        :params.model==="routes"?<RoutesTable/>
+        :params.model==="packages"?<PackagesTable/>
+        :params.model==="history"?<HistoryTable/>
+        :<LogsTable/>}
       </section>
     </main>
   )

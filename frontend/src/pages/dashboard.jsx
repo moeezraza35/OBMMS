@@ -18,11 +18,16 @@ import LogsTable from "./logstable"
 import redirect from "../utils/redirect"
 
 function Dashboard(){
-  const params = useParams()
-  const [models, setModels] = useState([])
+  const [rows, setRows] = useState([])            // Data to be render
+  const [dialog, setDialog] = useState(false)     // Toggle dialog box
+  const [formMode, setMode] = useState(0)         // 0 for add and number for update
+  const [formData, setData] = useState({})        // Form data for posting
+  const [models, setModels] = useState([])        // List of Menu
   const {setLoading} = useContext(LoadingContext)
-  const {user, checkFlag, session_id} = useContext(AuthContext)
+  const {session_id, user, permissions, checkFlag} = useContext(AuthContext)
+  const params = useParams()
   const navigate = useNavigate()
+  const tableProps = {session_id, user, permissions, checkFlag, rows, setRows, dialog, setDialog, formMode, setMode, formData, setData, navigate, setLoading}
   const loadData = async () => {
     if (!checkFlag) {
       return
@@ -35,7 +40,6 @@ function Dashboard(){
       null,
       navigate
     )
-    setLoading(false)
   }
   useEffect(() => {
     loadData()
@@ -51,15 +55,15 @@ function Dashboard(){
       </Aside>
       <section className="flex-1 min-w-max mr-2 overflow-x-auto">
         <TitleBar>Dashboard</TitleBar>
-        {params.model==="users"?<UsersTable/>
-        :params.model==="group"?<GroupTable models={models}/>
-        :params.model==="buses"?<BusTable/>
-        :params.model==="location"?<LocationTable/>
-        :params.model==="stops"?<StopsTable/>
-        :params.model==="routes"?<RoutesTable/>
-        :params.model==="packages"?<PackagesTable/>
-        :params.model==="history"?<HistoryTable/>
-        :<LogsTable/>}
+        {params.model==="users"?<UsersTable {...tableProps}/>
+        :params.model==="group"?<GroupTable models={models} {...tableProps}/>
+        :params.model==="buses"?<BusTable {...tableProps}/>
+        :params.model==="location"?<LocationTable {...tableProps}/>
+        :params.model==="stops"?<StopsTable {...tableProps}/>
+        :params.model==="routes"?<RoutesTable {...tableProps}/>
+        :params.model==="packages"?<PackagesTable {...tableProps}/>
+        :params.model==="history"?<HistoryTable {...tableProps}/>
+        :<LogsTable {...tableProps}/>}
       </section>
     </main>
   )

@@ -1,31 +1,49 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { addGroup, getGroups, updateGroup } from "../utils/group"
-import Table from "../components/table"
 import { static_dir } from "../config"
+import Dialog from "../components/dialog"
+import Table from "../components/table"
 
-function GroupTable({ models }){
+function GroupTable({models=[], session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
   const [search, setSearch] = useState("")
-  const loadData = async (session_id, navigate) => {
-    return await getGroups(session_id, ()=>{}, null, navigate)
+  const loadData = async () => {
+    setRows([])
+    if (!checkFlag) return
+    setLoading(true)
+    await getGroups(session_id, setRows, null, navigate)
+    setLoading(false)
   }
+  useEffect(() => {loadData()}, [checkFlag])
   return (
-    <Table
-      cols={["ID", "Name"]}
-      model="group"
-      inputs={[
-        {type: "text", name: "name", placeholder: "Group Name...", required: true},
-        ...models.map(model => (
-          {type: "select", name: model, placeholder: model, values: [
-            {value: "", label: "Not Allowed"},
-            {value: "r", label: "Read Only"},
-            {value: "w", label: "Read & Write"},
-          ]}
-        ))
-      ]}
-      addRow={addGroup}
-      updateRow={updateGroup}
-      fetchData={loadData}
-      renderRows={(rows, user, permissions, setMode, setData, setDialog) => {
+    <>
+      <Dialog
+        dialog={dialog}
+        formMode={formMode}
+        inputs={[
+          {type: "text", name: "name", placeholder: "Group Name...", required: true},
+          ...models.map(model => (
+            {type: "select", name: model, placeholder: model, values: [
+              {value: "", label: "Not Allowed"},
+              {value: "r", label: "Read Only"},
+              {value: "w", label: "Read & Write"},
+            ]}
+          ))
+        ]}
+        formData={formData}
+        addRow={addGroup}
+        updateRow={updateGroup}
+        setData={setData}
+        setDialog={setDialog}
+        setRows={setRows}/>
+      <div className="p-4">
+        <input type="search" className="text-input" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/>
+      </div>
+      <Table
+        cols={["ID", "Name"]}
+        permission={user?.is_admin || permissions.group == 'w'}
+        setMode={setMode}
+        setDialog={setDialog}
+        renderRows={() => {
         return rows.filter((group) => {
           const matchSearch = search === "" || group.name.toLowerCase().includes(search.toLowerCase()) || String(group.id).includes(search)
           return matchSearch
@@ -47,11 +65,8 @@ function GroupTable({ models }){
               <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
             </td>:""}
           </tr>
-        ))}}>
-      <div className="p-4">
-        <input type="search" className="text-input" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/>
-      </div>
-    </Table>
+        ))}}/>
+    </>
   )
 }
 export default GroupTable

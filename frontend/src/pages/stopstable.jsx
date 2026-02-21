@@ -1,51 +1,24 @@
-import { useContext, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
 import { static_dir } from "../config"
 import { addStop, getStops, updateStop } from "../utils/stops"
-import { AuthContext } from "../context/auth"
-import { LoadingContext } from "../context/loading"
 import { Marker, Popup } from "react-leaflet"
 import { Horizontal_Card_Content } from '../components/content'
 import Location, { LocationPicker } from "../components/location"
 import Dialog from "../components/dialog"
 import L from "leaflet"
 
-function StopsTable(){
-  // const [newPosition, setPosition] = useState([])
-  const [dialog, setDialog] = useState(false)
-  const [formMode, setMode] = useState(0)
-  const [formData, setData] = useState({})
-  const [rows, setRows] = useState([])
-  const {session_id, checkFlag} = useContext(AuthContext)
-  const {setLoading} = useContext(LoadingContext)
-  const navigate = useNavigate()
-  const icon = L.icon({
-    iconUrl: '/images/icons/stop.svg',
-    iconRetinaUrl: '',
-    shadowUrl: '',
-    iconSize: [38, 38],
-    iconAnchor: [12, 30],
-    popupAnchor: [7, -34],
-    shadowSize: [41, 41]
-  })
+function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
   const setPosition = (position) => {
     setData(values => ({...values, latitudes: position[0], longitudes: position[1]}))
   }
   const loadData = async () => {
+    setRows([])
     if (!checkFlag) return
     setLoading(true)
-    const data = await getStops(
-      session_id,
-      setRows,
-      null,
-      navigate
-    )
+    await getStops(session_id, setRows, null, navigate)
     setLoading(false)
-    return data
   }
-  useEffect(() => {
-    loadData()
-  }, [checkFlag])
+  useEffect(() => {loadData()}, [checkFlag])
   return (
     <>
       <Dialog

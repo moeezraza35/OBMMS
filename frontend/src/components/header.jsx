@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { api_prefix, backend, frontend, static_dir } from "../config";
+import { frontend, static_dir } from "../config";
 import { AuthContext } from "../context/auth";
 import { LoadingContext } from "../context/loading";
 import makeRequest from "../utils/request";

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import { addBus, getBuses, updateBus } from "../utils/buses"
+import { getDrivers } from "../utils/users"
 import { static_dir } from "../config"
 import Table from "../components/table"
 import Dialog from "../components/dialog"
 
 function BusTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
+  const [users, setUsers] = useState([])
   const [search, setSearch] = useState("")
   const [select, setSelect] = useState("All")
   const dialogProp = { dialog, formMode, formData, addBus, updateBus, setData, setDialog, setRows }
@@ -13,6 +15,7 @@ function BusTable({session_id="", user=null, permissions=Object(), checkFlag=fal
     if (!checkFlag) return
     setLoading(true)
     await getBuses(session_id, setRows, null, navigate)
+    await getDrivers(session_id, setUsers, null, navigate)
     setLoading(false)
   }
   useEffect(() => {loadData()}, [checkFlag])
@@ -33,7 +36,7 @@ function BusTable({session_id="", user=null, permissions=Object(), checkFlag=fal
         </select>
       </div>
       <Table
-        cols={["ID", "License No.", "Capacity", "Passengers", "Active"]}
+        cols={["ID", "License No.", "Capacity", "Passengers", "Driver", "Active"]}
         permission={user?.is_admin || permissions.buses == 'w'}
         setMode={setMode}
         setDialog={setDialog}
@@ -48,6 +51,7 @@ function BusTable({session_id="", user=null, permissions=Object(), checkFlag=fal
               <td>{bus.license}</td>
               <td>{bus.capacity}</td>
               <td>{bus.passengers}</td>
+              <td>{users.find(u => u.id === bus.driver)?.name || "None"}</td>
               <td>{bus.active?'🟢':'🔴'}</td>
               {user?.is_admin || permissions.buses === 'w'?<td>
                 <button className="edit-btn" onClick={() => {

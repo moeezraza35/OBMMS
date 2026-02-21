@@ -110,6 +110,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - 14 Feb 2026 - Edit Stop Errors Fixed
 - 16 Feb 2026 - Drafted an Accounts app
 - 19 Feb 2026 - Admin dashboard UI designed
+- 21 Feb 2026 - Refactor & Implicit permissions
 
 ## Refrences
 - https://vite.dev/guide/

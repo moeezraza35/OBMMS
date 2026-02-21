@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react"
-import { getUsers } from "../utils/users"
+import { getUsersName } from "../utils/users"
 import { getPackages, addPackages, updatePackages, deletePackages } from "../utils/packages"
 import { static_dir } from "../config"
 import Table from "../components/table"
 import Dialog from "../components/dialog"
 
 function PackagesTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
+  const [users, setUsers] = useState([])
   const [search, setSearch] = useState("")
   const [select, setSelect] = useState("All")
   const loadData = async () => {
     setLoading(true)
     await getPackages(session_id, setRows, null, navigate)
+    await getUsersName(session_id, setUsers, null, navigate)
     setLoading(false)
   }
   useEffect(() => {loadData()}, [checkFlag])
@@ -54,13 +56,12 @@ function PackagesTable({session_id="", user=null, permissions=Object(), checkFla
           }).map(row => (
             <tr key={row.id}>
               <td>{row.id}</td>
-              <td>{row.user}</td>
+              <td>{users.find(u => u.id == row.user)?.name || "Unknown User"}</td>
               <td>Rs. {row.price}</td>
-              <td>{row.amount}</td>
+              <td>Rs. {row.amount}</td>
               <td>{row.installments}</td>
               <td>{row.start}</td>
               <td>{row.end}</td>
-              {/* <td>{row.is_admin?"Admin":(groups.find(group => group.id == row.group)?.name ?? "")}</td> */}
               <td>{row.active?'🟢':'🔴'}</td>
               {user?.is_admin || permissions.users==='w'?<td>
                 <button className="edit-btn" onClick={() => {

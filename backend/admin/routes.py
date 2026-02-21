@@ -3,8 +3,9 @@ from auth.models import Users, Group
 from tracking.models import Bus, Stop
 from obmms.settings import MODELS
 from obmms.database import get_session
-from auth.helper import authenticate, authorize, require_auth
+from auth.helper import authenticate, require_auth, getGroups
 from admin.helper import save, allowedModels, assignGroup, setPermission
+from tracking.helper import getBuses
 import json
 
 router = APIRouter(
@@ -34,11 +35,8 @@ async def get_all_users(request:Request) -> dict:
   session = get_session()
   try:
     user = require_auth(request, session, "users")
-    result = {"users" : []}
     users = session.query(Users).all()
-    for record in users:
-      result["users"].append(record.serialize())
-    return result
+    return {"users" : [u.serialize() for u in users]}
   finally:
     session.close()
 
@@ -46,19 +44,8 @@ async def get_all_users(request:Request) -> dict:
 async def get_all_groups(request:Request) -> dict:
   session = get_session()
   try:
-    user = authenticate(request, session)
-    if user is None:
-      raise HTTPException(status.HTTP_401_UNAUTHORIZED,"Login Required")
-    result = {"groups" : []}
-    groups = session.query(Group).all()
-    for group in groups:
-      result["groups"].append(group.serialize())
-    if not authorize(user, session, "group"):
-      if not authorize(user, session, "users"):
-        raise HTTPException(status.HTTP_403_FORBIDDEN,"Not Allowed")
-      for group in result["groups"]:
-        del group["permissions"]
-    return result
+    user = require_auth(request, session, "group")
+    return getGroups(session)
   finally:
     session.close()
 
@@ -66,17 +53,8 @@ async def get_all_groups(request:Request) -> dict:
 def get_all_buses(request: Request) -> dict:
   session = get_session()
   try:
-    user = authenticate(request, session)
-    if user is None:
-      raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
-    if not authorize(user, session, "buses"):
-      if not authorize(user, session, "location"):
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "Not Allowed")
-    result = {"buses": []}
-    buses = session.query(Bus)
-    for bus in buses:
-      result["buses"].append(bus.serialize())
-    return result
+    user = require_auth(request, session, "buses")
+    return getBuses(session)
   finally:
     session.close()
 
@@ -85,11 +63,8 @@ def get_all_stops(request:Request) -> dict:
   session = get_session()
   try:
     user = require_auth(request, session, "stops")
-    result = {"stops": []}
     stops = session.query(Stop).all()
-    for stop in stops:
-      result["stops"].append(stop.serialize())
-    return result
+    return {"stops": [stop.serialize() for stop in stops]}
   finally:
     session.close()
 

@@ -79,3 +79,10 @@ def require_auth(request:Request, session:Session, model:str, readonly=True) -> 
   if not authorize(user, session, model, readonly):
     raise HTTPException(status.HTTP_403_FORBIDDEN, "Not Allowed")
   return user
+
+def getGroups(session:Session) -> dict:
+  result = {"groups": []}
+  groups = session.query(Group).all()
+  for group in groups:
+    result["groups"].append(group.serialize())
+  return result

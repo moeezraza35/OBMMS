@@ -40,6 +40,7 @@ function Dashboard(){
       null,
       navigate
     )
+    setLoading(false)
   }
   useEffect(() => {
     loadData()

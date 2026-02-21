@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getGroups } from "../utils/group"
+import { getGroupsName } from "../utils/group"
 import { addUser, getUsers, updateUser } from "../utils/users"
 import { static_dir } from "../config"
 import Table from "../components/table"
@@ -14,7 +14,7 @@ function UsersTable({session_id="", user=null, permissions=Object(), checkFlag=f
     if (!checkFlag) return
     setLoading(true)
     await getUsers(session_id, setRows, null, navigate)
-    await getGroups(session_id, data => setGroups(data), null, navigate)
+    await getGroupsName(session_id, data => setGroups(data), null, navigate)
     setLoading(false)
   }
   useEffect(() => {loadData()}, [checkFlag])

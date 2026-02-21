@@ -1,6 +1,3 @@
-import { useContext, useEffect, useState } from "react"
-import { AuthContext } from "../context/auth"
-import { LoadingContext } from "../context/loading"
 import { static_dir } from "../config"
 
 function Table({cols=[], permission=false, setMode=()=>{}, setDialog=()=>{}, renderRows=()=>{}}){

@@ -95,3 +95,41 @@ async def change_password(request:Request) -> dict:
     return {"message": "Password changed successfully"}
   finally:
     session.close()
+
+@router.get("/users/")
+async def get_users(request:Request) -> dict:
+  session = get_session()
+  try:
+    user = require_auth(request, session, "packages")
+    users = session.query(Users).all()
+    return {"users": [{"id": u.id, "name": u.name} for u in users]}
+  finally:
+    session.close()
+
+@router.get("/groups/")
+async def get_groups(request:Request) -> dict:
+  session = get_session()
+  try:
+    user = require_auth(request, session, "user")
+    result = getGroups(session)
+    for group in result["groups"]:
+      del group["permissions"]
+    return result
+  finally:
+    session.close()
+
+@router.get("/drivers/")
+async def get_drivers(request:Request) -> dict:
+  session = get_session()
+  try:
+    user = require_auth(request, session, "bus")
+    groups = session.query(Group).all()
+    allowed_groups = []
+    for group in groups:
+      permissions = json.loads(group.permissions.replace("'", '"'))  # type:ignore
+      if "location" in permissions and permissions["location"] == "w":
+        allowed_groups.append(group.id)
+    drivers = session.query(Users).filter(Users.group.in_(allowed_groups)).all()
+    return {"drivers": [driver.serialize() for driver in drivers]}
+  finally:
+    session.close()

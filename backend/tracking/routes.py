@@ -13,21 +13,20 @@ router = APIRouter(
 def get_buses(request: Request):
   session = get_session()
   try:
-    # user = require_auth(request, session, "location")
-    user = authenticate(request, session)
-    if user is None:
-      raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
-    if authorize(user, session, "buses") is False:
-      if authorize(user, session, "route") is False:
-        if authorize(user, session, "location") is False:
-          raise HTTPException(status.HTTP_403_FORBIDDEN, "Not Allowed")
+    user = require_auth(request, session, "routes")
+    buses = session.query(Bus).all()
+    return {"buses": [{"id": bus.id, "license": bus.license} for bus in buses ]}
+  finally:
+    session.close()
+
+
+@router.get("/buses/active/")
+def get_active_buses(request: Request):
+  session = get_session()
+  try:
+    user = require_auth(request, session, "location")
     buses = getBuses(session)
-    result = {"buses": []}
-    for bus in buses["buses"]:
-      if bus["active"] is None or bus["active"] is False:
-        continue
-      result["buses"].append(bus)
-    return result
+    return {"buses": [bus for bus in buses["buses"] if bus["active"] is not None and bus["active"] is not False]}
   finally:
     session.close()
 
@@ -35,7 +34,7 @@ def get_buses(request: Request):
 def get_stops(request: Request):
   session = get_session()
   try:
-    user = require_auth(request, session, "location")
+    user = require_auth(request, session, "routes")
     stops = session.query(Stop).filter(Stop.active == True).all()
     return {"stops": [stop.serialize() for stop in stops]}
   finally:

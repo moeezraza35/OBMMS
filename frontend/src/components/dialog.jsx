@@ -5,7 +5,7 @@ import { AuthContext } from "../context/auth"
 import { Input, Checkbox, SelectBox } from "../components/input"
 import handleChange from "../utils/form"
 
-function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRow, setData, setDialog, setRows}){
+function Dialog({children, dialog=false, formMode=0, inputs=[], formData={}, addRow=async()=>{}, updateRow=async()=>{}, setData=()=>{}, setDialog=()=>{}, setRows=()=>{}}) {
   const {setLoading} = useContext(LoadingContext)
   const {session_id} = useContext(AuthContext)
   const navigate = useNavigate()
@@ -24,7 +24,7 @@ function Dialog({dialog=false, formMode=0, inputs=[], formData, addRow, updateRo
         setLoading(false)
       }}>
         <h3 className="mb-2">
-          {formMode==0?"Add User":"Edit User"}
+          {formMode==0?"Add ":"Edit "}{children}
         </h3>
         <Input
           name="id"

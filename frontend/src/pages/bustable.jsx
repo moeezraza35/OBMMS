@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { addBus, getBuses, updateBus } from "../utils/buses"
+import { addBus, getBuses, updateBus, deleteBus } from "../utils/buses"
 import { getDrivers } from "../utils/users"
 import { static_dir } from "../config"
 import Table from "../components/table"
@@ -9,7 +9,7 @@ function BusTable({session_id="", user=null, permissions=Object(), checkFlag=fal
   const [users, setUsers] = useState([])
   const [search, setSearch] = useState("")
   const [select, setSelect] = useState("All")
-  const dialogProp = { dialog, formMode, formData, addBus, updateBus, setData, setDialog, setRows }
+  const dialogProp = { dialog, formMode, formData, addRow: addBus, updateRow: updateBus, setData, setDialog, setRows }
   const loadData = async () => {
     setRows([])
     if (!checkFlag) return
@@ -26,7 +26,7 @@ function BusTable({session_id="", user=null, permissions=Object(), checkFlag=fal
           {type: "text", name: "license", required: true},
           {type: "number", name: "capacity", required: true}
         ]}
-        {...dialogProp}/>
+        {...dialogProp}>Bus</Dialog>
       <div className="flex gap-4 p-4">
         <input type="search" className="text-input" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/>
         <select className="text-input" value={select} onChange={(e) => setSelect(e.target.value)}>
@@ -63,7 +63,9 @@ function BusTable({session_id="", user=null, permissions=Object(), checkFlag=fal
                   setMode(bus.id)
                   setDialog(true)
                 }}><img src={static_dir+"images/icons/edit.svg"}/></button>
-                <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
+                <button className="del-btn" onClick={() => deleteBus({id: bus.id}, session_id, () => {
+                  setRows(prev => prev.filter(r => r.id !== bus.id))
+                }, null, navigate)}><img src={static_dir+"images/icons/delete.svg"} /></button>
               </td>:""}
             </tr>
           ))

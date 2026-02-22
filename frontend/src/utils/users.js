@@ -1,7 +1,7 @@
 import makeRequest from "./request";
 
 async function getUsers(session_id="", callback = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "admin/users/all/",
     "GET",
     session_id,
@@ -10,10 +10,9 @@ async function getUsers(session_id="", callback = () => {}, errorCase=null, navi
     errorCase,
     navigate
   )
-  return data?.users || []
 }
 async function getDrivers(session_id="", callback = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "auth/drivers/",
     "GET",
     session_id,
@@ -22,10 +21,9 @@ async function getDrivers(session_id="", callback = () => {}, errorCase=null, na
     errorCase,
     navigate
   )
-  return data?.drivers || []
 }
 async function getUsersName(session_id="", callback = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "auth/users/",
     "GET",
     session_id,
@@ -34,10 +32,9 @@ async function getUsersName(session_id="", callback = () => {}, errorCase=null, 
     errorCase,
     navigate
   )
-  return data?.users || []
 }
 async function addUser(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "admin/users/add/",
     "POST",
     session_id,
@@ -46,10 +43,9 @@ async function addUser(formData, session_id="", callback = () => {}, errorCase=n
     errorCase,
     navigate
   )
-  return data.user
 }
 async function updateUser(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "admin/users/update",
     "POST",
     session_id,
@@ -58,6 +54,16 @@ async function updateUser(formData, session_id="", callback = () => {}, errorCas
     errorCase,
     navigate
   )
-  return data.user
 }
-export {getUsers, getDrivers, getUsersName, addUser, updateUser}
+async function deleteUser(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/users/delete",
+    "POST",
+    session_id,
+    formData,
+    () => callback(),
+    errorCase,
+    navigate
+  )
+}
+export {getUsers, getDrivers, getUsersName, addUser, updateUser, deleteUser}

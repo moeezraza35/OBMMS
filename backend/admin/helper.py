@@ -1,5 +1,7 @@
+from datetime import date, datetime
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session, DeclarativeBase
+from admin.models import Logs
 from auth.models import Users
 from auth.helper import getPermissions
 
@@ -8,6 +10,17 @@ def save(session:Session, obj:DeclarativeBase):
     session.add(obj)
     session.commit()
     session.refresh(obj)
+  except Exception as e:
+    session.rollback()
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Database Error: "+str(e)
+    )
+
+def delete(session:Session, obj:DeclarativeBase):
+  try:
+    session.delete(obj)
+    session.commit()
   except Exception as e:
     session.rollback()
     raise HTTPException(
@@ -57,3 +70,14 @@ def setPermission(user:Users, session:Session, data:dict, existing_permissions:d
             if key in permissions:
               del permissions[key]
   return str(permissions)  # type: ignore
+
+def saveLog(session:Session, user:Users, action:str, model:str, row:int):
+  log = Logs(
+    user=user.id,
+    model=model,
+    action=action,
+    row=row,
+    date=date.today(),
+    time=datetime.now().time()
+  )
+  save(session, log)

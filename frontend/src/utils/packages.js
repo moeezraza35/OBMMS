@@ -1,8 +1,48 @@
+import makeRequest from "./request"
+
 async function getPackages(session_id="", callback = () => {}, errorCase=null, navigate=null){
-  callback([{id: 1, user: 1, price: 10000.00, amount: "Rs. 5,000", installments: 1, start: "2026-1-1", end: "2026-2-28", active: true}])
+  await makeRequest(
+    "admin/packages/all/",
+    "GET",
+    session_id,
+    null,
+    (data) => callback(data.packages),
+    errorCase,
+    navigate
+  )
 }
-async function addPackages(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){}
-async function updatePackages(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){}
-async function deletePackages(){}
+async function addPackages(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/packages/add/",
+    "POST",
+    session_id,
+    formData,
+    (data) => callback(data.package),
+    errorCase,
+    navigate
+  )
+}
+async function updatePackages(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/packages/update/",
+    "POST",
+    session_id,
+    formData,
+    (data) => callback(data.package),
+    errorCase,
+    navigate
+  )
+}
+async function deletePackages(formData={}, session_id="", callback=()=>{}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/packages/delete/",
+    "POST",
+    session_id,
+    formData,
+    () => callback(),
+    errorCase,
+    navigate
+  )
+}
 
 export {getPackages, addPackages, updatePackages, deletePackages}

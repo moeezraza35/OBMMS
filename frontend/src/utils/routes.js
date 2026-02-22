@@ -1,8 +1,48 @@
+import makeRequest from "./request"
+
 async function getRoutes(session_id="", callback = () => {}, errorCase=null, navigate=null){
-  callback([{id: 1, departure: "City A", destination: "City B", bus: "Bus 1", time: "10:00", active: true}])
+  await makeRequest(
+    "admin/routes/all/",
+    "GET",
+    session_id,
+    null,
+    (data) => callback(data.routes),
+    errorCase,
+    navigate
+  )
 }
-async function addRoute(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){}
-async function updateRoute(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){}
-async function deleteRoute(){}
+async function addRoute(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/routes/add/",
+    "POST",
+    session_id,
+    formData,
+    (data) => callback(data.route),
+    errorCase,
+    navigate
+  )
+}
+async function updateRoute(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/routes/update/",
+    "POST",
+    session_id,
+    formData,
+    (data) => callback(data.route),
+    errorCase,
+    navigate
+  )
+}
+async function deleteRoute(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/routes/delete/",
+    "POST",
+    session_id,
+    formData,
+    () => callback(),
+    errorCase,
+    navigate
+  )
+}
 
 export {getRoutes, addRoute, updateRoute, deleteRoute}

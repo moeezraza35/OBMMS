@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { static_dir } from "../config"
-import { addStop, getStops, updateStop } from "../utils/stops"
+import { addStop, getStops, updateStop, deleteStop } from "../utils/stops"
 import { Marker, Popup } from "react-leaflet"
 import { Horizontal_Card_Content } from '../components/content'
 import Location, { LocationPicker } from "../components/location"
@@ -8,6 +8,7 @@ import Dialog from "../components/dialog"
 import L from "leaflet"
 
 function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
+  const dialogProp = { dialog, formMode, formData, addRow: addStop, updateRow: updateStop, setData, setDialog, setRows }
   const setPosition = (position) => {
     setData(values => ({...values, latitudes: position[0], longitudes: position[1]}))
   }
@@ -22,8 +23,6 @@ function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=f
   return (
     <>
       <Dialog
-        dialog={dialog}
-        formMode={formMode}
         inputs={[
           {type: "text", name: "name", required: true},
           {type: "text", name: "description", required: true},
@@ -32,12 +31,7 @@ function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=f
           {type: "checkbox", name: "active"},
           {type: "checkbox", name: "campus"}
         ]}
-        formData={formData}
-        addRow={addStop}
-        updateRow={updateStop}
-        setData={setData}
-        setDialog={setDialog}
-        setRows={setRows}/>
+        {...dialogProp}>Stop</Dialog>
       <Location cursor="pointer">
         {rows.map(item => (
           <Marker key={item.id} position={item.location} icon={item.is_campus?L.icon({
@@ -85,7 +79,9 @@ function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=f
               }}>
                 <img src={static_dir+"images/icons/edit.svg"}/>
               </button>
-            <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"}/></button>
+            <button onClick={() => deleteStop({id: item.id}, session_id, () => {
+              setRows(prev => prev.filter(r => r.id !== item.id))
+            }, null, navigate)} className="del-btn"><img src={static_dir+"images/icons/delete.svg"}/></button>
           </Horizontal_Card_Content>
         ))}</div>
         <button

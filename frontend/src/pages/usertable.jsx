@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { getGroupsName } from "../utils/group"
-import { addUser, getUsers, updateUser } from "../utils/users"
+import { addUser, getUsers, updateUser, deleteUser } from "../utils/users"
 import { static_dir } from "../config"
 import Table from "../components/table"
 import Dialog from "../components/dialog"
@@ -9,6 +9,7 @@ function UsersTable({session_id="", user=null, permissions=Object(), checkFlag=f
   const [groups, setGroups] = useState([])
   const [search, setSearch] = useState("")
   const [select, setSelect] = useState("All")
+  const dialogProp = { dialog, formMode, formData, addRow: addUser, updateRow: updateUser, setData, setDialog, setRows }
   const loadData = async () => {
     setRows([])
     if (!checkFlag) return
@@ -21,8 +22,6 @@ function UsersTable({session_id="", user=null, permissions=Object(), checkFlag=f
   return (
     <>
       <Dialog
-        dialog={dialog}
-        formMode={formMode}
         inputs={[
           {type: "text", name: "name", placeholder: "Full Name...", required: true},
           {type: "password", name: "password", placeholder: ""},
@@ -33,12 +32,7 @@ function UsersTable({session_id="", user=null, permissions=Object(), checkFlag=f
             ...groups.map(group => ({value: group.id,label: group.name}))
           ]}
         ]}
-        formData={formData}
-        addRow={addUser}
-        updateRow={updateUser}
-        setData={setData}
-        setDialog={setDialog}
-        setRows={setRows}/>
+        {...dialogProp}>User</Dialog>
       <div className="flex gap-4 p-4">
         <input type="search" className="text-input" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/>
         <select className="text-input" value={select} onChange={(e) => setSelect(e.target.value)}>
@@ -77,7 +71,11 @@ function UsersTable({session_id="", user=null, permissions=Object(), checkFlag=f
                   })
                   setDialog(true)
                 }}><img src={static_dir+"images/icons/edit.svg"}/></button>
-                <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
+                <button className="del-btn" onClick={() => {
+                  deleteUser({id: row.id}, session_id, () => {
+                    setRows(prev => prev.filter(r => r.id !== row.id))
+                  }, null, navigate)
+                }}><img src={static_dir+"images/icons/delete.svg"} /></button>
               </td>:""}
             </tr>
         ))}}/>

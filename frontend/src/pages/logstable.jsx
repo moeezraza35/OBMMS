@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react"
-import { getLogs } from "../utils/logs"
-import { getUsers } from "../utils/users"
+import { getLogs, deleteLogs } from "../utils/logs"
 import { static_dir } from "../config"
 import Table from "../components/table"
 
 function LogsTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
   const [search, setSearch] = useState("")
-  const [select, setSelect] = useState("All")
   const loadData = async () => {
     setRows([])
     if (!checkFlag) return
@@ -19,27 +17,28 @@ function LogsTable({session_id="", user=null, permissions=Object(), checkFlag=fa
     <>
       <div className="flex gap-4 p-4">
         <input type="search" className="text-input" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/>
-        <select className="text-input" value={select} onChange={(e) => setSelect(e.target.value)}>
-          <option value="All" defaultChecked>All</option>
-          <option value="Admin">Admin</option>
-        </select>
       </div>
       <Table
-        cols={["ID", "Model", "Action", "Row", "Date", "Time", "-"]}
+        cols={["ID", user?.is_admin ? ["User"] : [], "Model", "Action", "Row", "Date", "Time", "-"]}
         renderRows={() => {
           return rows.filter((log) => {
-            return true
+            return String(log.id).includes(search) ||
+              String(log.user).includes(search.toLowerCase()) ||
+              log.model.toLowerCase().includes(search.toLowerCase())
           }).map(row => (
             <tr key={row.id}>
               <td>{row.id}</td>
+              {user?.is_admin && <td>{row.user}</td>}
               <td>{row.model}</td>
               <td>{row.action}</td>
               <td>{row.row}</td>
               <td>{row.date}</td>
               <td>{row.time}</td>
-              <td>
-                <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
-              </td>
+              <td>{user?.is_admin?
+                <button className="del-btn" onClick={() => deleteLogs({id: row.id}, session_id, () => {
+                  setRows(rows.filter(r => r.id !== row.id))
+                }, null, navigate)}><img src={static_dir+"images/icons/delete.svg"} /></button>
+              :'-'}</td>
             </tr>
           ))}
         }/>

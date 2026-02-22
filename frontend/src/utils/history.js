@@ -1,6 +1,26 @@
+import makeRequest from "./request"
+
 async function getHistory(session_id="", callback = () => {}, errorCase=null, navigate=null){
-  callback([{id: 1, package: 1, amount: 5000, date: "2026-1-20", time: "12:00:00"}])
+  await makeRequest(
+    "admin/history/all",
+    "GET",
+    session_id,
+    null,
+    (data) => callback(data.history),
+    errorCase,
+    navigate
+  )
 }
-async function deleteHistory(){}
+async function deleteHistory(formData={}, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/history/delete",
+    "POST",
+    session_id,
+    formData,
+    callback,
+    errorCase,
+    navigate
+  )
+}
 
 export {getHistory, deleteHistory}

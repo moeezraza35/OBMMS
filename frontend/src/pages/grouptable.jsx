@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
-import { addGroup, getGroups, updateGroup } from "../utils/group"
+import { addGroup, getGroups, updateGroup, deleteGroup } from "../utils/group"
 import { static_dir } from "../config"
 import Dialog from "../components/dialog"
 import Table from "../components/table"
 
 function GroupTable({models=[], session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
   const [search, setSearch] = useState("")
+  const dialogProp = { dialog, formMode, formData, addRow: addGroup, updateRow: updateGroup, setData, setDialog, setRows }
   const loadData = async () => {
     setRows([])
     if (!checkFlag) return
@@ -17,8 +18,6 @@ function GroupTable({models=[], session_id="", user=null, permissions=Object(), 
   return (
     <>
       <Dialog
-        dialog={dialog}
-        formMode={formMode}
         inputs={[
           {type: "text", name: "name", placeholder: "Group Name...", required: true},
           ...models.map(model => (
@@ -29,12 +28,7 @@ function GroupTable({models=[], session_id="", user=null, permissions=Object(), 
             ]}
           ))
         ]}
-        formData={formData}
-        addRow={addGroup}
-        updateRow={updateGroup}
-        setData={setData}
-        setDialog={setDialog}
-        setRows={setRows}/>
+        {...dialogProp}>Group</Dialog>
       <div className="p-4">
         <input type="search" className="text-input" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/>
       </div>
@@ -62,7 +56,10 @@ function GroupTable({models=[], session_id="", user=null, permissions=Object(), 
                 })
                 setDialog(true)
               }}><img src={static_dir+"images/icons/edit.svg"}/></button>
-              <button className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
+              <button className="del-btn" onClick={() => {deleteGroup({id: group.id}, session_id, () => {
+                setRows(prev => prev.filter(r => r.id !== group.id))
+              }, null, navigate)
+              }}><img src={static_dir+"images/icons/delete.svg"} /></button>
             </td>:""}
           </tr>
         ))}}/>

@@ -1,7 +1,7 @@
 import makeRequest from "./request";
 
 async function getGroups(session_id="", callBack = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "admin/group/all/",
     "GET",
     session_id,
@@ -10,10 +10,9 @@ async function getGroups(session_id="", callBack = () => {}, errorCase=null, nav
     errorCase,
     navigate
   )
-  return data.groups || []
 }
 async function getGroupsName(session_id="", callBack = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "auth/groups/",
     "GET",
     session_id,
@@ -22,10 +21,9 @@ async function getGroupsName(session_id="", callBack = () => {}, errorCase=null,
     errorCase,
     navigate
   )
-  return data.groups || []
 }
 async function addGroup(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "admin/group/add/",
     "POST",
     session_id,
@@ -34,10 +32,9 @@ async function addGroup(formData, session_id="", callback = () => {}, errorCase=
     errorCase,
     navigate
   )
-  return data.group
 }
 async function updateGroup(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
-  const data = await makeRequest(
+  await makeRequest(
     "admin/group/update/",
     "POST",
     session_id,
@@ -46,6 +43,16 @@ async function updateGroup(formData, session_id="", callback = () => {}, errorCa
     errorCase,
     navigate
   )
-  return data.group
 }
-export {getGroups, getGroupsName, addGroup, updateGroup}
+async function deleteGroup(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
+  await makeRequest(
+    "admin/group/delete/",
+    "POST",
+    session_id,
+    formData,
+    () => callback(),
+    errorCase,
+    navigate
+  )
+}
+export {getGroups, getGroupsName, addGroup, updateGroup, deleteGroup}

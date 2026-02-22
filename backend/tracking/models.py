@@ -78,6 +78,7 @@ class Route(Base):
   destination = Column(name="destination", type_=Integer)
   bus = Column(name="bus", type_=Integer)
   time = Column(name="time", type_=Time)
+  active = Column(name="active", type_=Boolean)
 
   def serialize(self) -> dict:
     return {
@@ -85,7 +86,8 @@ class Route(Base):
       "departure": self.departure,
       "destination": self.destination,
       "bus": self.bus,
-      "time": self.time
+      "time": self.time,
+      "active": self.active
     }
   
   def __repr__(self) -> str:

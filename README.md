@@ -48,6 +48,7 @@ Here are the following requirements need to be installed to run this project
 - Python 3
 - Git Bash
 - MySQL
+- Microsoft open JDK 17
 - Android Studio + latest SDK
 - Android Device (minimum Android 7)
 
@@ -93,6 +94,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - Cross Origin Resource Sharing (CORS)
 - Permission Model
 - Redirecting
+- Maps Integration
 
 ## Timeline
 - 24 Nov 2025 - Requirement gathering
@@ -112,6 +114,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - 19 Feb 2026 - Admin dashboard UI designed
 - 21 Feb 2026 - Refactor & Implicit permissions
 - 22 Feb 2026 - Developed all Admin REST APIs
+- 25 Feb 2026 - Structure the Mobile App
 
 ## Refrences
 - https://vite.dev/guide/
@@ -132,3 +135,6 @@ These commands will run the backend server on port *:8000. You can access it usi
 - https://www.openstreetmap.org
 - https://www.w3schools.com/tags/ref_httpmessages.asp
 - https://medium.com/@farhanahmedindia/complete-guide-deploying-a-flask-app-on-apache-ubuntu-c2f5d7b17e20
+- https://reactnative.dev/docs/set-up-your-environment
+- https://reactnative.dev/docs/navigation
+- https://reactnative.dev/docs/network

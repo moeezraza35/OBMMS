@@ -49,46 +49,21 @@ Here are the following requirements need to be installed to run this project
 - Git Bash
 - MySQL
 - Microsoft open JDK 17
-- Android Studio + latest SDK
-- Android Device (minimum Android 7)
+- Android Studio
+  - Android 16 ('Baklava')
+    - Android SDK Platform 36
+    - Sources for Android 36
+- Android Device (minimum Android 11)
 
 ## Run Development Environment
 These points will help you run the project only in the development environment. Please contact developers for production environment.
-- Download the project from the GitHub using 
-```
-git clone https://github.com/moeezraza35/OBMMS.git
-```
-- Open a terminal window in the project folder and run the following commands
-```
-cd frontend
-npm install
-npm run dev
-```
-These commands will run the frontend server on port *:3000. You can access it using http://localhost:3000.
+Download the project from the GitHub using the following command:
+> git clone https://github.com/moeezraza35/OBMMS.git
 
-- Open a new terminal window in the project folder and run the following commands
-```
-cd backend
-python -m venv venv
-```
-- For Windows users
-```
-.\venv\Scripts\activate
-```
-- For Linux/Mac users
-```
-source ./venv/bin/activate
-```
-```
-pip install -r requirements.txt
-python main.py migrate
-python main.py createsuperuser
-```
-Here, `migrate` command is used to initialize the database by creating all the required tables in the database and `createsuperuser` is used to create an admin user. It will ask you few questions like user ID and name. If user ID is kept empty it will assign any available ID number. After creating super user run the following command:
-```
-python main.py runservers
-```
-These commands will run the backend server on port *:8000. You can access it using http://localhost:8000.
+After downloading the project see the project's apps' `README` files for further installation. You should follow this order.
+- **Backend**: ```cd backend```
+- **Frontend**: ```cd frontend```
+- **Mobile**: ```cd mobile/Riphah_bus```
 
 ## Challenges
 - Cross Origin Resource Sharing (CORS)
@@ -115,6 +90,7 @@ These commands will run the backend server on port *:8000. You can access it usi
 - 21 Feb 2026 - Refactor & Implicit permissions
 - 22 Feb 2026 - Developed all Admin REST APIs
 - 25 Feb 2026 - Structure the Mobile App
+- 26 Feb 2026 - Added a map view
 
 ## Refrences
 - https://vite.dev/guide/
@@ -138,3 +114,4 @@ These commands will run the backend server on port *:8000. You can access it usi
 - https://reactnative.dev/docs/set-up-your-environment
 - https://reactnative.dev/docs/navigation
 - https://reactnative.dev/docs/network
+- https://www.npmjs.com/package/react-native-webview

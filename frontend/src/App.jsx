@@ -9,22 +9,32 @@ import Profile from "./pages/profile"
 import Header from "./components/header"
 import Footer from "./components/footer"
 import "./assets/App.css"
+import Map from "./pages/map"
+
+function Wrapper({children}){
+  return (
+    <>
+      <Header/>
+      {children}
+      <Footer/>
+    </>
+  )
+}
 
 function App() {
   return (
     <BrowserRouter>
       <LoadinProvider>
         <AuthProvider>
-          <Header/>
           <Routes>
-            <Route path='' element={<Home/>}/>
-            <Route path="/login/" element={<Login/>}/>
-            <Route path="/dashboard/" element={<Dashboard/>}/>
-            <Route path="/dashboard/:model/" element={<Dashboard/>}/>
-            <Route path="/profile/" element={<Profile/>}/>
-            <Route path="/change_password/" element={<Password/>}/>
+            <Route path='' element={<Wrapper><Home/></Wrapper>}/>
+            <Route path="/login/" element={<Wrapper><Login/></Wrapper>}/>
+            <Route path="/dashboard/" element={<Wrapper><Dashboard/></Wrapper>}/>
+            <Route path="/dashboard/:model/" element={<Wrapper><Dashboard/></Wrapper>}/>
+            <Route path="/profile/" element={<Wrapper><Profile/></Wrapper>}/>
+            <Route path="/map/" element={<Map/>}/>
+            <Route path="/change_password/" element={<Wrapper><Password/></Wrapper>}/>
           </Routes>
-          <Footer/>
         </AuthProvider>
       </LoadinProvider>
     </BrowserRouter>

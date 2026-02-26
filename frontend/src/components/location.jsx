@@ -25,12 +25,12 @@ function LocationPicker({position, setPosition}){
   ) 
 }
 
-function Location({ children }){
+function Location({ children, height="500px", width="100%" }){
   return(
     <MapContainer
       center={[31.4886, 74.3392]}
       zoom={13}
-      style={{ height: '500px', width: '100%' }}
+      style={{ height: height, width: width }}
       className="leaflet-pointer">
       <TileLayer
         url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"

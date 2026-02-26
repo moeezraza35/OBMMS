@@ -9,7 +9,9 @@ function Header(){
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      paddingInline: 10
+      paddingInline: 10,
+      borderBottomWidth: 3,
+      borderBottomColor: "blue"
     }}>
       <Image
         source={require("../assets/images/riphah-title.png")}

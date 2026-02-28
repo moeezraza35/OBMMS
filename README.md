@@ -91,6 +91,7 @@ After downloading the project see the project's apps' `README` files for further
 - 22 Feb 2026 - Developed all Admin REST APIs
 - 25 Feb 2026 - Structure the Mobile App
 - 26 Feb 2026 - Added a map view
+- 28 Feb 2026 - Mobile App Authentication
 
 ## Refrences
 - https://vite.dev/guide/
@@ -115,3 +116,4 @@ After downloading the project see the project's apps' `README` files for further
 - https://reactnative.dev/docs/navigation
 - https://reactnative.dev/docs/network
 - https://www.npmjs.com/package/react-native-webview
+- https://www.npmjs.com/package/react-native-keychain

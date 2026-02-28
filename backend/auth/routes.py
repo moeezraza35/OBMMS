@@ -50,6 +50,7 @@ async def login_check(request:Request) -> dict:
   if user is not None:
     if JWT_EXIPRE:
       session_id = create_session_id(user)
+    request.session["user"] = session_id
     return {
       "session_id": session_id,
       "user": user.serialize()

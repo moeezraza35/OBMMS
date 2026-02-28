@@ -7,16 +7,17 @@ const AuthContext = createContext({
   user: Object(null),
   permissions: Object(null),
   checkFlag: false,
+  setSessionID: () => {},
   require_auth: async () => {},
   getPermission: async () => {}
 })
 
 function AuthProvider({ children }){
-  let session_id = ""
+  const [session_id, setSessionID] = useState("")
   const [user, setUser] = useState(null)
   const [permissions, setPermissions] = useState({})
   const [checkFlag, setCheck] = useState(false)
-  const {loading, setLoading} = useContext(LoadingContext)
+  const {setLoading} = useContext(LoadingContext)
   const getPermission = async () => {
     const resData = await makeRequest(
       "auth/permissions/",
@@ -43,10 +44,10 @@ function AuthProvider({ children }){
       null,
       (data) => {
         if (data.user){
-          session_id = data.session_id
+          setSessionID(data.session_id)
           setUser(data.user)
         } else {
-          session_id = ""
+          setSessionID("")
           setUser(null)
         }
       },
@@ -65,7 +66,7 @@ function AuthProvider({ children }){
     })
   }, [])
   return (
-    <AuthContext.Provider value={{session_id, user, permissions, checkFlag, require_auth, getPermission}}>
+    <AuthContext.Provider value={{session_id, user, permissions, checkFlag, setSessionID, require_auth, getPermission}}>
       {children}
     </AuthContext.Provider>
   )

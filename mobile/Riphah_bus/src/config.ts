@@ -1,0 +1,6 @@
+export const backend = "http://localhost:8000"
+export const frontend = "http://localhost:3000"
+export const api_prefix = "/api/"
+export const backgroupColor = "white"
+export const textColor = "black"
+export const accentColor = "#185079"

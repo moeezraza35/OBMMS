@@ -92,7 +92,7 @@ After downloading the project see the project's apps' `README` files for further
 - 25 Feb 2026 - Structure the Mobile App
 - 26 Feb 2026 - Added a map view
 - 28 Feb 2026 - Mobile App Authentication
-- 02 Mar 2026 - Improve Auth and Request
+- 02 Mar 2026 - Permissions by Packages
 
 ## Refrences
 - https://vite.dev/guide/

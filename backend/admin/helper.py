@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session, DeclarativeBase
 from admin.models import Logs
 from auth.models import Users
 from auth.helper import getPermissions
+from obmms.settings import MODELS
 
 def save(session:Session, obj:DeclarativeBase):
   try:
@@ -29,12 +30,11 @@ def delete(session:Session, obj:DeclarativeBase):
     )
 
 def allowedModels(session:Session, user:Users) -> list[str]:
-  models = ["users", "group"]
   if user.is_admin is True:
-    return models
+    return MODELS
   permissions = getPermissions(user, session)
   allowed_models = []
-  for model in models:
+  for model in MODELS:
     if model in permissions:
       allowed_models.append(model)
   return allowed_models

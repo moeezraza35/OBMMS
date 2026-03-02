@@ -61,22 +61,21 @@ def getPermissions(user:Users, session:Session) -> dict:
   except json.JSONDecodeError:
     return {}
 
-def authorize(user: Users, session: Session, model:str, readonly=True) -> bool:
+def authorize(user: Users, session: Session, models:list[str], readonly=True) -> bool:
   if user.is_admin: # type:ignore
     return True
   permission = getPermissions(user, session)
-  print(permission) # Debug print
-  if model in permission:
-    print(model)  # Debug print
-    if readonly or permission[model] == 'w':
-      return True
+  for model in models:
+    if model in permission:
+      if readonly or permission[model] == 'w':
+        return True
   return False
 
 def require_auth(request:Request, session:Session, model:str, readonly=True) -> Users:
   user = authenticate(request, session)
   if user is None:
     raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
-  if not authorize(user, session, model, readonly):
+  if not authorize(user, session, [model], readonly):
     raise HTTPException(status.HTTP_403_FORBIDDEN, "Not Allowed")
   return user
 

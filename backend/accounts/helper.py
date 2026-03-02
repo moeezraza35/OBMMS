@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from sqlalchemy.orm import Session
-from accounts.models import History
+from accounts.models import History, Package
+from auth.models import Users
 from admin.helper import save
 
 def saveHistory(session:Session, package:int, amount:float):
@@ -11,4 +12,9 @@ def saveHistory(session:Session, package:int, amount:float):
     time=datetime.now().time(),
   )
   save(session, history)
-    
+
+def activePackage(session:Session, user:Users) -> bool:
+  package = session.query(Package).filter(Package.user == user.id and Package.active).all()
+  if len(package) == 0:
+    return False
+  return True

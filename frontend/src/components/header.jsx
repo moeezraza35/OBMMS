@@ -8,7 +8,7 @@ import makeRequest from "../utils/request";
 function Header(){
   const [nav, setNav] = useState("");
   const [profmenu, setProfmenu] = useState("");
-  const { user, session_id, setSessionID, require_auth } = useContext(AuthContext)
+  const { user, session_id, require_auth } = useContext(AuthContext)
   const { setLoading } = useContext(LoadingContext)
   const location = useLocation()
   const navigate = useNavigate()
@@ -69,10 +69,7 @@ function Header(){
                 "GET",
                 session_id,
                 null,
-                () => {
-                  setSessionID("")
-                  require_auth()
-                },
+                async (data) => await require_auth(data.session_id),
                 null,
                 navigate
               )

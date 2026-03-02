@@ -11,7 +11,7 @@ import Dues from './src/pages/dues';
 import Notifications from './src/pages/notifications';
 import Header from './src/components/header';
 import Login from './src/pages/login';
-import Passsword from './src/pages/password';
+import Password from './src/pages/password';
 
 const headerOpt = {
   header: () => <Header/>
@@ -39,8 +39,8 @@ const RootStack = createNativeStackNavigator({
       screen: Login,
       options: headerOpt
     },
-    Passsword: {
-      screen: Passsword,
+    Password: {
+      screen: Password,
       options: headerOpt
     }
   },

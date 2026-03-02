@@ -9,7 +9,7 @@ function Login(){
   const [sap, setSap] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShow] = useState(false)
-  const { session_id, user, require_auth } = useContext(AuthContext)
+  const { user, require_auth } = useContext(AuthContext)
   const { setLoading } = useContext(LoadingContext)
   const navigate = useNavigate()
   useEffect(() => {
@@ -25,12 +25,12 @@ function Login(){
           await makeRequest(
             "auth/login/",
             "POST",
-            session_id,
+            "",
             {
               "sap": sap,
               "password": password
             },
-            async () => await require_auth(),
+            async (data) => await require_auth(data.session_id),
             async (res) => alert(res.detail)
           )
           setLoading(false)

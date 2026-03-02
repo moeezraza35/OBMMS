@@ -35,17 +35,18 @@ function AuthProvider({ children }){
     )
     return resData
   }
-  const require_auth = async () => {
+  const require_auth = async (sid) => {
     setLoading(true)
     await makeRequest(
       "auth/login/check/",
       "GET",
-      session_id,
+      sid,
       null,
-      (data) => {
+      async (data) => {
         if (data.user){
           setSessionID(data.session_id)
           setUser(data.user)
+          await getPermission()
         } else {
           setSessionID("")
           setUser(null)
@@ -53,10 +54,6 @@ function AuthProvider({ children }){
       },
       (res) => alert(res.detail)
     )
-    if (user==null || user.reset_required){
-      return
-    }
-    await getPermission()
   }
   useEffect(() => {
     require_auth()
@@ -66,7 +63,7 @@ function AuthProvider({ children }){
     })
   }, [])
   return (
-    <AuthContext.Provider value={{session_id, user, permissions, checkFlag, setSessionID, require_auth, getPermission}}>
+    <AuthContext.Provider value={{session_id, user, permissions, checkFlag, require_auth, getPermission}}>
       {children}
     </AuthContext.Provider>
   )

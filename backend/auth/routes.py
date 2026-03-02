@@ -14,10 +14,14 @@ async def login_submit(request:Request) -> dict:
   data = await request.json()
   session = get_session()
   try:
+    if not "sap" in data or data["sap"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "SAP ID not given")
     user = session.get(Users, ident=int(data["sap"]))
     if user is None:
       raise HTTPException(status.HTTP_404_NOT_FOUND,"User with SAP# {} not found.".format(data["sap"]))
     session_id = ""
+    if not "password" in data or data["password"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Password not given")
     if user.checkPassword(data["password"]):
       session_id = create_session_id(user)
     if session_id == "":

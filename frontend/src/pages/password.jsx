@@ -39,12 +39,13 @@ function Password(){
             "POST",
             session_id,
             {"password": password},
-            () => {},
+            async () => {
+              await require_auth(session_id)
+              navigate("/dashboard/")
+            },
             null,
             navigate
           )
-          await require_auth()
-          navigate("/dashboard/")
           setLoading(false)
         }}>
         <input

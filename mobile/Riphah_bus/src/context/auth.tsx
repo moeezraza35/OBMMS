@@ -45,16 +45,17 @@ function AuthProvider({ children }: { children: ReactNode }){
       "GET",
       "Bearer "+session_id,
       null,
-      (data:{user:User|null, session_id:string}) => {
-        setUser(data.user)
-        setSessionId(data.session_id)
+      async (data:{user:User|null, session_id:string}) => {
+        if (data.user !== null){
+          setUser(data.user)
+          Keychain.setGenericPassword(data.user.name, data.session_id)
+          setSessionId(data.session_id)
+          await getPermission(session_id)
+        } else {
+          setSessionId("")
+        }
         if (data.user?.reset_required){
           navigate("Password");
-        } else {
-          if (data.user?.name){
-            Keychain.setGenericPassword(data.user.name, data.session_id)
-          }
-          getPermission(session_id)
         }
       },
       (e:any) => {Alert.alert("Connection Error","Make sure you're connected to internet "+e)}

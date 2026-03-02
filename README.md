@@ -92,6 +92,7 @@ After downloading the project see the project's apps' `README` files for further
 - 25 Feb 2026 - Structure the Mobile App
 - 26 Feb 2026 - Added a map view
 - 28 Feb 2026 - Mobile App Authentication
+- 02 Mar 2026 - Improve Auth and Request
 
 ## Refrences
 - https://vite.dev/guide/
@@ -117,3 +118,5 @@ After downloading the project see the project's apps' `README` files for further
 - https://reactnative.dev/docs/network
 - https://www.npmjs.com/package/react-native-webview
 - https://www.npmjs.com/package/react-native-keychain
+- https://fastapi.tiangolo.com/advanced/websockets/
+- https://archive.reactnative.dev/docs/geolocation#:~:text=iOS,result%20in%20a%20hard%20crash.

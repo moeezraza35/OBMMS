@@ -1,14 +1,16 @@
-import { TextInput, View, Button } from "react-native";
+import { TextInput, View, Button, Text } from "react-native";
 
-function Passsword(){
+function Password(){
   return (
     <View style={{flex:1, justifyContent:"center"}}>
       <View>
+        <Text>SAP ID</Text>
         <TextInput placeholder="SAP ID..."/>
+        <Text>Password</Text>
         <TextInput placeholder="Password..."/>
         <Button title="Login"/>
       </View>
     </View>
   )
 }
-export default Passsword
+export default Password

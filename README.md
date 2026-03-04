@@ -93,6 +93,7 @@ After downloading the project see the project's apps' `README` files for further
 - 26 Feb 2026 - Added a map view
 - 28 Feb 2026 - Mobile App Authentication
 - 02 Mar 2026 - Permissions by Packages
+- 04 Mar 2026 - Added WebSockets
 
 ## Refrences
 - https://vite.dev/guide/

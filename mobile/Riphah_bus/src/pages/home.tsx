@@ -1,33 +1,30 @@
-import { ScrollView, Text, View, StyleSheet, Alert, Platform, PermissionsAndroid } from 'react-native';
+import { ScrollView, Text, View, StyleSheet, Alert, Platform, PermissionsAndroid, Button } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import Geolocation from "react-native-geolocation-service"
 import NavBar from "../components/navbar"
-import { useContext, useEffect, useState } from 'react';
-import { LoadingContext } from '../context/loading';
 
 function Home() {
   const [error, setError] = useState("")
+  const [granted, setGranted] = useState(false)
+  const [sharing, setSharing] = useState(false)
   const [location, setLocation] = useState({
     latitude: 0.0,
     longitude: 0.0,
     accuracy: 0
   })
-  const {setLoading} = useContext(LoadingContext)
   useEffect(() => {
     requestLocationPermission();
   }, []);
-
-  // Request permission based on platform
+  useEffect(() => {
+    getCurrentLocation();
+  })
   const requestLocationPermission = async () => {
-    if (Platform.OS === 'ios') {
-      // iOS handles permissions differently
-      getCurrentLocation();
-      return;
-    }
+    if (Platform.OS === 'ios') return;
 
     // Android permission request
     try {
-      const granted = await PermissionsAndroid.request(
+      const permission = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           title: 'Location Permission',
@@ -36,14 +33,14 @@ function Home() {
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         }
-      );
-
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      )
+      if (permission === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission granted');
-        getCurrentLocation();
+        setGranted(true)
       } else {
         setError('Location permission denied');
-        setLoading(false);
+        setGranted(false)
+        setSharing(false)
         Alert.alert(
           'Permission Required',
           'Location access is needed to find nearby buses. Please enable it in settings.',
@@ -51,30 +48,32 @@ function Home() {
         );
       }
     } catch (err) {
-      console.warn(err);
+      console.error(err);
       setError('Failed to request permission');
-      setLoading(false);
+      setGranted(false)
+      setSharing(false)
     }
   };
 
   // Get current location
   const getCurrentLocation = () => {
-    setLoading(true);
-
+    if (!sharing) return
+    if (!granted){
+      requestLocationPermission()
+    }
     Geolocation.getCurrentPosition(
       (position) => {
-        console.log('Location obtained:', position);
+        console.log('Location obtained:', position)
         setLocation({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           accuracy: position.coords.accuracy,
-        });
-        setError("");
+        })
+        setError("")
       },
       (error) => {
-        console.log('Location error:', error);
+        console.error('Location error:', error);
         setError(error.message);
-        setLoading(false);
         
         Alert.alert(
           'Location Error',
@@ -104,6 +103,9 @@ function Home() {
             marginVertical: 10,
             borderRadius: 3}}></View>
           <View>
+            <Button
+              title={sharing?"Stop Sharing":"Share Location"}
+              onPress={() => setSharing(!sharing)}/>
             <Text>Latitude: {location.latitude}</Text>
             <Text>Longitude: {location.longitude}</Text>
             <Text>Accuracy: {location.accuracy}</Text>

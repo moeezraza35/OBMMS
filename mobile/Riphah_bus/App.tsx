@@ -12,6 +12,7 @@ import Notifications from './src/pages/notifications';
 import Header from './src/components/header';
 import Login from './src/pages/login';
 import Password from './src/pages/password';
+import { WebSocketProvider } from './src/context/websocket';
 
 const headerOpt = {
   header: () => <Header/>
@@ -55,8 +56,10 @@ function App() {
     <SafeAreaProvider>
       <LoadingProvider>
         <AuthProvider>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <Navigation ref={navigationRef} />
+          <WebSocketProvider>
+            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+            <Navigation ref={navigationRef} />
+          </WebSocketProvider>
         </AuthProvider>
       </LoadingProvider>
     </SafeAreaProvider>

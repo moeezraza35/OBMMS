@@ -38,7 +38,7 @@ class Location(Base):
   def serialize(self) -> dict:
     return {
       "id": self.id,
-      "location": (self.latitude, self.longitude),
+      "location": [self.latitude, self.longitude],
       "heading": self.heading,
       "speed": self.speed
     }

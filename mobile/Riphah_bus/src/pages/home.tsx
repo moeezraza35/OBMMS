@@ -1,6 +1,7 @@
-import { ScrollView, Text, View, StyleSheet, Alert, Platform, PermissionsAndroid, Button } from 'react-native';
+import { ScrollView, Text, View, Alert, Platform, PermissionsAndroid, Button } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview';
+import { WebSocketContext } from '../context/websocket';
 import Geolocation from "react-native-geolocation-service"
 import NavBar from "../components/navbar"
 
@@ -13,12 +14,23 @@ function Home() {
     longitude: 0.0,
     accuracy: 0
   })
+  const {ws} = useContext(WebSocketContext)
   useEffect(() => {
-    requestLocationPermission();
+    requestLocationPermission()
   }, []);
   useEffect(() => {
-    getCurrentLocation();
+    setTimeout(getCurrentLocation, 5000)
   })
+  useEffect(() => {
+    if (!ws) return
+    if (!sharing) return
+    ws.send(JSON.stringify({
+      type: "location",
+      bus: 1,
+      latitude: location.latitude,
+      longitude: location.longitude
+    }))
+  }, [location])
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') return;
 
@@ -35,7 +47,6 @@ function Home() {
         }
       )
       if (permission === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Location permission granted');
         setGranted(true)
       } else {
         setError('Location permission denied');
@@ -63,7 +74,6 @@ function Home() {
     }
     Geolocation.getCurrentPosition(
       (position) => {
-        console.log('Location obtained:', position)
         setLocation({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -105,7 +115,15 @@ function Home() {
           <View>
             <Button
               title={sharing?"Stop Sharing":"Share Location"}
-              onPress={() => setSharing(!sharing)}/>
+              onPress={() => {
+                if (sharing){
+                  ws?.send(JSON.stringify({
+                    type: "bus stop",
+                    bus: 1
+                  }))
+                }
+                setSharing(!sharing)
+              }}/>
             <Text>Latitude: {location.latitude}</Text>
             <Text>Longitude: {location.longitude}</Text>
             <Text>Accuracy: {location.accuracy}</Text>

@@ -70,6 +70,7 @@ After downloading the project see the project's apps' `README` files for further
 - Permission Model
 - Redirecting
 - Maps Integration
+- Location Sharing
 
 ## Timeline
 - 24 Nov 2025 - Requirement gathering
@@ -96,6 +97,7 @@ After downloading the project see the project's apps' `README` files for further
 - 04 Mar 2026 - Added WebSockets
 - 05 Mar 2026 - Added Location Handling
 - 06 Mar 2026 - Realtime Location Handling
+- 09 Mar 2026 - Location Sharing
 
 ## Refrences
 - https://vite.dev/guide/

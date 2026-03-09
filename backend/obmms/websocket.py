@@ -11,7 +11,6 @@ class WebSocketManager:
     self.connections:list[Connection] = []
   
   async def connect(self, websocket:WebSocket, user:int):
-    await websocket.accept()
     self.connections.append(Connection(websocket, user, True))
   
   def disconnect(self, user:int):

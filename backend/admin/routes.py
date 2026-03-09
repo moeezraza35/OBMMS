@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, HTTPException, status
 from auth.models import Users, Group
 from admin.models import Logs, Notifications
-from tracking.models import Bus, Stop, Route
+from tracking.models import Bus, Location, Stop, Route
 from accounts.models import Package, History
 from obmms.settings import MODELS
 from obmms.database import get_session
@@ -113,6 +113,16 @@ def get_all_history(request:Request) -> dict:
     user = require_auth(request, session, "history")
     history = session.query(History).all()
     return {"history": [h.serialize() for h in history]}
+  finally:
+    session.close()
+
+@router.get("/location/all/")
+def get_all_location(request:Request) -> dict:
+  session = get_session()
+  try:
+    user = require_auth(request, session, "location")
+    location = session.query(Location).all()
+    return {"location": [loc.serialize() for loc in location]}
   finally:
     session.close()
 

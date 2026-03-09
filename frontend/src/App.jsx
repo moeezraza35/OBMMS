@@ -10,6 +10,7 @@ import Header from "./components/header"
 import Footer from "./components/footer"
 import "./assets/App.css"
 import Map from "./pages/map"
+import { WebSocketProvider } from "./context/websocket"
 
 function Wrapper({children}){
   return (
@@ -26,15 +27,17 @@ function App() {
     <BrowserRouter>
       <LoadinProvider>
         <AuthProvider>
-          <Routes>
-            <Route path='' element={<Wrapper><Home/></Wrapper>}/>
-            <Route path="/login/" element={<Wrapper><Login/></Wrapper>}/>
-            <Route path="/dashboard/" element={<Wrapper><Dashboard/></Wrapper>}/>
-            <Route path="/dashboard/:model/" element={<Wrapper><Dashboard/></Wrapper>}/>
-            <Route path="/profile/" element={<Wrapper><Profile/></Wrapper>}/>
-            <Route path="/map/" element={<Map/>}/>
-            <Route path="/change_password/" element={<Wrapper><Password/></Wrapper>}/>
-          </Routes>
+          <WebSocketProvider>
+            <Routes>
+              <Route path='' element={<Wrapper><Home/></Wrapper>}/>
+              <Route path="/login/" element={<Wrapper><Login/></Wrapper>}/>
+              <Route path="/dashboard/" element={<Wrapper><Dashboard/></Wrapper>}/>
+              <Route path="/dashboard/:model/" element={<Wrapper><Dashboard/></Wrapper>}/>
+              <Route path="/profile/" element={<Wrapper><Profile/></Wrapper>}/>
+              <Route path="/map/" element={<Map/>}/>
+              <Route path="/change_password/" element={<Wrapper><Password/></Wrapper>}/>
+            </Routes>
+          </WebSocketProvider>
         </AuthProvider>
       </LoadinProvider>
     </BrowserRouter>

@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from obmms import OBMMS
+from obmms.settings import HOST, PORT, RELOAD
 import uvicorn
 
 obmms = OBMMS()
@@ -15,7 +16,7 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   if args.command == "runserver":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host=HOST, port=PORT, reload=RELOAD)
   elif args.command == "migrate":
     obmms.create_tables()
   elif args.command == "createsuperuser":

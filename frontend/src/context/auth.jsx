@@ -37,6 +37,7 @@ function AuthProvider({ children }){
   }
   const require_auth = async (sid) => {
     setLoading(true)
+    setCheck(false)
     await makeRequest(
       "auth/login/check/",
       "GET",
@@ -54,11 +55,11 @@ function AuthProvider({ children }){
       },
       (res) => alert(res.detail)
     )
+    setCheck(true)
   }
   useEffect(() => {
     require_auth()
     .then(() => {
-      setCheck(true)
       setLoading(false)
     })
   }, [])

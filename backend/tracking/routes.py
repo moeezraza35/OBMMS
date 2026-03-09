@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Request, status
-from tracking.models import Bus, Stop
+from tracking.models import Bus, Location, Stop
 from obmms.database import get_session
-from auth.helper import authenticate, authorize, require_auth
-from tracking.helper import getBuses
+from auth.helper import authenticate, authorize
+from tracking.helper import getBuses, getLocation
 from accounts.helper import activePackage
 
 router = APIRouter(
@@ -17,10 +17,10 @@ def get_buses(request: Request):
     user = authenticate(request, session)
     if user is None:
       raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
-    if not authorize(user, session, ["buses", "routes"], readonly=True):
+    if not authorize(user, session, ["buses", "routes", "location"], readonly=True):
       raise HTTPException(status.HTTP_403_FORBIDDEN, "Permission Denied")
     buses = session.query(Bus).all()
-    return {"buses": [{"id": bus.id, "license": bus.license} for bus in buses ]}
+    return {"buses": [{"id": bus.id, "license": bus.license, "location": bus.location} for bus in buses ]}
   finally:
     session.close()
 
@@ -51,5 +51,24 @@ def get_stops(request: Request):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Permission Denied")
     stops = session.query(Stop).filter(Stop.active == True).all()
     return {"stops": [stop.serialize() for stop in stops]}
+  finally:
+    session.close()
+
+@router.get("/location/")
+def get_location(request: Request):
+  session = get_session()
+  try:
+    user = authenticate(request, session)
+    if user is None:
+      raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
+    if not authorize(user, session, ["location"], readonly=True):
+      if not activePackage(session, user):
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Permission Denied")
+    buses = session.query(Bus).filter(Bus.active == True).all()
+    location = [getLocation(session, bus) for bus in buses]
+    return {
+      "buses": [bus.serialize() for bus in buses],
+      "location": [loc.serialize() for loc in location]
+    }
   finally:
     session.close()

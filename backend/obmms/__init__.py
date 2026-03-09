@@ -3,11 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.exc import IntegrityError, OperationalError
 from obmms.models import *
-from obmms.settings import SECRET_KEY, SESSION_COOKIE, SAME_SITE, HTTPS_ONLY, ALLOW_ORIGINS, ALLOW_CREDENTIALS, ALLOW_METHODS, ALLOW_HEADERS
+from obmms.routes import router
 from auth import Auth
 from admin import Admin
 from tracking import Tracking
 from accounts import Accounts
+from obmms.settings import SECRET_KEY, SESSION_COOKIE, SAME_SITE, HTTPS_ONLY, ALLOW_ORIGINS, ALLOW_CREDENTIALS, ALLOW_METHODS, ALLOW_HEADERS
 import sys
 
 class OBMMS:
@@ -31,6 +32,7 @@ class OBMMS:
     Admin(self.app)
     Tracking(self.app)
     Accounts(self.app)
+    self.app.include_router(router)
 
   def create_tables(self) -> bool:
     try:

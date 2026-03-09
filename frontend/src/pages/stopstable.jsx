@@ -1,11 +1,10 @@
 import { useEffect } from "react"
 import { static_dir } from "../config"
 import { addStop, getStops, updateStop, deleteStop } from "../utils/stops"
-import { Marker, Popup } from "react-leaflet"
 import { Horizontal_Card_Content } from '../components/content'
 import Location, { LocationPicker } from "../components/location"
 import Dialog from "../components/dialog"
-import L from "leaflet"
+import MapLabel from "../components/mapLabel"
 
 function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
   const dialogProp = { dialog, formMode, formData, addRow: addStop, updateRow: updateStop, setData, setDialog, setRows }
@@ -34,25 +33,7 @@ function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=f
         {...dialogProp}>Stop</Dialog>
       <Location cursor="pointer">
         {rows.map(item => (
-          <Marker key={item.id} position={item.location} icon={item.is_campus?L.icon({
-            iconUrl: '/images/riphah-logo.png',
-            iconRetinaUrl: '',
-            shadowUrl: '',
-            iconSize: [38, 38],
-            iconAnchor: [20, 25],
-            popupAnchor: [0, -20],
-            shadowSize: [41, 41]
-          }):L.icon({
-            iconUrl: '/images/icons/stop'+(item.active?"":"-disabled")+'.svg',
-            iconRetinaUrl: '',
-            shadowUrl: '',
-            iconSize: [38, 38],
-            iconAnchor: [16, 28],
-            popupAnchor: [0, -18],
-            shadowSize: [41, 41]
-          })}>
-            <Popup>{item.name}</Popup>
-          </Marker>
+          <MapLabel key={item.id} text={item.name} location={item.location} isCampus={item.is_campus} active={item.active}/>
         ))}
         <LocationPicker position={formData.latitudes && formData.longitudes?[formData.latitudes,formData.longitudes]:[]} setPosition={setPosition}/>
       </Location>

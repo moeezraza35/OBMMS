@@ -2,6 +2,7 @@ import { ScrollView, Text, View, Alert, Platform, PermissionsAndroid, Button } f
 import { useContext, useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { WebSocketContext } from '../context/websocket';
+import { intervals } from '../config';
 import Geolocation from "react-native-geolocation-service"
 import NavBar from "../components/navbar"
 
@@ -9,17 +10,25 @@ function Home() {
   const [error, setError] = useState("")
   const [granted, setGranted] = useState(false)
   const [sharing, setSharing] = useState(false)
-  const [location, setLocation] = useState({
+  const [location, setLocation] = useState<{
+    latitude: Number,
+    longitude: Number,
+    accuracy: Number,
+    heading: Number|null,
+    speed: Number|null
+  }>({
     latitude: 0.0,
     longitude: 0.0,
-    accuracy: 0
+    accuracy: 0,
+    heading: null,
+    speed: null,
   })
   const {ws} = useContext(WebSocketContext)
   useEffect(() => {
     requestLocationPermission()
   }, []);
   useEffect(() => {
-    setTimeout(getCurrentLocation, 5000)
+    setTimeout(getCurrentLocation, intervals)
   })
   useEffect(() => {
     if (!ws) return
@@ -28,7 +37,7 @@ function Home() {
       type: "location",
       bus: 1,
       latitude: location.latitude,
-      longitude: location.longitude
+      longitude: location.longitude,
     }))
   }, [location])
   const requestLocationPermission = async () => {
@@ -60,7 +69,7 @@ function Home() {
       }
     } catch (err) {
       console.error(err);
-      setError('Failed to request permission');
+      setError('Failed to request permission')
       setGranted(false)
       setSharing(false)
     }
@@ -78,6 +87,8 @@ function Home() {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           accuracy: position.coords.accuracy,
+          heading: position.coords.heading,
+          speed: position.coords.speed
         })
         setError("")
       },
@@ -96,15 +107,15 @@ function Home() {
         timeout: 15000,
         maximumAge: 10000,
       }
-    );
-  };
+    )
+  }
   return (
     <View style={{flex:1, backgroundColor: "white"}}>
+      <View style={{height: 500, width: "100%", position: "absolute", top: 0, zIndex: 1}}>
+        <WebView source={{ uri: 'http://localhost:3000/map/' }} style={{ flex: 1, borderBottomWidth: 1 }}/>
+      </View>
       <ScrollView style={{flex:1}}>
-        <View style={{height: 500}}>
-          <WebView source={{ uri: 'http://localhost:3000/map/' }} style={{ flex: 1, borderBottomWidth: 1 }}/>
-        </View>
-        <View style={{backgroundColor: "#fefefe", height: 500}}>
+        <View style={{backgroundColor: "#fefefe", height: 500, marginTop: 500, zIndex:10}}>
           <View style={{
             padding: 3,
             backgroundColor: "gray",
@@ -112,7 +123,7 @@ function Home() {
             marginHorizontal: "auto",
             marginVertical: 10,
             borderRadius: 3}}></View>
-          <View>
+          <View style={{padding: 10}}>
             <Button
               title={sharing?"Stop Sharing":"Share Location"}
               onPress={() => {
@@ -124,9 +135,11 @@ function Home() {
                 }
                 setSharing(!sharing)
               }}/>
-            <Text>Latitude: {location.latitude}</Text>
-            <Text>Longitude: {location.longitude}</Text>
-            <Text>Accuracy: {location.accuracy}</Text>
+            <Text>Latitude: {""+location.latitude}</Text>
+            <Text>Longitude: {""+location.longitude}</Text>
+            <Text>Accuracy: {""+location.accuracy}</Text>
+            <Text>Heading: {""+location.heading}</Text>
+            <Text>Speed: {""+location.speed}</Text>
             <Text>Error: {error}</Text>
           </View>
         </View>

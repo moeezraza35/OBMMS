@@ -98,6 +98,7 @@ After downloading the project see the project's apps' `README` files for further
 - 05 Mar 2026 - Added Location Handling
 - 06 Mar 2026 - Realtime Location Handling
 - 09 Mar 2026 - Location Sharing
+- 31 Mar 2026 - Improve WebSocket Disconnection
 
 ## Refrences
 - https://vite.dev/guide/

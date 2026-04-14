@@ -6,7 +6,7 @@ function Footer(){
  
       <div className="lists">
         <div className="listBox">
-          <img src={static_dir+"images/riphah-title-white.png"} alt="" />
+          <img src={static_dir+"images/logo-white.png"} alt="" />
           <div className="text-justify">
             <div className="social">
               <img src={static_dir+"images/icons/facebook.svg"} />

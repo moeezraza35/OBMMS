@@ -69,6 +69,7 @@ function WebSocketProvider({ children }) {
     if (!checkFlag || !session_id) return
     setLoading(true)
     connect()
+    setLoading(false)
 
     // Cleanup on unmount or when session changes
     return () => {
@@ -76,7 +77,6 @@ function WebSocketProvider({ children }) {
         wsRef.current.close()
         wsRef.current = null
       }
-      setLoading(false)
     }
   }, [checkFlag]) // Reconnect when session changes
 

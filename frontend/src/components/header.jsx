@@ -19,7 +19,7 @@ function Header(){
   return (
     <header>
       <div className="brand">
-        <img src="/images/riphah-title.png" alt="" />
+        <img src="/images/logo.png" alt="" />
       </div>
       <div className="toggle">
         <button onClick={() => {

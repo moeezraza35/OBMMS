@@ -7,6 +7,8 @@ Go to your phone `settings` > `Developer options`. Turn on `Stay awake` and `USB
 If you are not in `mobile` folder use this command:
 > cd mobile/Riphah_bus
 
+Here you need to install a package from https://github.com/moeezraza35/mr-wshandler-react/releases/tag/v0.1.0 and save it in the project folder with the name `dist`.
+
 If you haven't install node packages then run the following command *for once*:
 > npm install
 

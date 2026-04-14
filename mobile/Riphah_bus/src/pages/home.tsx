@@ -1,10 +1,11 @@
 import { ScrollView, Text, View, Alert, Platform, PermissionsAndroid, Button } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview';
-import { WebSocketContext } from '../context/websocket';
+import { MRWSHandlerContext } from "mr-wshandler-react"
 import { intervals } from '../config';
 import Geolocation from "react-native-geolocation-service"
 import NavBar from "../components/navbar"
+import { WebSocketContext } from '../context/websocket';
 
 function Home() {
   const [error, setError] = useState("")
@@ -23,7 +24,8 @@ function Home() {
     heading: null,
     speed: null,
   })
-  const {ws} = useContext(WebSocketContext)
+  const { send } = useContext(MRWSHandlerContext)
+  const { status } = useContext(WebSocketContext)
   useEffect(() => {
     requestLocationPermission()
   }, []);
@@ -31,9 +33,11 @@ function Home() {
     setTimeout(getCurrentLocation, intervals)
   })
   useEffect(() => {
-    if (!ws) return
+    if (!send) return
     if (!sharing) return
-    ws.send(JSON.stringify({
+    if (!status) return
+    console.log("Sending location") // Debug print
+    send(JSON.stringify({
       type: "location",
       bus: 1,
       latitude: location.latitude,
@@ -128,10 +132,10 @@ function Home() {
               title={sharing?"Stop Sharing":"Share Location"}
               onPress={() => {
                 if (sharing){
-                  ws?.send(JSON.stringify({
+                  send?send(JSON.stringify({
                     type: "bus stop",
                     bus: 1
-                  }))
+                  })):""
                 }
                 setSharing(!sharing)
               }}/>

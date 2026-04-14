@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
+from mr_wshandler import connectionManager, WebSocket
 from tracking.models import Bus, Location
 from auth.models import Users
 from auth.helper import authorize
 from admin.helper import save
-from obmms.websocket import websocketManager
 import json
 
 def getBuses(session:Session):
@@ -24,10 +24,20 @@ def getLocation(session:Session, bus:Bus) -> Location:
   save(session, location)
   return location
 
-async def handleTracking(session:Session, user:Users, data:dict) -> bool:
-  print("Authorizing...") # Debug print
-  if not authorize(user, session, ["location"], False):
-    return False
+async def handleTracking(session:Session, websocket:WebSocket, data:dict) -> bool:
+  print("Authorizing")  # Debug print
+  client_id = None
+  for connection in connectionManager.active_connections:
+    if connection.websocket is websocket:
+      client_id = connection.clientId
+  if client_id:
+    print("Client ID =",client_id)  # Debug print
+    user = session.get(Users, client_id)
+    print("User =", user) # Debug print
+    if not user:
+      return False
+    if not authorize(user, session, ["location"], False):
+      return False
   
   print("Getting Data...", data)  # Debug print
   
@@ -39,10 +49,10 @@ async def handleTracking(session:Session, user:Users, data:dict) -> bool:
   print(bus.serialize())  # debug print
   if bus.active is False or bus.active is None:
     print("False bus to active...") # Debug print
-    await websocketManager.send_to_allowed(json.dumps({
+    await connectionManager.send_message_to_room(json.dumps({
       "type": "bus active",
       "bus": bus.serialize()
-    }))
+    }), "allowed")
     bus.active = True # type:ignore
     save(session, bus)
   print ("Getting location...") # Debug print
@@ -56,11 +66,11 @@ async def handleTracking(session:Session, user:Users, data:dict) -> bool:
     return False
   location.longitude = data["longitude"]
   print("Sending location...")  # debug print
-  await websocketManager.send_to_allowed(json.dumps({
+  await connectionManager.send_message_to_room(json.dumps({
     "type": "location",
     "bus": bus.id,
     "location": location.serialize()
-  }))
+  }), "allowed")
   return True
 
 async def handleBusStop(session:Session, data:dict) -> bool:
@@ -75,8 +85,8 @@ async def handleBusStop(session:Session, data:dict) -> bool:
   print("saving the bus") # Debug print
   save(session, stoped_bus)
   print("Sending info...")  # Debug print
-  await websocketManager.send_to_allowed(json.dumps({
+  await connectionManager.send_message_to_room(json.dumps({
     "type": "bus stop",
     "bus": data["bus"]
-  }))
+  }), "allowed")
   return True

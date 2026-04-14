@@ -99,6 +99,7 @@ After downloading the project see the project's apps' `README` files for further
 - 06 Mar 2026 - Realtime Location Handling
 - 09 Mar 2026 - Location Sharing
 - 31 Mar 2026 - Improve WebSocket Disconnection
+- 04 Apr 2026 - Integrate MRWSHandler
 
 ## Refrences
 - https://vite.dev/guide/
@@ -126,3 +127,5 @@ After downloading the project see the project's apps' `README` files for further
 - https://www.npmjs.com/package/react-native-keychain
 - https://fastapi.tiangolo.com/advanced/websockets/
 - https://archive.reactnative.dev/docs/geolocation#:~:text=iOS,result%20in%20a%20hard%20crash.
+- https://github.com/moeezraza35/mr_wshandler_fastapi
+- https://github.com/moeezraza35/mr-wshandler-react

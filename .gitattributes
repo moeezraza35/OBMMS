@@ -1,1 +1,5 @@
 *.json linguist-vendored
+./mobile/obmms/.prettierrc.js linguist-vendored
+./mobile/obmms/babel.config.js linguist-vendored
+./mobile/obmms/jest.config.js linguist-vendored
+./mobile/obmms/metro.config.js linguist-vendored

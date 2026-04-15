@@ -41,10 +41,8 @@ function Map(){
     setLoading(false)
   }
   const callBack = async (data) => {
-    console.log("Callback received:", data)  // Debug print
     switch (data?.type) {
       case "bus active":
-        console.log("bus active called...") // Debug print
         setBuses(buses => [...buses, data.bus])
         break
       case "bus stop":
@@ -58,7 +56,6 @@ function Map(){
         });
         break;
       case "location":
-        console.log("Location case...") // Debug print
         // Find the bus
         const targetBus = buses.find(b => b.id === data.bus)
         if (!targetBus) break
@@ -91,8 +88,8 @@ function Map(){
     if (data === null) return
     callBack(data)
   }, [data])
-  useEffect(() => {console.log(location)}, [location])  // Debug print
-  useEffect(() => {console.log(buses)}, [buses])        // Debug print
+  // useEffect(() => {console.log(location)}, [location])  // Debug print
+  // useEffect(() => {console.log(buses)}, [buses])        // Debug print
   return (
     <div id="map" className="h-screen">
       <Location width="100%" height="100vh">

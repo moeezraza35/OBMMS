@@ -1,6 +1,7 @@
 import { useState, createContext, useEffect, useContext } from "react";
 import { LoadingContext } from "./loading";
 import makeRequest from "../utils/request";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext({
   session_id: "",
@@ -18,6 +19,7 @@ function AuthProvider({ children }){
   const [permissions, setPermissions] = useState({})
   const [checkFlag, setCheck] = useState(false)
   const {setLoading} = useContext(LoadingContext)
+  const navigate = useNavigate()
   const getPermission = async () => {
     const resData = await makeRequest(
       "auth/permissions/",
@@ -52,10 +54,11 @@ function AuthProvider({ children }){
           setSessionID("")
           setUser(null)
         }
+        setCheck(true)
       },
-      (res) => alert(res.detail)
+      null,
+      navigate
     )
-    setCheck(true)
   }
   useEffect(() => {
     require_auth()

@@ -12,9 +12,9 @@ async function makeRequest(url, method="GET", session_id="", formData={}, callba
           break
         case 0:
           alert("Cannot connect to server, please check your internet connection")
+          navigate("/")
         default:
-          alert(res.detail)
-          navigate("/dashboard/")
+          navigate("/")
           break
       }
     }

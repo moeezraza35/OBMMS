@@ -3,6 +3,7 @@ import { getBusesName } from "../utils/buses"
 import { getLocation } from "../utils/location"
 import { BusLabel } from "../components/mapLabel"
 import Location from "../components/location"
+import { frontend } from "../config"
 
 function LocationTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
   const [buses, setBuses] = useState([])
@@ -16,14 +17,7 @@ function LocationTable({session_id="", user=null, permissions=Object(), checkFla
   }
   useEffect(() => {loadData()}, [checkFlag])
   return (
-    <Location>
-      {rows.map(item => (
-        <BusLabel
-          key={item.id}
-          location={item.location}
-          text={buses.filter(bus => bus.location === item.id)[0]?.license || "-"}/>
-      ))}
-    </Location>
+    <iframe className="w-full h-[500px]" src={frontend+"/map/"} frameborder="0"></iframe>
   )
 }
 export default LocationTable

@@ -5,7 +5,7 @@ Take an Android device minimum Android 11. Open `settings` > `About`. Find devic
 Go to your phone `settings` > `Developer options`. Turn on `Stay awake` and `USB Debug`. And connect your phone with development machine.
 
 If you are not in `mobile` folder use this command:
-> cd mobile/Riphah_bus
+> cd mobile/obmms
 
 Here you need to install a package from https://github.com/moeezraza35/mr-wshandler-react/releases/tag/v0.1.0 and save it in the project folder with the name `dist`.
 

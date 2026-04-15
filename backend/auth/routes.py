@@ -123,6 +123,30 @@ async def get_groups(request:Request) -> dict:
   finally:
     session.close()
 
+@router.get("/group/")
+async def get_group(request:Request) -> dict:
+  session = get_session()
+  try:
+    user = authenticate(request, session)
+    if not user:
+      raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
+    
+    if user.is_admin is True:
+      return {
+        "group": "Admin"
+      }
+    group = session.get(Group, user.group)
+    if group:
+      return {
+        "group": group.name
+      }
+    else:
+      return {
+        "group": ""
+      }
+  finally:
+    session.close
+
 @router.get("/drivers/")
 async def get_drivers(request:Request) -> dict:
   session = get_session()

@@ -22,17 +22,6 @@ async function getDrivers(session_id="", callback = () => {}, errorCase=null, na
     navigate
   )
 }
-async function getUsersName(session_id="", callback = () => {}, errorCase=null, navigate=null){
-  await makeRequest(
-    "auth/users/",
-    "GET",
-    session_id,
-    null,
-    (data) => callback(data.users),
-    errorCase,
-    navigate
-  )
-}
 async function addUser(formData, session_id="", callback = () => {}, errorCase=null, navigate=null){
   await makeRequest(
     "admin/users/add/",
@@ -66,4 +55,4 @@ async function deleteUser(formData, session_id="", callback = () => {}, errorCas
     navigate
   )
 }
-export {getUsers, getDrivers, getUsersName, addUser, updateUser, deleteUser}
+export {getUsers, getDrivers, addUser, updateUser, deleteUser}

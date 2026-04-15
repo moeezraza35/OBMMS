@@ -13,7 +13,12 @@ async function makeRequest(url, method="GET", session_id="", formData={}, callba
         case 0:
           alert("Cannot connect to server, please check your internet connection")
           navigate("/")
+          break
+        case 400:
+          alert(res.detail)
+          break
         default:
+          res.detail !== ""? alert(res.detail):""
           navigate("/")
           break
       }
@@ -46,7 +51,7 @@ async function makeRequest(url, method="GET", session_id="", formData={}, callba
     return data
   } catch (e) {
     const result = {
-      detail: "An unexpected error occured, please try again.",
+      detail: "",
       status: 0
     }
     await errorCase(result)

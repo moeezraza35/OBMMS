@@ -323,29 +323,22 @@ async def add_package(request: Request) -> dict:
     
     if not "user" in data or data["user"] == "":
       raise HTTPException(status.HTTP_400_BAD_REQUEST, "User not given")
+    package_user = session.get(Users, data["user"])
+    if not package_user:
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "User not found")
     package.user = data["user"]
 
     if not "price" in data or data["price"] == "":
       raise HTTPException(status.HTTP_400_BAD_REQUEST, "Price not given")
     package.price = data["price"]
 
-    if "amount" in data and data["amount"] != "" and data["amount"] != 0:
-      package.amount = data["amount"]
-    else:
-      package.amount = 0  # type:ignore
-    
-    if "installments" in data and data["installments"] != "" and data["installments"] != 0:
-      package.installments = data["installments"]
-    else:
-      package.installments = 1  # type:ignore
-    
-    if not "start" in data or data["start"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Start date not given")
-    package.start = data["start"]
+    if not "month" in data or data["month"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Month not given")
+    package.month = data["month"]
 
-    if not "end" in data or data["end"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST, "End date not given")
-    package.end = data["end"]
+    if not "year" in data or data["year"] == "":
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Year not given")
+    package.year = data["year"]
 
     if not "active" in data or data["active"] == False:
       package.active = False # type:ignore
@@ -354,8 +347,7 @@ async def add_package(request: Request) -> dict:
 
     save(session, package)
     saveLog(session, user, "C", "packages", package.id) # type:ignore
-    if package.amount != 0: # type:ignore
-      saveHistory(session, package.id, package.amount) # type:ignore
+    saveHistory(session, package.id, data["price"]) # type:ignore
     return {"package": package.serialize()}
   finally:
     session.close()
@@ -526,42 +518,40 @@ async def update_package(request: Request) -> dict:
   data = await request.json()
   session = get_session()
   try:
-    user = require_auth(request, session, "packages", False)
+    user = require_auth(request, session, "packages")
     if not "id" in data or data["id"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Package ID not given")
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Route ID not given")
     package = session.get(Package, data["id"])
     if package is None:
-      raise HTTPException(status.HTTP_404_NOT_FOUND, "Package with ID# {} not found".format(data["id"]))
+      raise HTTPException(status.HTTP_404_NOT_FOUND, "Route with ID# {} not found".format(data["id"]))
     
     if "user" in data and data["user"] != "":
+      package_user = session.get(Users, data["user"])
+      if not package_user:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "User not found")
       package.user = data["user"]
 
     if "price" in data and data["price"] != "":
       package.price = data["price"]
 
-    if "amount" in data and data["amount"] != "" and data["amount"] != 0:
-      saveHistory(session, package.id, float(data["amount"])) # type:ignore
-      package.amount += float(data["amount"])  # type:ignore
+    if "month" in data and data["month"] != "":
+      package.month = data["month"]
 
-    if "installments" in data and data["installments"] != "" and data["installments"] != 0:
-      package.installments = data["installments"]
+    if "year" in data and data["year"] != "":
+      package.year = data["year"]
+
+    if "active" in data and data["active"] == False:
+      package.active = False # type:ignore
     else:
-      package.installments = 1  # type:ignore
-
-    if "start" in data and data["start"] != "":
-      package.start = data["start"]
-
-    if "end" in data and data["end"] != "":
-      package.end = data["end"]
-
-    if "active" in data:
-      package.active = data["active"]
+      package.active = True  # type:ignore
 
     save(session, package)
-    saveLog(session, user, "U", "packages", package.id) # type:ignore
+    saveLog(session, user, "C", "packages", package.id) # type:ignore
+    saveHistory(session, package.id, data["price"], False) # type:ignore
     return {"package": package.serialize()}
   finally:
     session.close()
+
 
 # Deleting Routes
 

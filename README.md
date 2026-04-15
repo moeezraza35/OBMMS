@@ -99,7 +99,8 @@ After downloading the project see the project's apps' `README` files for further
 - 06 Mar 2026 - Realtime Location Handling
 - 09 Mar 2026 - Location Sharing
 - 31 Mar 2026 - Improve WebSocket Disconnection
-- 04 Apr 2026 - Integrate MRWSHandler
+- 14 Apr 2026 - Integrate MRWSHandler
+- 15 Apr 2026 - Implement monthly package system
 
 ## Refrences
 - https://vite.dev/guide/

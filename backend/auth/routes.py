@@ -101,16 +101,6 @@ async def change_password(request:Request) -> dict:
   finally:
     session.close()
 
-@router.get("/users/")
-async def get_users(request:Request) -> dict:
-  session = get_session()
-  try:
-    user = require_auth(request, session, "packages")
-    users = session.query(Users).all()
-    return {"users": [{"id": u.id, "name": u.name} for u in users]}
-  finally:
-    session.close()
-
 @router.get("/groups/")
 async def get_groups(request:Request) -> dict:
   session = get_session()

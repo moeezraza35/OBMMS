@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react"
-import { getUsersName } from "../utils/users"
 import { getPackages, addPackages, updatePackages, deletePackages } from "../utils/packages"
 import { static_dir } from "../config"
 import Table from "../components/table"
 import Dialog from "../components/dialog"
 
 function PackagesTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
-  const [users, setUsers] = useState([])
   const [search, setSearch] = useState("")
-  const [select, setSelect] = useState("All")
   const dialogProp = { dialog, formMode, formData, addRow: addPackages, updateRow: updatePackages, setData, setDialog, setRows }
   const loadData = async () => {
+    if (!checkFlag) return
     setRows([])
     setLoading(true)
     await getPackages(session_id, setRows, null, navigate)
-    await getUsersName(session_id, setUsers, null, navigate)
+    // await getUsersName(session_id, setUsers, null, navigate)
     setLoading(false)
   }
   useEffect(() => {loadData()}, [checkFlag])
@@ -22,15 +20,24 @@ function PackagesTable({session_id="", user=null, permissions=Object(), checkFla
     <>
       <Dialog
         inputs={[
-          {type: "select", name: "user", values: [
-            {value: "", label: "--Not-Selected--"},
-            ...users.map(u => ({value: u.id, label: u.name}))
-          ]},
+          {type: "number", name: "user", placeholder: "User ID...", required: true},
           {type: "number", name: "price", placeholder: "Price...", required: true},
-          {type: "number", name: "amount", placeholder: "Add Amount..."},
-          {type: "number", name: "installments"},
-          {type: "date", name: "start", required: true},
-          {type: "date", name: "end", required: true},
+          {type: "select", name: "month", values: [
+            {value: "", label: "--select-month--"},
+            {value: 1, label: "January"},
+            {value: 2, label: "February"},
+            {value: 3, label: "March"},
+            {value: 4, label: "April"},
+            {value: 5, label: "May"},
+            {value: 6, label: "June"},
+            {value: 7, label: "July"},
+            {value: 8, label: "August"},
+            {value: 9, label: "September"},
+            {value: 10, label: "October"},
+            {value: 11, label: "November"},
+            {value: 12, label: "December"},
+          ]},
+          {type: "number", name: "year", required: true},
           {type: "checkbox", name: "active", placeholder:""}
         ]}
         {...dialogProp}>Package</Dialog>
@@ -38,24 +45,21 @@ function PackagesTable({session_id="", user=null, permissions=Object(), checkFla
         <input type="search" className="text-input" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/>
       </div>
       <Table
-        cols={["ID", "User", "Price", "Amount", "Installments", "Start", "End", "Active"]}
+        cols={["ID", "User", "Price", "Month", "Year", "Active"]}
         permission={user?.is_admin || permissions.packages === 'w'}
         setMode={setMode}
         setDialog={setDialog}
         renderRows={() => {
           return rows.filter((packages) => {
             return packages.id.toString().includes(search) ||
-            packages.user.toString().includes(search) ||
-            users.find(u => u.id == packages.user)?.name.toLowerCase().includes(search.toLowerCase())
+            packages.user.toString().includes(search)
           }).map(row => (
             <tr key={row.id}>
               <td>{row.id}</td>
-              <td>{users.find(u => u.id == row.user)?.name || "Unknown User"}</td>
+              <td>ID: {row.user}</td>
               <td>Rs. {row.price}</td>
-              <td>Rs. {row.amount}</td>
-              <td>{row.installments}</td>
-              <td>{row.start}</td>
-              <td>{row.end}</td>
+              <td>{row.month}</td>
+              <td>{row.year}</td>
               <td>{row.active?'🟢':'🔴'}</td>
               {user?.is_admin || permissions.users==='w'?<td>
                 <button className="edit-btn" onClick={() => {
@@ -64,9 +68,8 @@ function PackagesTable({session_id="", user=null, permissions=Object(), checkFla
                     id: row.id,
                     user: row.user,
                     price: row.price,
-                    installments: row.installments,
-                    start: row.start,
-                    end: row.end,
+                    month: row.month,
+                    year: row.year,
                     active: row.active
                   })
                   setDialog(true)

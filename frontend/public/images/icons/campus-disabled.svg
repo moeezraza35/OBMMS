@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800"
+   height="800"
+   viewBox="0 0 1024 1024"
+   class="icon"
+   version="1.1"
+   id="svg8"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8" />
+  <path
+     d="m 64,96 h 896 v 928 H 64 Z"
+     fill="#EAEAEA"
+     id="path1"
+     style="fill:#eaeaea" />
+  <path
+     d="m 416,768 h 192 v 256 H 416 Z"
+     fill="#434854"
+     id="path2"
+     style="fill:#484848" />
+  <path
+     d="M 416,576 H 608 V 704 H 416 Z m -256,0 H 352 V 704 H 160 Z m 0,192 H 352 V 896 H 160 Z M 672,576 H 864 V 704 H 672 Z m 0,192 H 864 V 896 H 672 Z M 416,384 H 608 V 512 H 416 Z m -256,0 H 352 V 512 H 160 Z m 512,0 H 864 V 512 H 672 Z M 416,192 H 608 V 320 H 416 Z m -256,0 H 352 V 320 H 160 Z m 512,0 H 864 V 320 H 672 Z"
+     fill="#469FCC"
+     id="path3"
+     style="fill:#8a8a8a" />
+  <path
+     d="m 160,192 h 192 v 32 H 160 Z m 256,0 h 192 v 32 H 416 Z m 256,0 h 192 v 32 H 672 Z M 160,384 h 192 v 32 H 160 Z m 256,0 h 192 v 32 H 416 Z m 256,0 h 192 v 32 H 672 Z M 160,576 h 192 v 32 H 160 Z m 256,0 h 192 v 32 H 416 Z m 256,0 h 192 v 32 H 672 Z M 160,768 h 192 v 32 H 160 Z m 512,0 h 192 v 32 H 672 Z"
+     fill=""
+     id="path4" />
+  <path
+     d="m 64,96 h 896 v 32 H 64 Z"
+     fill=""
+     id="path5" />
+  <path
+     d="M 1024,64 A 32,32 0 0 1 992,96 H 32 A 32,32 0 0 1 0,64 V 32 A 32,32 0 0 1 32,0 h 960 a 32,32 0 0 1 32,32 z"
+     fill="#EF4D4D"
+     id="path6"
+     style="fill:#7d7d7d" />
+  <path
+     d="M 238.24,1024 A 126.656,126.656 0 0 0 256,960 128,128 0 0 0 0,960 c 0,23.424 6.752,45.088 17.76,64 z M 896,832 A 127.744,127.744 0 0 0 779.776,907.04 94.848,94.848 0 0 0 736,896 96,96 0 0 0 640,992 c 0,11.296 2.304,21.952 5.888,32 h 360.384 A 126.944,126.944 0 0 0 1024,960 128,128 0 0 0 896,832 Z"
+     fill="#3AAD73"
+     id="path7"
+     style="fill:#848484" />
+  <path
+     d="M 779.776,907.04 A 94.848,94.848 0 0 0 736,896 96,96 0 0 0 640,992 c 0,11.296 2.304,21.952 5.888,32 H 785.76 A 126.656,126.656 0 0 1 768,960 c 0,-18.944 4.384,-36.768 11.776,-52.96 z"
+     fill=""
+     id="path8" />
+</svg>

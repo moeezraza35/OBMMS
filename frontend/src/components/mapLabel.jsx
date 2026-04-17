@@ -1,8 +1,8 @@
 import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
-const campusIcon = L.icon({
-  iconUrl: '/images/riphah-logo.png',
+const campusIcon = (active) => L.icon({
+  iconUrl: '/images/icons/campus'+(active?"":"-disabled")+".svg",
   iconRetinaUrl: '',
   shadowUrl: '',
   iconSize: [38, 38],
@@ -29,7 +29,7 @@ const busIcon = L.icon({
   shadowSize: [41, 41]
 })
 function MapLabel({text, location, isCampus, active}){
-  const icon = isCampus ? campusIcon : stopIcon(active);
+  const icon = isCampus ? campusIcon(active) : stopIcon(active);
   return (
     <Marker position={location} icon={icon}>
       <Popup>{text}</Popup>

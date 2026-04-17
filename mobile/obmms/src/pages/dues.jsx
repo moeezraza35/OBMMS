@@ -7,7 +7,7 @@ function Dues() {
       <ScrollView style={{flex:1}}>
         <Text>Dues</Text>
       </ScrollView>
-      <NavBar active={1}/>
+      <NavBar active={2}/>
     </View>
   )
 }

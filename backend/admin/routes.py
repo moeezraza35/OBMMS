@@ -469,7 +469,6 @@ async def update_stop(request: Request) -> dict:
         routes = session.query(Route).filter((Route.departure == stop.id) | (Route.destination == stop.id)).all() # type:ignore
         for route in routes:
           session.delete(route)
-        delete(session, stop)
 
     if "campus" in data:
       stop.is_campus = data["campus"]

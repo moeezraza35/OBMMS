@@ -1,7 +1,18 @@
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import NavBar from '../components/navbar';
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../context/auth';
+import { navigate } from '../utils/navigation';
 
 function Notifications() {
+  const { user } = useContext(AuthContext)
+  useEffect(() => {
+    if (user === null){
+      navigate("Login")
+    } else if (user.reset_required) {
+      navigate("Password")
+    }
+  }, [])
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>

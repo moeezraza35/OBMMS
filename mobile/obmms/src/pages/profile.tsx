@@ -4,14 +4,19 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from '../context/auth';
 import { navigate } from '../utils/navigation';
 import { accentColor, backgroupColor, textColor } from '../config';
+import { LoadingContext } from '../context/loading';
+import { makeRequest } from '../utils/request';
 
 function Profile() {
-  const {user, permissions} = useContext(AuthContext)
+  const { session_id, user, permissions, require_auth } = useContext(AuthContext)
+  const { setLoading } = useContext(LoadingContext)
   useEffect(() => {
     if (user === null){
       navigate("Login")
+    } else if (user.reset_required) {
+      navigate("Password")
     }
-  })
+  }, [])
   if(user)
   return (
     <View style={styles.container}>
@@ -59,7 +64,18 @@ function Profile() {
         {/* Logout Button */}
         <TouchableOpacity 
           style={[styles.logoutButton]}
-          onPress={() => {}}
+          onPress={async () => {
+            setLoading(true)
+            await makeRequest(
+              "auth/logout/",
+              "GET",
+              session_id,
+              null,
+              async (data:{session_id:string}) => await require_auth(data.session_id),
+              null,
+            )
+            setLoading(false)
+          }}
           activeOpacity={0.8}
         >
           <Text style={styles.logoutButtonText}>Logout</Text>

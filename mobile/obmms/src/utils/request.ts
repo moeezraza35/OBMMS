@@ -7,7 +7,7 @@ async function makeRequest(url:string, method:"POST"|"GET", session_id:string, b
     errorCase = (res:{detail:string, status:Number}) => {
       switch(res.status){
         case 401:
-          navigate("/login/")
+          navigate("Login")
           break
         case 500:
           Alert.alert("Internal Server Error", "Please try again later.", 
@@ -28,7 +28,7 @@ async function makeRequest(url:string, method:"POST"|"GET", session_id:string, b
             ])
         default:
           Alert.alert(res.detail)
-          navigate("/dashboard/")
+          navigate("Home")
           break
       }
     }

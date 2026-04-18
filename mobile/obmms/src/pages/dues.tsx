@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { accentColor } from '../config';
 import NavBar from '../components/navbar';
+import { navigate } from '../utils/navigation';
+import { AuthContext } from '../context/auth';
 
 // Types for package and transaction data
 interface PackageItem {
@@ -25,6 +27,14 @@ interface TransactionItem {
 }
 
 function Dues() {
+  const { user } = useContext(AuthContext)
+  useEffect(() => {
+    if (user === null){
+      navigate("Login")
+    } else if (user.reset_required) {
+      navigate("Password")
+    }
+  }, [])
   // Demo active packages data
   const activePackages: PackageItem[] = [
     {

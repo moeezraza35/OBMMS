@@ -52,13 +52,19 @@ function AuthProvider({ children }: { children: ReactNode }){
           setSessionId(data.session_id)
           await getPermission(session_id)
         } else {
-          setSessionId("")
+          setUser(null);
+          setSessionId("");
+          setPermissions({});
+          // Delete stored credentials
+          await Keychain.resetGenericPassword();
+          // Navigate to login
+          navigate("Login");
         }
         if (data.user?.reset_required){
           navigate("Password");
         }
       },
-      (e:any) => {Alert.alert("Connection Error","Make sure you're connected to internet "+e)}
+      null
     )
   }
   const getPermission = async (session_id:string) => {
@@ -68,7 +74,7 @@ function AuthProvider({ children }: { children: ReactNode }){
       "Bearer "+session_id,
       null,
       (data:{permissions:Object}) => setPermissions(data.permissions),
-      (e:any) => {Alert.alert("Connection Error","Make sure you're connected to internet "+e)}
+      null
     )
   }
   const LoadData = async () => {

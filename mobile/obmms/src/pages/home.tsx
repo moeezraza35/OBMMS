@@ -1,5 +1,5 @@
 import { Text, View, Alert, Platform, PermissionsAndroid, StyleSheet, TouchableOpacity, InteractionManager } from 'react-native';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { WebView } from 'react-native-webview';
 import { MRWSHandlerContext } from "mr-wshandler-react";
 import { WebSocketContext } from '../context/websocket';
@@ -7,6 +7,8 @@ import { intervals } from '../config';
 import Geolocation from "react-native-geolocation-service";
 import NavBar from "../components/navbar";
 import DropDown from '../components/dropdown';
+import { AuthContext } from '../context/auth';
+import { navigate } from '../utils/navigation';
 
 const busOptions = [
   { id: 0, name: "Select Bus" },
@@ -84,6 +86,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
+  locationInfo: {
+    backgroundColor: '#f0f0f0',
+    padding: 8,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  locationText: {
+    fontSize: 12,
+    color: '#333',
+  },
 });
 
 function Home() {
@@ -92,11 +104,11 @@ function Home() {
   const [sharing, setSharing] = useState(false)
   const [selectedBus, setSelectedBus] = useState(0)
   const [location, setLocation] = useState<{
-    latitude: Number,
-    longitude: Number,
-    accuracy: Number,
-    heading: Number|null,
-    speed: Number|null
+    latitude: number,
+    longitude: number,
+    accuracy: number,
+    heading: number | null,
+    speed: number | null
   }>({
     latitude: 0.0,
     longitude: 0.0,
@@ -106,28 +118,46 @@ function Home() {
   })
   const { send } = useContext(MRWSHandlerContext)
   const { status } = useContext(WebSocketContext)
+  const { user } = useContext(AuthContext)
 
   useEffect(() => {
-  InteractionManager.runAfterInteractions(() => {
-    requestLocationPermission();
-  });
-}, []);
+    InteractionManager.runAfterInteractions(() => {
+      requestLocationPermission();
+    });
+    if (user === null) {
+      navigate("Login")
+    } else if (user.reset_required) {
+      navigate("Password")
+    }
+  }, []); // Empty deps: runs once on mount
 
+  // Send location via WebSocket whenever location changes
   useEffect(() => {
-    setTimeout(getCurrentLocation, intervals)
-  })
+    if (sharing && selectedBus !== 0 && location.latitude !== 0 && location.longitude !== 0) {
+      send?.(JSON.stringify({
+        "type": "location",
+        "latitude": location.latitude,
+        "longitude": location.longitude,
+        "bus": selectedBus
+      }));
+    }
+  }, [location, sharing, selectedBus, send]);
 
+  // Manage interval for getting location
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (sharing && granted) {
+    if (sharing && granted) {
+      // Start new interval
+      setInterval(() => {
         getCurrentLocation();
-      }
-    }, intervals);
-    return () => clearInterval(interval);
+      }, intervals);
+    }
   }, [sharing, granted]);
 
   const requestLocationPermission = async () => {
-    if (Platform.OS === 'ios') return;
+    if (Platform.OS === 'ios') {
+      setGranted(true);
+      return;
+    }
     try {
       const permission = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -156,7 +186,10 @@ function Home() {
 
   const getCurrentLocation = () => {
     if (!sharing) return
-    if (!granted) requestLocationPermission()
+    if (!granted) {
+      requestLocationPermission();
+      return;
+    }
     Geolocation.getCurrentPosition(
       (position) => {
         setLocation({
@@ -178,7 +211,7 @@ function Home() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white"}}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{ padding: 10, flex: 1 }}>
         <View style={styles.webviewContainer}>
           <WebView
@@ -200,7 +233,7 @@ function Home() {
               sharing ? styles.stopButton : styles.startButton,
             ]}
             onPress={() => {
-              if (sharing) {
+              if (sharing && status) {
                 send?.(JSON.stringify({ type: "bus stop", bus: selectedBus ?? 1 }));
               }
               setSharing(!sharing);
@@ -211,6 +244,24 @@ function Home() {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Display current location when sharing */}
+        {sharing && (
+          <View style={styles.locationInfo}>
+            <Text style={styles.locationText}>
+              Lat: {location.latitude.toFixed(6)}, Lng: {location.longitude.toFixed(6)}
+            </Text>
+            <Text style={styles.locationText}>
+              Accuracy: {location.accuracy.toFixed(1)}m
+            </Text>
+            {location.speed !== null && (
+              <Text style={styles.locationText}>
+                Speed: {(location.speed * 3.6).toFixed(1)} km/h
+              </Text>
+            )}
+            {error !== "" && <Text style={[styles.locationText, { color: 'red' }]}>Error: {error}</Text>}
+          </View>
+        )}
       </View>
       <NavBar active={1} />
     </View>

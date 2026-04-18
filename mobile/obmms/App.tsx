@@ -21,6 +21,10 @@ const headerOpt = {
 
 const RootStack = createNativeStackNavigator({
   screens: {
+    Login: {
+      screen: Login,
+      options: {header: () => <></>}
+    },
     Home: {
       screen: Home,
       options: {header: () => <Header/>}
@@ -41,13 +45,9 @@ const RootStack = createNativeStackNavigator({
       screen: Notifications,
       options: {header: () => <Header title='Notifications' showBack/>}
     },
-    Login: {
-      screen: Login,
-      options: {header: () => <Header title='Login'/>}
-    },
     Password: {
       screen: Password,
-      options: {header: () => <Header title='Reset Password'/>}
+      options: {header: () => <></>}
     }
   },
 });

@@ -1,7 +1,7 @@
 import { View, ViewStyle, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { accentColor } from '../config';
+import { accentColor, textColor } from '../config';
 
 // Define your root stack parameter list (add all screens you use)
 type RootStackParamList = {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     fontSize: 28,
-    color: '#2563eb',
+    color: "#ffffff77",
     fontWeight: '600',
   },
   logo: {
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1e293b',
+    fontWeight: '400',
+    color: "#fff",
   },
   bellIcon: {
     height: 24,

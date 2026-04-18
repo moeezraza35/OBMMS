@@ -13,6 +13,7 @@ import Header from './src/components/header';
 import Login from './src/pages/login';
 import Password from './src/pages/password';
 import { WebSocketProvider } from './src/context/websocket';
+import Schedule from './src/pages/schedule';
 
 const headerOpt = {
   header: () => <Header/>
@@ -22,27 +23,31 @@ const RootStack = createNativeStackNavigator({
   screens: {
     Home: {
       screen: Home,
-      options: headerOpt
+      options: {header: () => <Header/>}
     },
     Profile: {
       screen: Profile,
-      options: headerOpt
+      options: {header: () => <Header title='My Profile' showBack/>}
     },
     Dues: {
       screen: Dues,
-      options: headerOpt
+      options: {header: () => <Header title='Bus Fee & Dues' showBack/>}
+    },
+    Schedule: {
+      screen: Schedule,
+      options: {header: () => <Header title='Schedule' showBack/>}
     },
     Notifications: {
       screen: Notifications,
-      options: headerOpt
+      options: {header: () => <Header title='Notifications' showBack/>}
     },
     Login: {
       screen: Login,
-      options: headerOpt
+      options: {header: () => <Header title='Login'/>}
     },
     Password: {
       screen: Password,
-      options: headerOpt
+      options: {header: () => <Header title='Reset Password'/>}
     }
   },
 });

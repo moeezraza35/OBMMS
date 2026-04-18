@@ -1,14 +1,14 @@
-import { Text, View, ScrollView } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import NavBar from '../components/navbar';
 
-function Dues() {
+function Schedule() {
   return (
     <View style={{flex:1, backgroundColor: "white"}}>
       <ScrollView style={{flex:1}}>
-        <Text>Dues</Text>
+        <Text>Schedule</Text>
       </ScrollView>
-      <NavBar active={2}/>
+      <NavBar active={4}/>
     </View>
   )
 }
-export default Dues;
+export default Schedule;

@@ -178,40 +178,40 @@ function Home() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", padding: 10 }}>
-      
-      <View style={styles.webviewContainer}>
-        <WebView
-          source={{ uri: 'http://localhost:3000/map/' }}
-          style={{ flex: 1 }}
-          scrollEnabled={false}
-        />
+    <View style={{ flex: 1, backgroundColor: "white"}}>
+      <View style={{ padding: 10, flex: 1 }}>
+        <View style={styles.webviewContainer}>
+          <WebView
+            source={{ uri: 'http://localhost:3000/map/' }}
+            style={{ flex: 1 }}
+            scrollEnabled={false}
+          />
+        </View>
+        <View style={styles.controlsRow}>
+          <DropDown
+            list={busOptions}
+            value={selectedBus}
+            onSelect={(item) => setSelectedBus(item.id)}
+            placeholder="Choose a bus"
+          />
+          <TouchableOpacity
+            style={[
+              styles.shareButton,
+              sharing ? styles.stopButton : styles.startButton,
+            ]}
+            onPress={() => {
+              if (sharing) {
+                send?.(JSON.stringify({ type: "bus stop", bus: selectedBus ?? 1 }));
+              }
+              setSharing(!sharing);
+            }}
+            activeOpacity={0.8}>
+            <Text style={styles.shareButtonText}>
+              {sharing ? "Stop Sharing" : "Share Location"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.controlsRow}>
-        <DropDown
-          list={busOptions}
-          value={selectedBus}
-          onSelect={(item) => setSelectedBus(item.id)}
-          placeholder="Choose a bus"
-        />
-        <TouchableOpacity
-          style={[
-            styles.shareButton,
-            sharing ? styles.stopButton : styles.startButton,
-          ]}
-          onPress={() => {
-            if (sharing) {
-              send?.(JSON.stringify({ type: "bus stop", bus: selectedBus ?? 1 }));
-            }
-            setSharing(!sharing);
-          }}
-          activeOpacity={0.8}>
-          <Text style={styles.shareButtonText}>
-            {sharing ? "Stop Sharing" : "Share Location"}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
       <NavBar active={1} />
     </View>
   )

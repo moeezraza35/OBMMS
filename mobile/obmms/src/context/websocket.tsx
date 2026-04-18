@@ -1,7 +1,6 @@
-import { ReactNode, createContext, useContext, useEffect, useRef, useState } from "react";
-import { MRWSHandlerContext, MRWSHandlerProvider } from "mr-wshandler-react";
+import { ReactNode, createContext, useState } from "react";
+import { MRWSHandlerProvider } from "mr-wshandler-react";
 import { backend, intervals } from "../config";
-import { AuthContext } from "./auth";
 
 type WebSocketType = {
   status: boolean
@@ -18,11 +17,9 @@ function WebSocketProvider({ children }:{children:ReactNode}){
       delay={intervals}
       onopen={() => {
         setStatus(true)
-        console.log("Connection open...") // Debug print
       }}
       onclose={() => {
         setStatus(false)
-        console.log("Connection close...")  // Debug print
       }}>
       <WebSocketContext.Provider value={{
         status: status

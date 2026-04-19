@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request, status
 from tracking.models import Bus, Location, Stop
 from obmms.database import get_session
-from auth.helper import authenticate, authorize
+from auth.helper import authenticate, authorize, require_auth
 from tracking.helper import getBuses, getLocation
 from accounts.helper import activePackage
 
@@ -36,6 +36,19 @@ def get_active_buses(request: Request):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Permission Denied")
     buses = getBuses(session)
     return {"buses": [bus for bus in buses["buses"] if bus["active"] is not None and bus["active"] is not False]}
+  finally:
+    session.close()
+
+@router.get("/buses/my/")
+def get_my_buses(request: Request):
+  session = get_session()
+  try:
+    user = require_auth(request, session, "location", False)
+    buses = session.query(Bus).filter(Bus.driver == user.id)
+    print(buses)  # Debug print
+    return {
+      "buses": [{"id": bus.id, "name": bus.license} for bus in buses]
+    }
   finally:
     session.close()
 

@@ -432,6 +432,9 @@ async def update_bus(request:Request) -> dict:
     
     if "capacity" in data and data["capacity"] != "" and data["capacity"] != 0:
       bus.capacity = data["capacity"]
+
+    if "driver" in data and data["driver"] != "" and data["driver"] != 0:
+      bus.driver = data["driver"]
     
     save(session, bus)
     saveLog(session, user, "U", "buses", bus.id) # type:ignore

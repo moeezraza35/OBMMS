@@ -9,13 +9,8 @@ import NavBar from "../components/navbar";
 import DropDown from '../components/dropdown';
 import { AuthContext } from '../context/auth';
 import { navigate } from '../utils/navigation';
-
-const busOptions = [
-  { id: 0, name: "Select Bus" },
-  { id: 1, name: 'Bus 101 - LED-10-7958' },
-  { id: 2, name: 'Bus 102 - LED-10-7959' },
-  { id: 3, name: 'Bus 103 - LED-10-7960' },
-];
+import { LoadingContext } from '../context/loading';
+import { makeRequest } from '../utils/request';
 
 const styles = StyleSheet.create({
   webviewContainer: {
@@ -102,6 +97,7 @@ function Home() {
   const [error, setError] = useState("")
   const [granted, setGranted] = useState(false)
   const [sharing, setSharing] = useState(false)
+  const [buses, setBuses] = useState<Array<{id:number, name:string}>>([{id: 0, name: "Select Bus"}])
   const [selectedBus, setSelectedBus] = useState(0)
   const [location, setLocation] = useState<{
     latitude: number,
@@ -118,7 +114,21 @@ function Home() {
   })
   const { send } = useContext(MRWSHandlerContext)
   const { status } = useContext(WebSocketContext)
-  const { user } = useContext(AuthContext)
+  const { session_id, user } = useContext(AuthContext)
+  const { setLoading } = useContext(LoadingContext)
+
+  const LoadData = async () => {
+    setLoading(true)
+    await makeRequest(
+      "tracking/buses/my",
+      "GET",
+      session_id,
+      null,
+      (data:{buses: [{id:number, name:string}]}) => {setBuses([{id: 0, name: "Select Bus"}, ...data.buses])},
+      null
+    )
+    setLoading(false)
+  }
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -129,7 +139,8 @@ function Home() {
     } else if (user.reset_required) {
       navigate("Password")
     }
-  }, []); // Empty deps: runs once on mount
+    LoadData()
+  }, []);
 
   // Send location via WebSocket whenever location changes
   useEffect(() => {
@@ -222,7 +233,7 @@ function Home() {
         </View>
         <View style={styles.controlsRow}>
           <DropDown
-            list={busOptions}
+            list={buses}
             value={selectedBus}
             onSelect={(item) => setSelectedBus(item.id)}
             placeholder="Choose a bus"

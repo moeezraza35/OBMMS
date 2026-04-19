@@ -24,7 +24,11 @@ function BusTable({session_id="", user=null, permissions=Object(), checkFlag=fal
       <Dialog
         inputs={[
           {type: "text", name: "license", required: true},
-          {type: "number", name: "capacity", required: true}
+          {type: "number", name: "capacity", required: true},
+          {type: "select", name: "driver", values: [
+            {value: 0, label: "Select Driver"},
+            ...users.map(user => ({value: user.id, label: user.name}))
+          ]}
         ]}
         {...dialogProp}>Bus</Dialog>
       <div className="flex gap-4 p-4">
@@ -58,7 +62,8 @@ function BusTable({session_id="", user=null, permissions=Object(), checkFlag=fal
                   setData({
                     "id": bus.id,
                     "license": bus.license,
-                    "capacity": bus.capacity
+                    "capacity": bus.capacity,
+                    "driver": bus.driver? bus.driver : ""
                   })
                   setMode(bus.id)
                   setDialog(true)

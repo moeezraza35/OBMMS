@@ -4,25 +4,27 @@ import { makeRequest } from "../utils/request";
 import { AuthContext } from "../context/auth";
 import { navigate } from "../utils/navigation";
 import { accentColor } from "../config"; // adjust path if needed
+import { LoadingContext } from "../context/loading";
 
 function Login() {
   const { user, setSessionId, require_auth } = useContext(AuthContext);
+  const { setLoading } = useContext(LoadingContext)
   const [formData, setFormData] = useState({
     sap: "",
     password: "",
   });
   useEffect(() => {
-    if (user !== null){
+    if (user != null){
       if (user.reset_required) {
         navigate("Password")
       } else {
         navigate("Home")
       }
     } 
-  }, [])
+  }, [user])
 
   const handleLogin = async () => {
-    console.log(formData);
+    setLoading(true)
     await makeRequest(
       "auth/login/",
       "POST",
@@ -37,6 +39,7 @@ function Login() {
         console.log(e);
       }
     );
+    setLoading(false)
   };
 
   return (

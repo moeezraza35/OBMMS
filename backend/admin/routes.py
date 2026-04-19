@@ -371,7 +371,7 @@ async def update_user(request:Request) -> dict:
       edit_user.group = None  # type:ignore
       assignGroup(user, edit_user, data["group"])
 
-    if "passwrod" in data and data["password"] != "":
+    if "password" in data and data["password"] != "":
       edit_user.password = data["password"]
       edit_user.reset_required = True # type:ignore
 

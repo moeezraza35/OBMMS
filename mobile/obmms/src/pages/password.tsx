@@ -1,7 +1,16 @@
-import { TextInput, View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { accentColor } from "../config"; // adjust path if needed
+import { TextInput, View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { useContext, useState } from "react";
+import { accentColor } from "../config";
+import { LoadingContext } from "../context/loading";
+import { makeRequest } from "../utils/request";
+import { AuthContext } from "../context/auth";
+import { navigate } from "../utils/navigation";
 
 function Password() {
+  const [password, setPassword] = useState("")
+  const [confirm, setConfirm] = useState("")
+  const { setLoading } = useContext(LoadingContext)
+  const { session_id, require_auth } = useContext(AuthContext)
   return (
     <View style={styles.container}>
       {/* Top accent box with white circle and lock icon */}
@@ -20,6 +29,8 @@ function Password() {
           placeholder="Enter new password..."
           placeholderTextColor="#999"
           secureTextEntry
+          value={password}
+          onChange={(e) => setPassword(e.nativeEvent.text)}
         />
 
         <Text style={styles.label}>Confirm Password</Text>
@@ -28,10 +39,36 @@ function Password() {
           placeholder="Confirm your password..."
           placeholderTextColor="#999"
           secureTextEntry
+          value={confirm}
+          onChange={(e) => setConfirm(e.nativeEvent.text)}
         />
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.resetButton, { backgroundColor: accentColor }]}>
+          <TouchableOpacity
+            style={[styles.resetButton, { backgroundColor: accentColor }]}
+            onPress={async () => {
+              if (password === "" || confirm === ""){
+                Alert.alert("Missing Values!","Please fill out all the fields")
+                return
+              }
+              if (password !== confirm){
+                Alert.alert("Password Mismatch", "Password and confirm password doesn't match")
+                return
+              }
+              setLoading(true)
+              await makeRequest(
+                "auth/change_password/",
+                "POST",
+                session_id,
+                {"password": password},
+                async () => {
+                  await require_auth(session_id)
+                  navigate("Home")
+                },
+                null
+              )
+              setLoading(false)
+            }}>
             <Text style={styles.resetButtonText}>Reset Password</Text>
           </TouchableOpacity>
         </View>

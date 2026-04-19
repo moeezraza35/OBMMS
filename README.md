@@ -71,6 +71,7 @@ After downloading the project see the project's apps' `README` files for further
 - Redirecting
 - Maps Integration
 - Location Sharing
+- Nested Scrolling
 
 ## Timeline
 - 24 Nov 2025 - Requirement gathering

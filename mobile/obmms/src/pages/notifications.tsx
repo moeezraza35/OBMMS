@@ -3,9 +3,11 @@ import NavBar from '../components/navbar';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from '../context/auth';
 import { navigate } from '../utils/navigation';
+import { NotificationContext } from '../context/notification';
 
 function Notifications() {
   const { user } = useContext(AuthContext)
+  const { notifications } = useContext(NotificationContext)
   useEffect(() => {
     if (user === null){
       navigate("Login")
@@ -16,12 +18,14 @@ function Notifications() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.notificationBox}>
-          <Text style={styles.notificationTitle}>Notification 1</Text>
-          <Text style={styles.notificationMessage}>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Asperiores corporis provident quas? Vitae omnis fugit quae commodi maxime facilis, adipisci cupiditate veniam? Earum consectetur accusamus iusto nisi quo vel magnam!
-          </Text>
-        </View>
+        {notifications.map(notifi => (
+          <View style={styles.notificationBox}>
+            <Text style={styles.notificationTitle}>{notifi.title}</Text>
+            <Text style={styles.notificationMessage}>
+              {notifi.body}
+            </Text>
+          </View>
+        ))}
       </ScrollView>
       <NavBar active={0} />
     </View>

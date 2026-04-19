@@ -139,6 +139,7 @@ function Home() {
     } else if (user.reset_required) {
       navigate("Password")
     }
+    send?.(JSON.stringify({"session_id": session_id}))
     LoadData()
   }, []);
 

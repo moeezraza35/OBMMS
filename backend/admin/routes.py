@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Request, HTTPException, status
+from datetime import date, datetime
 from auth.models import Users, Group
 from admin.models import Logs, Notifications
 from tracking.models import Bus, Location, Stop, Route
 from accounts.models import Package, History
+from mr_wshandler import connectionManager
 from obmms.settings import MODELS
 from obmms.database import get_session
 from auth.helper import authenticate, require_auth, getGroups
@@ -351,6 +353,11 @@ async def add_package(request: Request) -> dict:
     save(session, package)
     saveLog(session, user, "C", "packages", package.id) # type:ignore
     saveHistory(session, package.id, data["price"]) # type:ignore
+
+    message = "Your Package has been activated with ID #"+str(package.id)
+    newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
+    save(session, newNotifiy)
+    await connectionManager.send_message_to_client_id({"type":"notification", "message": message}, user.id) # type:ignore
     return {"package": package.serialize()}
   finally:
     session.close()
@@ -553,6 +560,11 @@ async def update_package(request: Request) -> dict:
     save(session, package)
     saveLog(session, user, "C", "packages", package.id) # type:ignore
     saveHistory(session, package.id, data["price"], False) # type:ignore
+    
+    message = "Your Package has been Updated with ID #"+str(package.id)
+    newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
+    save(session, newNotifiy)
+    await connectionManager.broadcast({"type":"notification", "message": message})
     return {"package": package.serialize()}
   finally:
     session.close()
@@ -698,6 +710,11 @@ async def delete_package(request:Request) -> dict:
     
     delete(session, package)
     saveLog(session, user, "D", "packages", package.id) # type:ignore
+
+    message = "Your Package has been deleted with ID #"+str(package.id)
+    newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
+    save(session, newNotifiy)
+    await connectionManager.send_message_to_client_id({"type":"notification", "message": message}, user.id) # type:ignore
     return {"message": "Package with ID# {} deleted".format(data["id"])}
   finally:
     session.close()

@@ -1,35 +1,85 @@
 import { ScrollView, Text, TextInput, View, StyleSheet } from 'react-native';
 import NavBar from '../components/navbar';
 import { textColor } from '../config';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/auth';
 import { navigate } from '../utils/navigation';
+import { LoadingContext } from '../context/loading';
+import { makeRequest } from '../utils/request';
 
 function Schedule() {
-  const { user } = useContext(AuthContext)
+  const [routes, setRoutes] = useState<Array<any>>([])
+  const [stops, setStops] = useState<Array<any>>([])
+  const [buses, setBuses] = useState<Array<any>>([])
+  const [search, setSearch] = useState("")
+  const { session_id, user } = useContext(AuthContext)
+  const { setLoading } = useContext(LoadingContext)
+  const loadData = async () => {
+    setLoading(true)
+    await makeRequest(
+      "tracking/routes/",
+      "GET",
+      session_id,
+      null,
+      (data:{routes:Array<object>}) => setRoutes(data.routes),
+      null
+    )
+    await makeRequest(
+      "tracking/buses/",
+      "GET",
+      session_id,
+      null,
+      (data:{buses:Array<object>}) => setBuses(data.buses),
+      null
+    )
+    await makeRequest(
+      "tracking/stops/",
+      "GET",
+      session_id,
+      null,
+      (data:{stops:Array<object>}) => setStops(data.stops),
+      null
+    )
+    setLoading(false)
+  }
   useEffect(() => {
     if (user === null){
       navigate("Login")
     } else if (user.reset_required) {
       navigate("Password")
     }
+    loadData()
   }, [])
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <TextInput style={styles.input} placeholderTextColor={"#00000077"} placeholder="Search bus or route..." />
-        <View style={styles.card}>
-          <Text style={styles.routeId}>LED-10-7958</Text>
+        <TextInput
+          style={styles.input}
+          value={search}
+          onChange={(e) => setSearch(e.nativeEvent.text)}
+          placeholderTextColor={"#00000077"}
+          placeholder="Search bus or route..." />
+        {routes.filter(route => {
+          const busLicense = buses.find(bus => bus.id === route.bus)?.license || "";
+          const departureName = stops.find(stop => stop.id === route.departure)?.name || "";
+          const destinationName = stops.find(stop => stop.id === route.destination)?.name || "";
+          const searchLower = search.toLowerCase();
+          return search === "" ||
+            busLicense.toLowerCase().includes(searchLower) ||
+            departureName.toLowerCase().includes(searchLower) ||
+            destinationName.toLowerCase().includes(searchLower);
+        }).map(route => (<View style={styles.card}>
+          <Text style={styles.routeId}>{buses.find(bus => bus.id === route.bus)?.license}</Text>
           <View style={styles.row}>
             <Text style={styles.label}>Departure</Text>
-            <Text style={styles.value}>Stop 1</Text>
+            <Text style={styles.value}>{stops.find(stop => stop.id === route.departure)?.name}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Arrival</Text>
-            <Text style={styles.value}>Stop 2</Text>
+            <Text style={styles.label}>Destination</Text>
+            <Text style={styles.value}>{stops.find(stop => stop.id === route.destination)?.name}</Text>
           </View>
-          <Text style={styles.time}>10:00 pm</Text>
-        </View>
+          <Text style={styles.time}>{route.time}</Text>
+        </View>))}
       </ScrollView>
       <NavBar active={4} />
     </View>

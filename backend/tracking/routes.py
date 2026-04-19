@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Request, status
-from tracking.models import Bus, Location, Stop
+from tracking.models import Bus, Route, Stop
 from obmms.database import get_session
 from auth.helper import authenticate, authorize, require_auth
 from tracking.helper import getBuses, getLocation
@@ -18,7 +18,8 @@ def get_buses(request: Request):
     if user is None:
       raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
     if not authorize(user, session, ["buses", "routes", "location"], readonly=True):
-      raise HTTPException(status.HTTP_403_FORBIDDEN, "Permission Denied")
+      if not activePackage(session, user):
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Permission Denied")
     buses = session.query(Bus).all()
     return {"buses": [{"id": bus.id, "license": bus.license, "location": bus.location} for bus in buses ]}
   finally:
@@ -59,7 +60,7 @@ def get_stops(request: Request):
     user = authenticate(request, session)
     if user is None:
       raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
-    if not authorize(user, session, ["stops", "routes"], readonly=True):
+    if not authorize(user, session, ["stops", "routes", "location"], readonly=True):
       if not activePackage(session, user):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Permission Denied")
     stops = session.query(Stop).filter(Stop.active == True).all()
@@ -82,6 +83,23 @@ def get_location(request: Request):
     return {
       "buses": [bus.serialize() for bus in buses],
       "location": [loc.serialize() for loc in location]
+    }
+  finally:
+    session.close()
+  
+@router.get("/routes/")
+def get_routes(request: Request):
+  session = get_session()
+  try:
+    user = authenticate(request, session)
+    if user is None:
+      raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
+    if not authorize(user, session, ["routes", "location"], readonly=True):
+      if not activePackage(session, user):
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Permission Denied")
+    routes = session.query(Route).filter(Route.active == True).all()
+    return {
+      "routes": [route.serialize() for route in routes]
     }
   finally:
     session.close()

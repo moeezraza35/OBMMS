@@ -214,6 +214,9 @@ async def add_bus(request:Request) -> dict:
       raise HTTPException(status.HTTP_400_BAD_REQUEST, "Bus capacity not given")
     bus.capacity = data["capacity"]
 
+    if "driver" in data and data["driver"] != "" and data["driver"] != 0:
+      bus.driver = data["driver"]
+
     save(session, bus)
     saveLog(session, user, "C", "buses", bus.id) # type:ignore
     return {"bus": bus.serialize()}

@@ -120,7 +120,7 @@ function Home() {
   const LoadData = async () => {
     setLoading(true)
     await makeRequest(
-      "tracking/buses/my",
+      "tracking/buses/my/",
       "GET",
       session_id,
       null,

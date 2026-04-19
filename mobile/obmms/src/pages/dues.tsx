@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import { accentColor } from '../config';
 import NavBar from '../components/navbar';
 import { navigate } from '../utils/navigation';
 import { AuthContext } from '../context/auth';
+import { LoadingContext } from '../context/loading';
+import { makeRequest } from '../utils/request';
 
 // Types for package and transaction data
 interface PackageItem {
@@ -27,27 +29,38 @@ interface TransactionItem {
 }
 
 function Dues() {
-  const { user } = useContext(AuthContext)
+  const [packages, setPackages] = useState<Array<any>>([])
+  const [history, setHistory] = useState<Array<any>>([])
+  const { session_id, user } = useContext(AuthContext)
+  const { setLoading } = useContext(LoadingContext)
+  const loadData = async () => {
+    setLoading(true)
+    await makeRequest(
+      "accounts/packages",
+      "GET",
+      session_id,
+      null,
+      (data:{packages:Array<any>}) => {setPackages(data.packages)},
+      null
+    )
+    await makeRequest(
+      "accounts/history",
+      "GET",
+      session_id,
+      null,
+      (data:{history:Array<any>}) => {setHistory(data.history)},
+      null
+    )
+    setLoading(false)
+  }
   useEffect(() => {
     if (user === null){
       navigate("Login")
     } else if (user.reset_required) {
       navigate("Password")
     }
+    loadData()
   }, [])
-  // Demo active packages data
-  const activePackages: PackageItem[] = [
-    {
-      id: 'PKG_APR2026',
-      name: 'April 2026',
-      amount: 3000,
-    },
-    {
-      id: 'PKG_MAY2026',
-      name: 'May 2026',
-      amount: 3000,
-    },
-  ];
 
   // Demo transaction history (past payments)
   const transactionHistory: TransactionItem[] = [
@@ -99,14 +112,14 @@ function Dues() {
         <Text style={styles.headerTitle}>Active Packages</Text>
 
         <View style={styles.packagesContainer}>
-          {activePackages.map((pkg) => (
+          {packages.map((pkg) => (
             <View key={pkg.id} style={styles.packageCard}>
               {/* Package ID */}
               <Text style={styles.packageId}>ID: {pkg.id}</Text>
               {/* Package Name (Month Year) */}
-              <Text style={styles.packageName}>{pkg.name}</Text>
+              <Text style={styles.packageName}>{ ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][pkg.month-1] } { pkg.year}</Text>
               {/* Amount in large font */}
-              <Text style={styles.packageAmount}>{formatCurrency(pkg.amount)}</Text>
+              <Text style={styles.packageAmount}>{formatCurrency(pkg.price)}</Text>
             </View>
           ))}
         </View>
@@ -120,7 +133,7 @@ function Dues() {
             </View>
           ) : (
             <View style={styles.historyList}>
-              {transactionHistory.map((transaction) => (
+              {history.map((transaction) => (
                 <View key={transaction.id} style={styles.historyItem}>
                   {/* Date and Time row */}
                   <View style={styles.historyRow}>
@@ -137,7 +150,7 @@ function Dues() {
                       💰 {formatCurrency(transaction.amount)}
                     </Text>
                     <Text style={styles.historyPackageId}>
-                      🆔 {transaction.packageId}
+                      🆔 {transaction.package}
                     </Text>
                   </View>
                 </View>

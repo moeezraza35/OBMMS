@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import NavBar from '../components/navbar';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/auth';
 import { navigate } from '../utils/navigation';
 import { accentColor, backgroupColor, textColor } from '../config';
@@ -8,14 +8,28 @@ import { LoadingContext } from '../context/loading';
 import { makeRequest } from '../utils/request';
 
 function Profile() {
-  const { session_id, user, permissions, require_auth } = useContext(AuthContext)
+  const [group, setGroup] = useState("")
+  const { session_id, user, require_auth } = useContext(AuthContext)
   const { setLoading } = useContext(LoadingContext)
+  const loadData = async () => {
+    setLoading(true)
+    await makeRequest(
+      "auth/group/",
+      "GET",
+      session_id,
+      null,
+      (data:{group:string}) => setGroup(data.group),
+      null
+    )
+    setLoading(false)
+  }
   useEffect(() => {
     if (user === null){
       navigate("Login")
     } else if (user.reset_required) {
       navigate("Password")
     }
+    loadData()
   }, [])
   if(user)
   return (
@@ -57,7 +71,7 @@ function Profile() {
           
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Group:</Text>
-            <Text style={styles.infoValue}>{user.is_admin?"Admin":JSON.stringify(permissions)}</Text>
+            <Text style={styles.infoValue}>{group}</Text>
           </View>
         </View>
 

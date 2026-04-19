@@ -9,6 +9,8 @@ async function makeRequest(url:string, method:"POST"|"GET", session_id:string, b
         case 401:
           navigate("Login")
           break
+        case 403:
+          break
         case 500:
           Alert.alert("Internal Server Error", "Please try again later.", 
             [

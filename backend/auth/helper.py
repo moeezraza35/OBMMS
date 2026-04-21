@@ -53,7 +53,7 @@ def authenticate(request:Request, session: Session) -> None | Users:
   return user
 
 def getPermissions(user:Users, session:Session) -> dict:
-  if user.is_admin is True:
+  if user.is_admin is True or user.group is None or user.group is 0:
     return {}
   group = session.get(Group, user.group)
   try:

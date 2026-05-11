@@ -105,7 +105,7 @@ async def change_password(request:Request) -> dict:
 async def get_groups(request:Request) -> dict:
   session = get_session()
   try:
-    user = require_auth(request, session, "user")
+    user = require_auth(request, session, "users")
     result = getGroups(session)
     for group in result["groups"]:
       del group["permissions"]
@@ -141,7 +141,7 @@ async def get_group(request:Request) -> dict:
 async def get_drivers(request:Request) -> dict:
   session = get_session()
   try:
-    user = require_auth(request, session, "bus")
+    user = require_auth(request, session, "buses")
     groups = session.query(Group).all()
     allowed_groups = []
     for group in groups:

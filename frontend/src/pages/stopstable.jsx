@@ -37,7 +37,7 @@ function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=f
         ))}
         <LocationPicker position={formData.latitudes && formData.longitudes?[formData.latitudes,formData.longitudes]:[]} setPosition={setPosition}/>
       </Location>
-      <div className='flex w-full py-2'>
+      {user?.is_admin || permissions.stops === 'w'?<div className='flex w-full py-2'>
         <div className='horizontal-slider'>{rows.map(item => (
           <Horizontal_Card_Content key={item.id}>
             <h3>{item.name}</h3>
@@ -77,7 +77,7 @@ function StopsTable({session_id="", user=null, permissions=Object(), checkFlag=f
           }}>
           <img src={static_dir+"images/icons/add.svg"}/>
         </button>
-      </div>
+      </div>:""}
     </>
   )
 }

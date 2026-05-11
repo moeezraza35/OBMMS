@@ -35,11 +35,11 @@ function HistoryTable({session_id="", user=null, permissions=Object(), checkFlag
               <td>{row.amount}</td>
               <td>{row.date}</td>
               <td>{row.time}</td>
-              <td>
+              {user?.is_admin || permissions.history === 'w'?<td>
                 <button onClick={() => deleteHistory({id: row.id}, session_id, () => {
                   setRows(prev => prev.filter(r => r.id !== row.id))
                 }, null, navigate)} className="del-btn"><img src={static_dir+"images/icons/delete.svg"} /></button>
-              </td>
+              </td>:""}
             </tr>
           ))}}/>
     </>

@@ -61,7 +61,7 @@ function PackagesTable({session_id="", user=null, permissions=Object(), checkFla
               <td>{row.month}</td>
               <td>{row.year}</td>
               <td>{row.active?'🟢':'🔴'}</td>
-              {user?.is_admin || permissions.users==='w'?<td>
+              {user?.is_admin || permissions.packages==='w'?<td>
                 <button className="edit-btn" onClick={() => {
                   setMode(row.id)
                   setData({

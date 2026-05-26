@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.exc import IntegrityError, OperationalError
 from obmms.models import *
@@ -33,6 +34,7 @@ class OBMMS:
     Tracking(self.app)
     Accounts(self.app)
     self.app.include_router(router)
+    self.app.mount("/", StaticFiles(directory="static"), name="static")
 
   def create_tables(self) -> bool:
     try:

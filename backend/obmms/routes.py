@@ -1,13 +1,30 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket
+from fastapi.responses import HTMLResponse, FileResponse
 from mr_wshandler import WSHandler, connectionManager
-from tracking.models import Bus
 from auth.helper import check_session_id
 from obmms.database import get_session
 from tracking.helper import handleTracking, handleBusStop
-import json
+import os
 
 router = APIRouter(prefix="")
 ws = WSHandler()
+
+def read_index():
+  file = open("./templates/index.html", "rt")
+  html = file.read()
+  file.close()
+  return html
+
+@router.get("/")
+async def index():
+  return HTMLResponse(read_index())
+
+@router.get("/{full_path:path}")
+async def route(full_path:str):
+  file_path = os.path.join("./static", full_path)
+  if os.path.isfile(file_path):
+    return FileResponse(file_path)
+  return HTMLResponse(read_index())
 
 @router.websocket("/ws")
 @ws.endpoint(mode="dict")

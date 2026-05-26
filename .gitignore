@@ -1,6 +1,8 @@
 # Python
 venv/
 __pycache__/
+templates/
+static/
 
 # OSX
 .DS_Store

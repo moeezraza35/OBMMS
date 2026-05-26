@@ -37,10 +37,10 @@ function Header(){
       </div>
       <nav className={nav}>
         <ul>
-          <li><Link to={frontend+"/"}>Home</Link></li>
-          <li><Link to={frontend+"/#aboutus"}>About Us</Link></li>
-          <li><Link to={frontend+"/#objectives"}>Objectives</Link></li>
-          <li><Link to={frontend+"/#ourwork"}>Our Work</Link></li>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/#aboutus">About Us</Link></li>
+          <li><Link to="/#objectives">Objectives</Link></li>
+          <li><Link to="/#ourwork">Our Work</Link></li>
           <li><Link to="#contact">Contact</Link></li>
         </ul>
       </nav>

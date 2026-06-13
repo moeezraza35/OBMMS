@@ -1,0 +1,14 @@
+[Unit]
+Description=OBMMS
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/OBMMS
+Environment="PATH=/var/www/OBMMS/venv/bin"
+ExecStart=/var/www/fastapi_app/venv/bin/python main.py runserver
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -3,7 +3,7 @@ import { useContext, useEffect, useState, useRef } from 'react';
 import { WebView } from 'react-native-webview';
 import { MRWSHandlerContext } from "mr-wshandler-react";
 import { WebSocketContext } from '../context/websocket';
-import { intervals } from '../config';
+import { frontend, intervals } from '../config';
 import Geolocation from "react-native-geolocation-service";
 import NavBar from "../components/navbar";
 import DropDown from '../components/dropdown';
@@ -227,7 +227,7 @@ function Home() {
       <View style={{ padding: 10, flex: 1 }}>
         <View style={styles.webviewContainer}>
           <WebView
-            source={{ uri: 'http://localhost:3000/map/' }}
+            source={{ uri: frontend+'/map/' }}
             style={{ flex: 1 }}
             scrollEnabled={false}
           />

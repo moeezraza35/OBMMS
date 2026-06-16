@@ -2,7 +2,7 @@ import makeRequest from "./request"
 
 async function getHistory(session_id="", callback = () => {}, errorCase=null, navigate=null){
   await makeRequest(
-    "admin/history/all",
+    "admin/history/all/",
     "GET",
     session_id,
     null,
@@ -13,7 +13,7 @@ async function getHistory(session_id="", callback = () => {}, errorCase=null, na
 }
 async function deleteHistory(formData={}, session_id="", callback = () => {}, errorCase=null, navigate=null){
   await makeRequest(
-    "admin/history/delete",
+    "admin/history/delete/",
     "POST",
     session_id,
     formData,

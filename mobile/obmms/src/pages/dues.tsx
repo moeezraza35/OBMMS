@@ -36,7 +36,7 @@ function Dues() {
   const loadData = async () => {
     setLoading(true)
     await makeRequest(
-      "accounts/packages",
+      "accounts/packages/",
       "GET",
       session_id,
       null,
@@ -44,7 +44,7 @@ function Dues() {
       null
     )
     await makeRequest(
-      "accounts/history",
+      "accounts/history/",
       "GET",
       session_id,
       null,
@@ -61,31 +61,6 @@ function Dues() {
     }
     loadData()
   }, [])
-
-  // Demo transaction history (past payments)
-  const transactionHistory: TransactionItem[] = [
-    {
-      id: 'txn_001',
-      date: '2026-03-15',
-      time: '14:30',
-      amount: 3000,
-      packageId: 'PKG_MAR2026',
-    },
-    {
-      id: 'txn_002',
-      date: '2026-02-20',
-      time: '11:15',
-      amount: 3000,
-      packageId: 'PKG_FEB2026',
-    },
-    {
-      id: 'txn_003',
-      date: '2026-01-10',
-      time: '09:45',
-      amount: 3000,
-      packageId: 'PKG_JAN2026',
-    },
-  ];
 
   // Helper to format currency
   const formatCurrency = (amount: number): string => {
@@ -127,7 +102,7 @@ function Dues() {
         {/* Transaction History Section */}
         <View style={styles.section}>
           <Text style={styles.headerTitle}>Payment History</Text>
-          {transactionHistory.length === 0 ? (
+          {history.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No transactions found</Text>
             </View>

@@ -37,8 +37,29 @@ function WebSocketProvider({ children }) {
 
     ws.onmessage = (event) => {
       const received = JSON.parse(event.data)
+
       if (received?.type === "notification") {
-        // Handle notification
+        const message = received?.message || "New notification"
+
+        if ("Notification" in window) {
+          const permission = Notification.permission
+
+          if (permission === "granted") {
+            new Notification("OBMMS", {
+              body: message,
+              icon: "/favicon.png"
+            })
+          } else if (permission === "default") {
+            Notification.requestPermission().then((result) => {
+              if (result === "granted") {
+                new Notification("OBMMS", {
+                  body: message,
+                  icon: "/favicon.png"
+                })
+              }
+            })
+          }
+        }
       } else {
         setData(received)
         // If you need to call a dynamic callback, use a ref as before

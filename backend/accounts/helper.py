@@ -4,7 +4,7 @@ from accounts.models import History, Package
 from auth.models import Users
 from admin.helper import save
 
-def saveHistory(session:Session, package:int, amount:float, add=True):
+def saveHistory(session:Session, package:int, user:int, amount:float, add=True):
   history = None
   if not add:
     history = session.query(History).filter(History.package == package).first()
@@ -14,6 +14,7 @@ def saveHistory(session:Session, package:int, amount:float, add=True):
       return
   history = History(
     package=package,
+    user=user,
     amount=amount,
     date=date.today(),
     time=datetime.now().time(),

@@ -1,18 +1,20 @@
+import os
+
 # Development Host Settings
-HOST = "127.0.0.1"
-PORT = 8000
-RELOAD = True
+HOST = os.getenv("HOST", "0.0.0.0")
+PORT = int(os.getenv("PORT", "8000"))
+RELOAD = os.getenv("RELOAD", "True").lower() == "true"
 
 # Session Settings
-SECRET_KEY = "63856-OBMMS$66688-&-66566"
+SECRET_KEY = os.getenv("SECRET_KEY")
 SESSION_COOKIE = "session_id"
 SAME_SITE = "lax"
 HTTPS_ONLY = False # Set to True if using HTTPS
 
 # JWT Settings
-JWT_ALGORITHM = "HS256"
-JWT_EXIPRE = False
-JWT_EXP_TIME = 30   # Days
+JWT_ALGORITHM = os.getenv("HOST")
+JWT_EXIPRE = os.getenv("JWT_EXPIRE", "False").lower() == "true"
+JWT_EXP_TIME = int(os.getenv("JWT_EXP_TIME", "30"))
 
 # Encryption settings
 SCHEMES = ["bcrypt"]
@@ -25,18 +27,14 @@ ALLOW_HEADERS = ['*']
 ALLOW_METHODS = ['*']
 
 # Database Settings
-DB_DIALECT = "mysql"
-DB_HOST = "127.0.0.1"
-DB_PORT = 3306
-DB_NAME = "test"
-DB_DRIVER = "pymysql"
-DB_USERNAME = "root"
-DB_PASSWORD = ""
-DB_ECHO = False
+DB_DIALECT  = os.getenv("DB_DIALECT", "mysql")
+DB_HOST     = os.getenv("DB_HOST", "127.0.0.1")   # fallback for local host runs
+DB_PORT     = int(os.getenv("DB_PORT", "3306"))
+DB_NAME     = os.getenv("DB_NAME", "obmms")
+DB_DRIVER   = os.getenv("DB_DRIVER", "pymysql")
+DB_USERNAME = os.getenv("DB_USERNAME", "root")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_ECHO     = os.getenv("DB_ECHO", "False").lower() == "true"
 
 # Models settings
 MODELS = ["users", "group", "buses", "location", "stops", "routes", "packages", "history"]
-
-# Email Settings
-EMAIL = "moeezrazaseven@gmail.com"
-EMAIL_PASSWORD = ""

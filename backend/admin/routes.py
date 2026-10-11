@@ -352,12 +352,12 @@ async def add_package(request: Request) -> dict:
 
     save(session, package)
     saveLog(session, user, "C", "packages", package.id) # type:ignore
-    saveHistory(session, package.id, data["price"]) # type:ignore
+    saveHistory(session, package.id, data["user"], data["price"]) # type:ignore
 
     message = "Your Package has been activated with ID #"+str(package.id)
-    newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
-    save(session, newNotifiy)
-    await connectionManager.send_message_to_client_id({"type":"notification", "message": message}, user.id) # type:ignore
+    # newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
+    # save(session, newNotifiy)
+    await connectionManager.send_message_to_client_id({"type":"notification", "message": message}, data["user"])
     return {"package": package.serialize()}
   finally:
     session.close()
@@ -532,10 +532,10 @@ async def update_package(request: Request) -> dict:
   try:
     user = require_auth(request, session, "packages")
     if not "id" in data or data["id"] == "":
-      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Route ID not given")
+      raise HTTPException(status.HTTP_400_BAD_REQUEST, "Package ID not given")
     package = session.get(Package, data["id"])
     if package is None:
-      raise HTTPException(status.HTTP_404_NOT_FOUND, "Route with ID# {} not found".format(data["id"]))
+      raise HTTPException(status.HTTP_404_NOT_FOUND, "Package with ID# {} not found".format(data["id"]))
     
     if "user" in data and data["user"] != "":
       package_user = session.get(Users, data["user"])
@@ -562,9 +562,9 @@ async def update_package(request: Request) -> dict:
     saveHistory(session, package.id, data["price"], False) # type:ignore
     
     message = "Your Package has been Updated with ID #"+str(package.id)
-    newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
-    save(session, newNotifiy)
-    await connectionManager.broadcast({"type":"notification", "message": message})
+    # newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
+    # save(session, newNotifiy)
+    await connectionManager.send_message_to_client_id({"type":"notification", "message": message}, data["user"])
     return {"package": package.serialize()}
   finally:
     session.close()
@@ -712,9 +712,9 @@ async def delete_package(request:Request) -> dict:
     saveLog(session, user, "D", "packages", package.id) # type:ignore
 
     message = "Your Package has been deleted with ID #"+str(package.id)
-    newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
-    save(session, newNotifiy)
-    await connectionManager.send_message_to_client_id({"type":"notification", "message": message}, user.id) # type:ignore
+    # newNotifiy = Notifications(user=user.id, message=message, date=date.today(), time=datetime.now().time())
+    # save(session, newNotifiy)
+    await connectionManager.send_message_to_client_id({"type":"notification", "message": message}, package.user) # type:ignore
     return {"message": "Package with ID# {} deleted".format(data["id"])}
   finally:
     session.close()

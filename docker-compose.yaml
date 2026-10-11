@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: obmms_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env
+    # On Linux, this line is required for host.docker.internal to resolve.
+    # On Windows/Mac it's harmless and Docker already supports it.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: python main.py runserver
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: obmms_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    # env_file:
+    #   - ./frontend/.env
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - backend
+    command: npm run dev

@@ -12,4 +12,8 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  watch: {
+    usePolling: true,
+    interval: 500,
+  },
 })

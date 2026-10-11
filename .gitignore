@@ -89,7 +89,6 @@ dist-ssr
 !.yarn/sdks
 !.yarn/versions
 
-
 # Build Files
 mobile/obmms/android/app/src/main/assets/
 mobile/obmms/android/app/src/main/res/drawable-mdpi/
@@ -97,3 +96,6 @@ mobile/obmms/android/app/src/main/res/drawable-xhdpi/
 mobile/obmms/android/app/src/main/res/drawable-xxhdpi/
 mobile/obmms/android/app/src/main/res/drawable-xxxhdpi/
 mobile/obmms/android/app/src/main/res/raw/
+
+# Environment
+.env

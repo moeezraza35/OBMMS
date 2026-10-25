@@ -38,3 +38,11 @@ DB_ECHO     = os.getenv("DB_ECHO", "False").lower() == "true"
 
 # Models settings
 MODELS = ["users", "group", "buses", "location", "stops", "routes", "packages", "history"]
+
+# Version & Auto-Update Settings
+VERSION = os.getenv("VERSION", "0.0.2")
+AUTO_UPDATE = os.getenv("AUTO_UPDATE", "True").lower() == "true"
+GITHUB_REPO = os.getenv("GITHUB_REPO", "moeezraza35/OBMMS")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", None)
+UPDATE_CHECK_INTERVAL = int(os.getenv("UPDATE_CHECK_INTERVAL", "86400")) # in seconds (default 24h)
+

@@ -5,3 +5,5 @@ export const intervals = 1000
 export const backgroupColor = "white"
 export const textColor = "black"
 export const accentColor = "#049888"
+export const version = "0.0.1"
+export const github_repo = "moeezraza35/OBMMS"

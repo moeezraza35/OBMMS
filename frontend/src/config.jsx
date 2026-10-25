@@ -3,3 +3,5 @@ export const frontend = "http://localhost:3000"
 export const api_prefix = "/api/"
 export const static_dir = "/"
 export const debug = true
+export const version = "0.0.2"
+export const github_repo = "moeezraza35/OBMMS"

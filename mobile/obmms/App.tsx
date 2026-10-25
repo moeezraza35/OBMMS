@@ -1,4 +1,5 @@
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React, { useEffect } from 'react';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {createStaticNavigation} from '@react-navigation/native';
 import { navigationRef } from './src/utils/navigation';
@@ -15,6 +16,7 @@ import Password from './src/pages/password';
 import { WebSocketProvider } from './src/context/websocket';
 import Schedule from './src/pages/schedule';
 import { NotificationProvider } from './src/context/notification';
+import { checkMobileUpdate } from './src/utils/updateManager';
 
 const headerOpt = {
   header: () => <Header/>
@@ -57,6 +59,11 @@ const Navigation = createStaticNavigation(RootStack);
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
+
+  useEffect(() => {
+    // Check GitHub Releases for mobile updates on app launch
+    checkMobileUpdate(true);
+  }, []);
 
   return (
     <SafeAreaProvider>

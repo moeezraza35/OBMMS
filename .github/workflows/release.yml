@@ -1,0 +1,138 @@
+name: Monorepo Release & Asset Publisher
+
+on:
+  push:
+    tags:
+      - 'backend-*'
+      - 'frontend-*'
+      - 'mobile-*'
+
+permissions:
+  contents: write
+
+jobs:
+  # ==========================================
+  # Backend Release Job
+  # ==========================================
+  release-backend:
+    if: startsWith(github.ref, 'refs/tags/backend-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract Tag Name
+        id: tag_info
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create Backend Zip Archive
+        run: |
+          mkdir -p release_assets
+          cd backend
+          zip -r ../release_assets/backend.zip . -x "venv/*" "__pycache__/*" "*.env*" ".git/*" "*.sqlite*" "*.db"
+          cd ..
+
+      - name: Create GitHub Release and Upload Backend Zip
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag_info.outputs.TAG_NAME }}
+          name: "Backend Release ${{ steps.tag_info.outputs.TAG_NAME }}"
+          files: release_assets/backend.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ==========================================
+  # Frontend Release Job
+  # ==========================================
+  release-frontend:
+    if: startsWith(github.ref, 'refs/tags/frontend-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Extract Tag Name
+        id: tag_info
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Install & Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Package Frontend Dist
+        run: |
+          mkdir -p release_assets
+          cd frontend/dist
+          zip -r ../../release_assets/frontend-dist.zip .
+          cd ../..
+
+      - name: Create GitHub Release and Upload Frontend Bundle
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag_info.outputs.TAG_NAME }}
+          name: "Frontend Release ${{ steps.tag_info.outputs.TAG_NAME }}"
+          files: release_assets/frontend-dist.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ==========================================
+  # Mobile Release Job (Android APK)
+  # ==========================================
+  release-mobile:
+    if: startsWith(github.ref, 'refs/tags/mobile-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Extract Tag Name
+        id: tag_info
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Install Dependencies
+        working-directory: ./mobile/obmms
+        run: npm ci
+
+      - name: Build Android Release APK
+        working-directory: ./mobile/obmms/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon
+
+      - name: Prepare APK Asset
+        run: |
+          mkdir -p release_assets
+          cp mobile/obmms/android/app/build/outputs/apk/release/app-release.apk release_assets/obmms.apk
+
+      - name: Create GitHub Release and Upload APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag_info.outputs.TAG_NAME }}
+          name: "Mobile Release ${{ steps.tag_info.outputs.TAG_NAME }}"
+          files: release_assets/obmms.apk
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

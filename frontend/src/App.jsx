@@ -8,6 +8,7 @@ import Password from "./pages/password"
 import Profile from "./pages/profile"
 import Header from "./components/header"
 import Footer from "./components/footer"
+import UpdateNotifier from "./components/UpdateNotifier"
 import "./assets/App.css"
 import Map from "./pages/map"
 import { WebSocketProvider } from "./context/websocket"
@@ -28,6 +29,7 @@ function App() {
       <LoadinProvider>
         <AuthProvider>
           <WebSocketProvider>
+            <UpdateNotifier />
             <Routes>
               <Route path='' element={<Wrapper><Home/></Wrapper>}/>
               <Route path="/login/" element={<Wrapper><Login/></Wrapper>}/>

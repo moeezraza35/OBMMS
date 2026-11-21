@@ -1,4 +1,7 @@
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # Development Host Settings
 HOST = os.getenv("HOST", "0.0.0.0")
@@ -12,7 +15,7 @@ SAME_SITE = "lax"
 HTTPS_ONLY = False # Set to True if using HTTPS
 
 # JWT Settings
-JWT_ALGORITHM = os.getenv("HOST")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 JWT_EXIPRE = os.getenv("JWT_EXPIRE", "False").lower() == "true"
 JWT_EXP_TIME = int(os.getenv("JWT_EXP_TIME", "30"))
 
@@ -40,7 +43,7 @@ DB_ECHO     = os.getenv("DB_ECHO", "False").lower() == "true"
 MODELS = ["users", "group", "buses", "location", "stops", "routes", "packages", "history"]
 
 # Version & Auto-Update Settings
-VERSION = os.getenv("VERSION", "0.0.2")
+VERSION = os.getenv("0.3.0")
 AUTO_UPDATE = os.getenv("AUTO_UPDATE", "True").lower() == "true"
 GITHUB_REPO = os.getenv("GITHUB_REPO", "moeezraza35/OBMMS")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", None)

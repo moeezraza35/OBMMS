@@ -15,15 +15,18 @@ from obmms import settings
 
 logger = logging.getLogger("obmms.updater")
 
-def parse_version_tuple(tag: str) -> Tuple[int, ...]:
+def parse_version_tuple(tag: Any) -> Tuple[int, ...]:
     """
     Extracts numerical version tuple from tag string.
     e.g. 'backend-v0.0.2' -> (0, 0, 2)
          'backend-1.2.0'  -> (1, 2, 0)
          'v0.0.1'         -> (0, 0, 1)
     """
+    # GitHub release payloads may contain null/non-string tag values.
+    safe_tag = tag.strip() if isinstance(tag, str) else ""
+
     # Remove module prefix (e.g., 'backend-v', 'backend-', 'v')
-    cleaned = re.sub(r'^[a-zA-Z_\-]+v?', '', tag.strip())
+    cleaned = re.sub(r'^[a-zA-Z_\-]+v?', '', safe_tag)
     match = re.search(r'(\d+(?:\.\d+)+)', cleaned)
     if not match:
         return (0, 0, 0)
@@ -316,6 +319,9 @@ async def auto_update_loop(app: Any):
                 update_info = check_for_backend_update()
                 if update_info.get("has_update"):
                     release = update_info.get("release")
+                    if not isinstance(release, dict):
+                        logger.error("Update info contained an invalid release payload; skipping auto-update.")
+                        continue
                     logger.info(f"New backend release found: {release.get('tag_name')}! Auto-updating...")
                     success = apply_backend_update(release)
                     if success:
@@ -402,6 +408,12 @@ async def trigger_backend_update(background_tasks: BackgroundTasks):
         }
 
     release = update_info.get("release")
+    if not isinstance(release, dict):
+        return {
+            "status": "error",
+            "message": "Update information is invalid. Please check for updates again.",
+            "has_update": False
+        }
 
     def run_update_task():
         if apply_backend_update(release):

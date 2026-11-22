@@ -11,7 +11,7 @@ import urllib.error
 import zipfile
 from pathlib import Path
 from typing import Optional, Dict, Any, Tuple
-from obmms import settings
+from obmms.settings import AUTO_UPDATE, GITHUB_REPO, GITHUB_TOKEN, VERSION, RELOAD, UPDATE_CHECK_INTERVAL
 
 logger = logging.getLogger("obmms.updater")
 
@@ -61,13 +61,13 @@ def fetch_github_releases(repo: Optional[str] = None, token: Optional[str] = Non
     """
     Fetches all releases for the specified GitHub repository.
     """
-    target_repo = repo or settings.GITHUB_REPO
+    target_repo = repo or GITHUB_REPO
     url = f"https://api.github.com/repos/{target_repo}/releases"
     headers = {
         "User-Agent": "OBMMS-Updater",
         "Accept": "application/vnd.github.v3+json"
     }
-    github_token = token or settings.GITHUB_TOKEN
+    github_token = token or GITHUB_TOKEN
     if github_token:
         headers["Authorization"] = f"Bearer {github_token}"
 
@@ -106,23 +106,22 @@ def check_for_backend_update() -> Dict[str, Any]:
     """
     Checks if a newer backend version is available on GitHub Releases.
     """
-    current_ver = getattr(settings, "VERSION", "0.0.1")
     latest_release = get_latest_backend_release()
 
     if not latest_release:
         return {
             "has_update": False,
-            "current_version": current_ver,
+            "current_version": VERSION,
             "latest_version": None,
             "release": None
         }
 
     latest_tag = latest_release.get("tag_name", "")
-    has_update = compare_versions(latest_tag, current_ver) > 0
+    has_update = compare_versions(latest_tag, VERSION) > 0
 
     return {
         "has_update": has_update,
-        "current_version": current_ver,
+        "current_version": VERSION,
         "latest_version": latest_tag,
         "release": latest_release
     }
@@ -135,7 +134,7 @@ def download_file(url: str, dest_path: str, token: Optional[str] = None):
         "User-Agent": "OBMMS-Updater",
         "Accept": "application/octet-stream"
     }
-    github_token = token or settings.GITHUB_TOKEN
+    github_token = token or GITHUB_TOKEN
     if github_token:
         headers["Authorization"] = f"Bearer {github_token}"
 
@@ -298,7 +297,7 @@ def trigger_restart():
 
     # If running as standalone script or container without auto-reload,
     # we can restart using execv
-    if not getattr(settings, "RELOAD", True):
+    if RELOAD:
         try:
             logger.info("Restarting process with os.execv...")
             os.execv(sys.executable, [sys.executable] + sys.argv)
@@ -314,7 +313,7 @@ async def auto_update_loop(app: Any):
 
     while True:
         try:
-            if getattr(app.settings, "AUTO_UPDATE", False):
+            if AUTO_UPDATE:
                 logger.info("Checking for backend updates on GitHub Releases...")
                 update_info = check_for_backend_update()
                 if update_info.get("has_update"):
@@ -333,8 +332,7 @@ async def auto_update_loop(app: Any):
             logger.error(f"Error in auto-update worker: {e}")
 
         # Sleep for the configured interval (default: 86400s / 24h)
-        interval = getattr(settings, "UPDATE_CHECK_INTERVAL", 86400)
-        await asyncio.sleep(interval)
+        await asyncio.sleep(UPDATE_CHECK_INTERVAL)
 
 from fastapi import APIRouter, BackgroundTasks
 
@@ -345,14 +343,13 @@ async def get_system_updates():
     releases = fetch_github_releases()
 
     # Backend
-    backend_current = getattr(settings, "VERSION", "0.0.2")
     backend_releases = [r for r in releases if r.get("tag_name", "").lower().startswith("backend-")]
     latest_backend = None
     has_backend_update = False
     if backend_releases:
         backend_releases.sort(key=lambda r: parse_version_tuple(r.get("tag_name", "")), reverse=True)
         latest_backend = backend_releases[0]
-        has_backend_update = compare_versions(latest_backend.get("tag_name", ""), backend_current) > 0
+        has_backend_update = compare_versions(latest_backend.get("tag_name", ""), VERSION) > 0
 
     # Frontend
     frontend_releases = [r for r in releases if r.get("tag_name", "").lower().startswith("frontend-")]
@@ -369,9 +366,9 @@ async def get_system_updates():
         latest_mobile = mobile_releases[0]
 
     return {
-        "auto_update": getattr(settings, "AUTO_UPDATE", False),
+        "auto_update": AUTO_UPDATE,
         "backend": {
-            "current_version": backend_current,
+            "current_version": VERSION,
             "has_update": has_backend_update,
             "latest_tag": latest_backend.get("tag_name") if latest_backend else None,
             "release_notes": latest_backend.get("body") if latest_backend else None,
@@ -428,6 +425,6 @@ async def trigger_backend_update(background_tasks: BackgroundTasks):
 
 @update_router.post("/auto-update/toggle")
 async def toggle_auto_update(enable: bool):
-    settings.AUTO_UPDATE = enable
-    return {"status": "success", "auto_update": settings.AUTO_UPDATE}
+    AUTO_UPDATE = enable
+    return {"status": "success", "auto_update": AUTO_UPDATE}
 

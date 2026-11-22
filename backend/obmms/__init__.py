@@ -9,8 +9,7 @@ from auth import Auth
 from admin import Admin
 from tracking import Tracking
 from accounts import Accounts
-from obmms.settings import SECRET_KEY, SESSION_COOKIE, SAME_SITE, HTTPS_ONLY, ALLOW_ORIGINS, ALLOW_CREDENTIALS, ALLOW_METHODS, ALLOW_HEADERS
-from obmms import settings
+from obmms.settings import SECRET_KEY, SESSION_COOKIE, SAME_SITE, HTTPS_ONLY, ALLOW_ORIGINS, ALLOW_CREDENTIALS, ALLOW_METHODS, ALLOW_HEADERS, AUTO_UPDATE
 from obmms.updater import auto_update_loop, update_router
 import asyncio
 import sys
@@ -18,7 +17,6 @@ import sys
 class OBMMS:
   def __init__(self) -> None:
     self.app = FastAPI()
-    self.app.settings = settings
     self.app.add_middleware(
       SessionMiddleware,
       secret_key=SECRET_KEY,  # type:ignore
@@ -43,7 +41,7 @@ class OBMMS:
 
     @self.app.on_event("startup")
     async def startup_event():
-      if getattr(self.app.settings, "AUTO_UPDATE", False):
+      if AUTO_UPDATE:
         asyncio.create_task(auto_update_loop(self.app))
 
   def create_tables(self) -> bool:

@@ -10,7 +10,7 @@ from admin import Admin
 from tracking import Tracking
 from accounts import Accounts
 from obmms.settings import SECRET_KEY, SESSION_COOKIE, SAME_SITE, HTTPS_ONLY, ALLOW_ORIGINS, ALLOW_CREDENTIALS, ALLOW_METHODS, ALLOW_HEADERS, AUTO_UPDATE
-from obmms.updater import auto_update_loop, update_router
+from updater import Updater
 import asyncio
 import sys
 
@@ -35,14 +35,10 @@ class OBMMS:
     Admin(self.app)
     Tracking(self.app)
     Accounts(self.app)
-    self.app.include_router(update_router)
+    Updater(self.app)
+
     self.app.include_router(router)
     self.app.mount("/", StaticFiles(directory="static"), name="static")
-
-    @self.app.on_event("startup")
-    async def startup_event():
-      if AUTO_UPDATE:
-        asyncio.create_task(auto_update_loop(self.app))
 
   def create_tables(self) -> bool:
     try:

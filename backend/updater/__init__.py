@@ -8,9 +8,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 from typing import Any, Dict, Optional
-
 from fastapi import FastAPI
-
 from obmms.settings import (
     AUTO_UPDATE,
     GITHUB_REPO,
@@ -19,7 +17,6 @@ from obmms.settings import (
     UPDATE_CHECK_INTERVAL,
     VERSION,
 )
-
 from .helper import (
     clean_version_from_tag,
     compare_versions,
@@ -27,13 +24,14 @@ from .helper import (
     fetch_github_releases,
     filter_releases_by_prefix,
     find_backend_zip_asset,
+    find_frontend_zip_asset,
+    locate_dist_root,
     sort_releases_desc,
 )
 
 logger = logging.getLogger("obmms.updater")
 
 _updater_instance: Optional["Updater"] = None
-
 
 def get_updater() -> "Updater":
     """Return the singleton Updater. Raises if Updater(app) was never called."""
@@ -133,6 +131,11 @@ class Updater:
             lb.get("tag_name", ""), self.version
         ) > 0
 
+        installed_fe = self._read_installed_frontend_version()
+        has_frontend_update = bool(lf) and (
+            installed_fe is None or compare_versions(lf.get("tag_name", ""), installed_fe) > 0
+        )
+
         return {
             "auto_update": self.auto_update,
             "backend": {
@@ -143,6 +146,8 @@ class Updater:
                 "published_at": lb.get("published_at") if lb else None,
             },
             "frontend": {
+                "current_version": installed_fe,
+                "has_update": has_frontend_update,
                 "latest_tag": lf.get("tag_name") if lf else None,
                 "release_notes": lf.get("body") if lf else None,
                 "published_at": lf.get("published_at") if lf else None,
@@ -285,6 +290,193 @@ class Updater:
             await asyncio.sleep(self.check_interval)
 
         logger.info("Auto-update loop exited (auto_update disabled).")
+    # ---------- Frontend: queries ----------
 
+    def get_latest_frontend_release(self) -> Optional[Dict[str, Any]]:
+        releases = filter_releases_by_prefix(self.get_releases(), "frontend-")
+        return sort_releases_desc(releases)[0] if releases else None
+
+    def _frontend_version_stamp_path(self) -> Path:
+        # Stored outside static/, so it's not served to clients and not wiped by the swap.
+        return Path(self.backend_root) / ".frontend_version"
+
+    def _read_installed_frontend_version(self) -> Optional[str]:
+        p = self._frontend_version_stamp_path()
+        if not p.exists():
+            return None
+        try:
+            return p.read_text(encoding="utf-8").strip() or None
+        except Exception:
+            return None
+
+    def _write_installed_frontend_version(self, tag: str) -> None:
+        p = self._frontend_version_stamp_path()
+        try:
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(tag, encoding="utf-8")
+        except Exception as e:
+            logger.warning(f"Could not write frontend version stamp: {e}")
+
+    def check_for_frontend_update(self) -> Dict[str, Any]:
+        latest = self.get_latest_frontend_release()
+        installed = self._read_installed_frontend_version()
+        if not latest:
+            return {
+                "has_update": False,
+                "current_version": installed,
+                "latest_version": None,
+                "release": None,
+            }
+        tag = latest.get("tag_name", "")
+        # First-ever update: no stamp → treat as out-of-date and apply.
+        has_update = installed is None or compare_versions(tag, installed) > 0
+        return {
+            "has_update": has_update,
+            "current_version": installed,
+            "latest_version": tag,
+            "release": latest,
+        }
+
+    # ---------- Frontend: apply ----------
+
+    def apply_frontend_update(
+        self,
+        release: Dict[str, Any],
+        templates_root: Optional[str] = None,
+        static_root: Optional[str] = None,
+    ) -> bool:
+        """
+        Downloads frontend bundle (dist.zip), extracts into staging directories,
+        then safely deploys:
+        - dist/index.html            → <backend_root>/templates/index.html
+        - everything else in dist/   → <backend_root>/static/...
+        Preserves <static>/uploads if present (user data lives outside the update).
+        Uses atomic file replacement within directories to avoid cross-device link
+        (EXDEV: [Errno 18]) errors in Docker overlayfs and mounted filesystems.
+        """
+        backend_path = Path(self.backend_root).resolve()
+        templates_path = Path(templates_root).resolve() if templates_root else backend_path / "templates"
+        static_path = Path(static_root).resolve() if static_root else backend_path / "static"
+
+        tag = release.get("tag_name", "")
+        logger.info(f"Starting frontend update to {tag} (templates={templates_path}, static={static_path})")
+
+        download_url = find_frontend_zip_asset(release)
+        if not download_url:
+            logger.error("No frontend bundle zip asset found in release; aborting frontend update.")
+            return False
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_zip = os.path.join(tmpdir, "dist.zip")
+            extract_dir = Path(tmpdir) / "extracted"
+            extract_dir.mkdir(parents=True, exist_ok=True)
+
+            try:
+                download_file(download_url, tmp_zip, self.token)
+            except Exception as e:
+                logger.error(f"Failed to download frontend zip: {e}")
+                return False
+
+            try:
+                with zipfile.ZipFile(tmp_zip, "r") as zf:
+                    zf.extractall(extract_dir)
+            except Exception as e:
+                logger.error(f"Failed to unzip frontend zip: {e}")
+                return False
+
+            source_root = locate_dist_root(extract_dir)
+            if source_root is None:
+                logger.error("dist.zip has no index.html at a recognizable path; aborting.")
+                return False
+
+            # Check if source is arranged as templates/ + static/ OR flat dist/
+            if (source_root / "templates" / "index.html").exists() and (source_root / "static").is_dir():
+                index_source = source_root / "templates" / "index.html"
+                static_source = source_root / "static"
+            else:
+                index_source = source_root / "index.html"
+                static_source = source_root
+
+            # 1) index.html → templates/index.html (atomic file replacement)
+            templates_path.mkdir(parents=True, exist_ok=True)
+            tmp_index = templates_path / ".index.html.tmp"
+            shutil.copy2(index_source, tmp_index)
+            os.replace(tmp_index, templates_path / "index.html")
+
+            # 2) Sync static files → static/
+            # Strictly protect user uploads
+            protected_items = {"uploads"}
+            static_path.mkdir(parents=True, exist_ok=True)
+
+            for entry in static_source.iterdir():
+                if entry.name in ("index.html", "templates") or entry.name in protected_items:
+                    continue
+                dest = static_path / entry.name
+                if entry.is_dir():
+                    # For Vite bundled assets, clean stale hashed chunks from older builds
+                    clean_stale = (entry.name == "assets")
+                    self._sync_directory(entry, dest, clean_stale=clean_stale, preserve=protected_items)
+                else:
+                    tmp_file = static_path / f".{entry.name}.tmp"
+                    shutil.copy2(entry, tmp_file)
+                    os.replace(tmp_file, dest)
+
+            # 3) Cleanup any lingering .new / .old directories from previous failed attempts
+            for p in (
+                templates_path.parent / (templates_path.name + ".new"),
+                templates_path.parent / (templates_path.name + ".old"),
+                static_path.parent / (static_path.name + ".new"),
+                static_path.parent / (static_path.name + ".old"),
+            ):
+                if p.exists():
+                    shutil.rmtree(p, ignore_errors=True)
+
+            # 4) Record what we installed
+            self._write_installed_frontend_version(tag)
+
+            logger.info(f"Frontend successfully updated to {tag}.")
+            return True
+
+    @staticmethod
+    def _sync_directory(
+        src: Path,
+        dst: Path,
+        clean_stale: bool = False,
+        preserve: Optional[set] = None,
+    ) -> None:
+        """
+        Safely copies files from src into dst in-place.
+        Uses atomic file replacement (os.replace on temporary files within the same directory),
+        preventing partial reads while completely avoiding cross-device link (EXDEV) errors
+        that happen when attempting to rename directories in Docker overlayfs or bind mounts.
+        """
+        preserve = preserve or set()
+        dst.mkdir(parents=True, exist_ok=True)
+        new_names = set()
+
+        for item in src.iterdir():
+            if item.name in preserve:
+                continue
+            new_names.add(item.name)
+            target = dst / item.name
+            if item.is_dir():
+                Updater._sync_directory(item, target, clean_stale=clean_stale, preserve=preserve)
+            else:
+                tmp_target = dst / f".{item.name}.tmp"
+                shutil.copy2(item, tmp_target)
+                os.replace(tmp_target, target)
+
+        if clean_stale:
+            for existing in dst.iterdir():
+                if existing.name in preserve or existing.name.startswith("."):
+                    continue
+                if existing.name not in new_names:
+                    if existing.is_dir():
+                        shutil.rmtree(existing, ignore_errors=True)
+                    else:
+                        try:
+                            existing.unlink()
+                        except Exception as e:
+                            logger.warning(f"Could not remove stale file {existing}: {e}")
 
 __all__ = ["Updater", "get_updater"]

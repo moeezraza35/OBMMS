@@ -1,4 +1,4 @@
-import { version as currentVersion, github_repo } from "../config";
+import { version as currentVersion, github_repo, api_prefix, backend } from "../config";
 
 /**
  * Parses numerical version tuple from tag string.
@@ -88,16 +88,25 @@ export async function checkFrontendUpdate() {
  * Performs cache busting and reloads page to fetch fresh bundle.
  */
 export async function applyFrontendUpdate() {
-  try {
-    // Clear browser cache if Cache API is available
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map((k) => caches.delete(k)));
-    }
-  } catch (e) {
-    console.warn("Error clearing cache:", e);
+  const res = await fetch(`${backend}${api_prefix}system/update/frontend`, {
+    method: "POST",
+  });
+  const body = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(body.message || `Update failed (${res.status})`);
+  }
+  if (body.has_update === false) {
+    // already up to date on the backend side
+    return body;
   }
 
-  // Force page reload
+  // Give the server a beat to finish the background task, then reload.
+  await new Promise((r) => setTimeout(r, 4000));
+
+  if ("caches" in window) {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+  }
   window.location.reload();
 }

@@ -5,6 +5,7 @@ import shutil
 import urllib.error
 import urllib.request
 from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
 
 logger = logging.getLogger("obmms.updater.helper")
 
@@ -111,3 +112,51 @@ def find_backend_zip_asset(release: Dict[str, Any]) -> Optional[str]:
             return asset.get("browser_download_url")
     # GitHub auto-generated zipball
     return release.get("zipball_url")
+
+def find_frontend_zip_asset(release: Dict[str, Any]) -> Optional[str]:
+    """
+    Pick the dist.zip / frontend bundle download URL from a frontend release payload.
+    Prefers exact 'dist.zip', 'frontend-dist.zip', 'frontend.zip';
+    falls back to any zip whose name contains 'dist' or 'frontend',
+    or any zip asset attached to the release.
+    Does NOT fall back to zipball_url — the zipball is source, not a build.
+    """
+    assets = release.get("assets") or []
+    exact_names = {"dist.zip", "frontend-dist.zip", "frontend.zip"}
+    for asset in assets:
+        name = str(asset.get("name", "")).lower()
+        if name in exact_names:
+            return asset.get("browser_download_url")
+    for asset in assets:
+        name = str(asset.get("name", "")).lower()
+        if name.endswith(".zip") and ("dist" in name or "frontend" in name):
+            return asset.get("browser_download_url")
+    for asset in assets:
+        name = str(asset.get("name", "")).lower()
+        if name.endswith(".zip"):
+            return asset.get("browser_download_url")
+    return None
+
+def locate_dist_root(extract_dir: Path) -> Optional[Path]:
+    """
+    Find the directory containing index.html inside an extracted dist.zip.
+    Handles:
+      - index.html at root
+      - dist/index.html
+      - templates/index.html
+      - wrapper/dist/index.html or arbitrary nested directory
+    """
+    if (extract_dir / "index.html").exists():
+        return extract_dir
+    if (extract_dir / "dist" / "index.html").exists():
+        return extract_dir / "dist"
+    if (extract_dir / "templates" / "index.html").exists():
+        return extract_dir
+
+    matches = list(extract_dir.glob("**/index.html"))
+    if matches:
+        candidate = matches[0].parent
+        if candidate.name == "templates" and (candidate.parent / "static").is_dir():
+            return candidate.parent
+        return candidate
+    return None

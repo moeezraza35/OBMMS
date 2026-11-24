@@ -10,7 +10,6 @@ from admin import Admin
 from tracking import Tracking
 from accounts import Accounts
 from obmms.settings import SECRET_KEY, SESSION_COOKIE, SAME_SITE, HTTPS_ONLY, ALLOW_ORIGINS, ALLOW_CREDENTIALS, ALLOW_METHODS, ALLOW_HEADERS, AUTO_UPDATE
-from updater import Updater
 import asyncio
 import sys
 
@@ -35,6 +34,7 @@ class OBMMS:
     Admin(self.app)
     Tracking(self.app)
     Accounts(self.app)
+    from updater import Updater
     Updater(self.app)
 
     self.app.include_router(router)

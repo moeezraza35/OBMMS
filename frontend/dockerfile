@@ -1,9 +1,10 @@
-FROM node:22-slim
+# ---------- Stage 1: build the Vite bundle ----------
+FROM node:22-slim AS build
 
-WORKDIR /app
+WORKDIR /app/frontend
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY ./eslint.config.js ./
 COPY ./index.html ./
@@ -11,6 +12,17 @@ COPY ./vite.config.js ./
 COPY ./public ./public
 COPY ./src ./src
 
-EXPOSE 3000
+RUN npm run build
 
-CMD ["npm", "run", "dev"]
+# ---------- Stage 2: arrange output as templates/ + static/ ----------
+FROM alpine:3.20 AS artifacts
+
+WORKDIR /app
+
+RUN mkdir -p /app/templates /app/static
+
+COPY --from=build /app/frontend/dist ./dist
+
+RUN mv /app/dist/index.html /app/templates/index.html && \
+    find /app/dist -mindepth 1 -maxdepth 1 -exec mv {} /app/static/ \; && \
+    rmdir /app/dist

@@ -5,12 +5,18 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-COPY ./accounts /app/OBMMS/accounts
-COPY ./admin /app/OBMMS/admin
-COPY ./auth /app/OBMMS/auth
-COPY ./obmms /app/OBMMS/obmms
-COPY ./tracking /app/OBMMS/tracking
-COPY ./main.py /app/OBMMS/main.py
+COPY ./accounts /app/accounts
+COPY ./admin    /app/admin
+COPY ./auth     /app/auth
+COPY ./obmms    /app/obmms
+COPY ./tracking /app/tracking
+COPY ./updater  /app/updater
+COPY ./main.py  /app/main.py
+
+# --- artifacts from the frontend build ---
+COPY --from=frontend /app/templates /app/templates
+COPY --from=frontend /app/static    /app/static
+# -----------------------------------------
 
 EXPOSE 8000
 

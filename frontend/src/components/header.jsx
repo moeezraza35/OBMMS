@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { frontend, static_dir } from "../config";
+import { frontend, static_dir, version } from "../config";
 import { AuthContext } from "../context/auth";
 import { LoadingContext } from "../context/loading";
 import makeRequest from "../utils/request";
@@ -20,6 +20,7 @@ function Header(){
     <header>
       <div className="brand">
         <img src="/images/logo.png" alt="" />
+        <span>{version}</span>
       </div>
       <div className="toggle">
         <button onClick={() => {

@@ -99,3 +99,4 @@ mobile/obmms/android/app/src/main/res/raw/
 
 # Environment
 .env
+.frontend_version

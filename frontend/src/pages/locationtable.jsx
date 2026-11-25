@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import { getBusesName } from "../utils/buses"
 import { getLocation } from "../utils/location"
 import { BusLabel } from "../components/mapLabel"
-import Location from "../components/location"
 import { frontend } from "../config"
+import Location from "../components/location"
 
 function LocationTable({session_id="", user=null, permissions=Object(), checkFlag=false, rows=[], setRows=()=>{}, dialog=false, setDialog=()=>{}, formMode=0, setMode=()=>{}, formData={}, setData=()=>{}, navigate=()=>{}, setLoading=()=>{}}){
   const [buses, setBuses] = useState([])

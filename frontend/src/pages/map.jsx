@@ -5,9 +5,9 @@ import { LoadingContext } from "../context/loading"
 import { getBuses, getActiveBuses } from "../utils/buses"
 import { getActiveStops, getStops } from "../utils/stops"
 import { getActiveLocation } from "../utils/location"
+import { WebSocketContext } from "../context/websocket"
 import MapLabel, { BusLabel } from "../components/mapLabel"
 import Location from "../components/location"
-import { WebSocketContext } from "../context/websocket"
 
 function Map(){
   const [stops, setStops] = useState([])

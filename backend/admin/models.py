@@ -1,5 +1,12 @@
-from sqlalchemy import Column, Integer, String, CHAR, Date, Time, Boolean
 from obmms.database import Base
+from sqlalchemy import (
+  Column,
+  Integer,
+  String,
+  CHAR,
+  Date,
+  Time
+)
 
 class Logs(Base):
   __tablename__ = "logs"

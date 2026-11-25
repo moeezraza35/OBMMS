@@ -2,7 +2,12 @@ from datetime import datetime, timezone, timedelta
 from fastapi import Request, HTTPException, status
 from sqlalchemy.orm import Session
 from auth.models import Users, Group
-from obmms.settings import SECRET_KEY, JWT_ALGORITHM, JWT_EXIPRE, JWT_EXP_TIME
+from obmms.settings import (
+  SECRET_KEY,
+  JWT_ALGORITHM,
+  JWT_EXIPRE,
+  JWT_EXP_TIME
+)
 import jwt
 import json
 

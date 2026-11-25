@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { LoadingContext } from "./loading";
 import makeRequest from "../utils/request";
-import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext({
   session_id: "",

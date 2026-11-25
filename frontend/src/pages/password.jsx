@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
-import { AuthContext } from "../context/auth"
 import { useNavigate } from "react-router-dom"
+import { AuthContext } from "../context/auth"
 import { LoadingContext } from "../context/loading"
 import makeRequest from "../utils/request"
 import redirect from "../utils/redirect"

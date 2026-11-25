@@ -1,4 +1,4 @@
-import { static_dir } from "../config"
+import { static_dir, version } from "../config"
 
 function Footer(){
   return (
@@ -45,7 +45,7 @@ function Footer(){
           </ul>
         </div>
       </div>
-      <p>© 2026 Riphah International University. All rights reserved.</p>
+      <p>Copyright © 2026 Moeez Raza. All rights reserved. {version}</p>
     </footer>
   )
 }

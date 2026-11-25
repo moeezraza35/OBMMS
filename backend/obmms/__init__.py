@@ -9,8 +9,16 @@ from auth import Auth
 from admin import Admin
 from tracking import Tracking
 from accounts import Accounts
-from obmms.settings import SECRET_KEY, SESSION_COOKIE, SAME_SITE, HTTPS_ONLY, ALLOW_ORIGINS, ALLOW_CREDENTIALS, ALLOW_METHODS, ALLOW_HEADERS, AUTO_UPDATE
-import asyncio
+from obmms.settings import (
+  SECRET_KEY,
+  SESSION_COOKIE,
+  SAME_SITE,
+  HTTPS_ONLY,
+  ALLOW_ORIGINS,
+  ALLOW_CREDENTIALS,
+  ALLOW_METHODS,
+  ALLOW_HEADERS
+)
 import sys
 
 class OBMMS:

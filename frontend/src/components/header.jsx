@@ -20,7 +20,6 @@ function Header(){
     <header>
       <div className="brand">
         <img src="/images/logo.png" alt="" />
-        <span>{version}</span>
       </div>
       <div className="toggle">
         <button onClick={() => {

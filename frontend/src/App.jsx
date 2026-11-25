@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router"
 import { AuthProvider } from "./context/auth"
 import { LoadinProvider } from "./context/loading"
+import { WebSocketProvider } from "./context/websocket"
 import Home from "./pages/home"
 import Login from "./pages/login"
 import Dashboard from "./pages/dashboard"
@@ -9,9 +10,8 @@ import Profile from "./pages/profile"
 import Header from "./components/header"
 import Footer from "./components/footer"
 import UpdateNotifier from "./components/UpdateNotifier"
-import "./assets/App.css"
 import Map from "./pages/map"
-import { WebSocketProvider } from "./context/websocket"
+import "./assets/App.css"
 
 function Wrapper({children}){
   return (

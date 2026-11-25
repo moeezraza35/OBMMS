@@ -43,7 +43,7 @@ DB_ECHO     = os.getenv("DB_ECHO", "False").lower() == "true"
 MODELS = ["users", "group", "buses", "location", "stops", "routes", "packages", "history"]
 
 # Version & Auto-Update Settings
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 AUTO_UPDATE = os.getenv("AUTO_UPDATE", "True").lower() == "true"
 GITHUB_REPO = os.getenv("GITHUB_REPO", "moeezraza35/OBMMS")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", None)

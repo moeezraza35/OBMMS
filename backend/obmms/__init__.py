@@ -9,6 +9,7 @@ from auth import Auth
 from admin import Admin
 from tracking import Tracking
 from accounts import Accounts
+from updater import Updater
 from obmms.settings import (
   SECRET_KEY,
   SESSION_COOKIE,
@@ -42,7 +43,6 @@ class OBMMS:
     Admin(self.app)
     Tracking(self.app)
     Accounts(self.app)
-    from updater import Updater
     Updater(self.app)
 
     self.app.include_router(router)

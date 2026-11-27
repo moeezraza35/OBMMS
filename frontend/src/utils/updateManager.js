@@ -7,7 +7,7 @@ import { version as currentVersion, github_repo, api_prefix, backend } from "../
  */
 export function parseVersionTuple(tag) {
   if (!tag) return [0, 0, 0];
-  const cleaned = tag.replace(/^[a-zA-Z_\-]+v?/, "").trim();
+  const cleaned = tag.replace(/^[a-zA-Z_-]+v?/, "").trim();
   const match = cleaned.match(/(\d+(?:\.\d+)+)/);
   if (!match) return [0, 0, 0];
   return match[1].split(".").map((num) => parseInt(num, 10) || 0);
@@ -87,14 +87,20 @@ export async function checkFrontendUpdate() {
 /**
  * Performs cache busting and reloads page to fetch fresh bundle.
  */
-export async function applyFrontendUpdate() {
+export async function applyFrontendUpdate(session_id = "") {
+  const headers = {};
+  if (session_id) {
+    headers["Authorization"] = `Bearer ${session_id}`;
+  }
   const res = await fetch(`${backend}${api_prefix}system/update/frontend`, {
     method: "POST",
+    headers,
+    credentials: "include",
   });
   const body = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(body.message || `Update failed (${res.status})`);
+    throw new Error(body.detail || body.message || `Update failed (${res.status})`);
   }
   if (body.has_update === false) {
     // already up to date on the backend side

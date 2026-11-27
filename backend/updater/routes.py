@@ -1,4 +1,7 @@
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
+from auth.helper import authenticate
+from auth.models import Users
+from obmms.database import get_session
 from . import get_updater
 import logging
 
@@ -7,13 +10,33 @@ logger = logging.getLogger("obmms.updater.routes")
 update_router = APIRouter(prefix="/api/system", tags=["System Update"])
 
 
+def require_admin(request: Request) -> Users:
+  """
+  Verifies that the incoming request is authenticated and belongs to an admin user.
+  Raises 401 if not logged in, or 403 if user is not an administrator.
+  """
+  session = get_session()
+  try:
+    user = authenticate(request, session)
+    if user is None:
+      raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Login Required")
+    if user.is_admin is not True:
+      raise HTTPException(status.HTTP_403_FORBIDDEN, "Admin privileges required")
+    return user
+  finally:
+    session.close()
+
+
 @update_router.get("/updates")
-async def get_system_updates():
+async def get_system_updates(user: Users = Depends(require_admin)):
   return get_updater().get_system_updates()
 
 
 @update_router.post("/update/backend")
-async def trigger_backend_update(background_tasks: BackgroundTasks):
+async def trigger_backend_update(
+  background_tasks: BackgroundTasks,
+  user: Users = Depends(require_admin),
+):
   updater = get_updater()
   info = updater.check_for_backend_update()
 
@@ -49,11 +72,18 @@ async def trigger_backend_update(background_tasks: BackgroundTasks):
 
 
 @update_router.post("/auto-update/toggle")
-async def toggle_auto_update(enable: bool):
+async def toggle_auto_update(
+  enable: bool,
+  user: Users = Depends(require_admin),
+):
   return {"status": "success", "auto_update": get_updater().set_auto_update(enable)}
 
+
 @update_router.post("/update/frontend")
-async def trigger_frontend_update(background_tasks: BackgroundTasks):
+async def trigger_frontend_update(
+  background_tasks: BackgroundTasks,
+  user: Users = Depends(require_admin),
+):
   updater = get_updater()
   info = updater.check_for_frontend_update()
 

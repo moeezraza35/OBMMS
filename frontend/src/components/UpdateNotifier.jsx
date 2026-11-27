@@ -1,12 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { checkFrontendUpdate, applyFrontendUpdate } from "../utils/updateManager";
+import { AuthContext } from "../context/auth";
 
 export default function UpdateNotifier() {
+  const { user, session_id } = useContext(AuthContext);
   const [updateInfo, setUpdateInfo] = useState(null);
   const [dismissed, setDismissed] = useState(false);
   const [updating, setUpdating] = useState(false);
 
+  const isAdmin = Boolean(user && user.is_admin);
+
   useEffect(() => {
+    // Only check for updates when an admin user is logged in
+    if (!isAdmin) {
+      return;
+    }
+
     let isMounted = true;
     checkFrontendUpdate().then((info) => {
       if (isMounted && info.hasUpdate) {
@@ -27,15 +36,21 @@ export default function UpdateNotifier() {
       isMounted = false;
       clearInterval(interval);
     };
-  }, []);
+  }, [isAdmin]);
 
-  if (!updateInfo || !updateInfo.hasUpdate || dismissed) {
+  // Show update prompt only when user is logged in and is an admin
+  if (!user || !user.is_admin || !updateInfo || !updateInfo.hasUpdate || dismissed) {
     return null;
   }
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     setUpdating(true);
-    applyFrontendUpdate();
+    try {
+      await applyFrontendUpdate(session_id);
+    } catch (err) {
+      alert(err.message || "Failed to apply frontend update.");
+      setUpdating(false);
+    }
   };
 
   return (

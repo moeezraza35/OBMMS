@@ -1,8 +1,10 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
+
 from auth.helper import authenticate
 from auth.models import Users
 from obmms.database import get_session
 from . import get_updater
+
 import logging
 
 logger = logging.getLogger("obmms.updater.routes")

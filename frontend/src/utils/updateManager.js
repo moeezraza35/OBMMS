@@ -1,4 +1,4 @@
-import { version as currentVersion, github_repo, api_prefix, backend } from "../config";
+import { version as currentVersion, github_repo, api_prefix, backend } from "../config"
 
 /**
  * Parses numerical version tuple from tag string.

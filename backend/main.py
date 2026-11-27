@@ -1,6 +1,8 @@
 from argparse import ArgumentParser
+
 from obmms import OBMMS
 from obmms.settings import HOST, PORT, RELOAD
+
 import uvicorn
 
 obmms = OBMMS()

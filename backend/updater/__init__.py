@@ -1,16 +1,7 @@
-import asyncio
-import logging
-import os
-import re
-import shutil
-import sys
-import tempfile
-import zipfile
+from fastapi import FastAPI
 from pathlib import Path
 from typing import Any, Dict, Optional
-
-from fastapi import FastAPI
-
+from updater.routes import update_router
 from obmms.settings import (
   AUTO_UPDATE,
   GITHUB_REPO,
@@ -19,7 +10,6 @@ from obmms.settings import (
   UPDATE_CHECK_INTERVAL,
   VERSION,
 )
-
 from .helper import (
   clean_version_from_tag,
   compare_versions,
@@ -31,6 +21,15 @@ from .helper import (
   locate_dist_root,
   sort_releases_desc,
 )
+
+import asyncio
+import logging
+import os
+import re
+import shutil
+import sys
+import tempfile
+import zipfile
 
 logger = logging.getLogger("obmms.updater")
 
@@ -75,8 +74,6 @@ class Updater:
     self.backend_root = backend_root or str(Path(__file__).resolve().parent.parent)
     self._loop_task: Optional[asyncio.Task] = None
 
-    # Deferred import to avoid a circular import at module load time.
-    from .routes import update_router
     app.include_router(update_router)
     app.on_event("startup")(self._on_startup)
 

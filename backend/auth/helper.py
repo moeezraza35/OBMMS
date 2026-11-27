@@ -1,13 +1,16 @@
-from datetime import datetime, timezone, timedelta
-from fastapi import Request, HTTPException, status
+from datetime import datetime, timedelta, timezone
+from fastapi import HTTPException, Request, status
 from sqlalchemy.orm import Session
-from auth.models import Users, Group
+
+from auth.models import Group, Users
+
 from obmms.settings import (
-  SECRET_KEY,
   JWT_ALGORITHM,
   JWT_EXIPRE,
-  JWT_EXP_TIME
+  JWT_EXP_TIME,
+  SECRET_KEY,
 )
+
 import jwt
 import json
 
@@ -31,7 +34,7 @@ def check_session_id(session_id:str, session:Session) -> Users | None:
       key=SECRET_KEY,
       algorithms=JWT_ALGORITHM
     )
-  except:
+  except (jwt.PyJWTError, Exception):
     return None
   return session.get(Users, data["user"])
 

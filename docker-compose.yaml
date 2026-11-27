@@ -4,6 +4,8 @@ services:
       context: ./frontend
       target: artifacts
     image: obmms-frontend:latest
+    env_file:
+      - ./frontend/.env
 
   backend:
     build:

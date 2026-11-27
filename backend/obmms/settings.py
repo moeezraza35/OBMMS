@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 import os
 
 load_dotenv()
@@ -16,7 +17,8 @@ HTTPS_ONLY = False # Set to True if using HTTPS
 
 # JWT Settings
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-JWT_EXIPRE = os.getenv("JWT_EXPIRE", "False").lower() == "true"
+JWT_EXPIRE = os.getenv("JWT_EXPIRE", "False").lower() == "true"
+JWT_EXIPRE = JWT_EXPIRE
 JWT_EXP_TIME = int(os.getenv("JWT_EXP_TIME", "30"))
 
 # Encryption settings

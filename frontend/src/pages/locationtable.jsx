@@ -17,7 +17,7 @@ function LocationTable({session_id="", user=null, permissions=Object(), checkFla
   }
   useEffect(() => {loadData()}, [checkFlag])
   return (
-    <iframe className="w-full h-[500px]" src={frontend+"/map/"} frameborder="0"></iframe>
+    <iframe className="w-full h-[500px]" src={`${frontend}/map/`} frameborder="0"></iframe>
   )
 }
 export default LocationTable

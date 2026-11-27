@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { frontend, static_dir, version } from "../config";
-import { AuthContext } from "../context/auth";
-import { LoadingContext } from "../context/loading";
-import makeRequest from "../utils/request";
+
+import { frontend, static_dir, version } from "../config"
+import { AuthContext } from "../context/auth"
+import { LoadingContext } from "../context/loading"
+
+import makeRequest from "../utils/request"
 
 function Header(){
   const [nav, setNav] = useState("");
@@ -55,13 +57,13 @@ function Header(){
             setProfmenu("")
           }
         }}>
-          <img src={static_dir+(user == null?"images/icons/login.svg":"images/icons/profile.svg")} />
+          <img src={`${static_dir}${user == null ? "images/icons/login.svg" : "images/icons/profile.svg"}`} />
         </button>
         <menu className={profmenu}>
           {user != null?
           <ul>
-            <li><Link to={frontend+"/profile/"}>Profile</Link></li>
-            <li><Link to={frontend+"/dashboard/"}>Dashboard</Link></li>
+            <li><Link to={`${frontend}/profile/`}>Profile</Link></li>
+            <li><Link to={`${frontend}/dashboard/`}>Dashboard</Link></li>
             <li><a onClick={async () => {
               setLoading(true)
               await makeRequest(
@@ -78,7 +80,7 @@ function Header(){
             }}>Logout</a></li>
           </ul>:
           <ul>
-            <li><Link to={frontend+"/login/"}>Login</Link></li>
+            <li><Link to={`${frontend}/login/`}>Login</Link></li>
           </ul>}
         </menu>
       </div>

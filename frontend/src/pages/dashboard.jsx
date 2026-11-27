@@ -50,7 +50,7 @@ function Dashboard(){
       <Aside title="Activities">
         {models.map((model) => (
           <li key={model} className={params.model==model?"active":""}>
-            <Link to={frontend+"/dashboard/"+model+'/'}>{model}</Link>
+            <Link to={`${frontend}/dashboard/${model}/`}>{model}</Link>
           </li>
         ))}
       </Aside>

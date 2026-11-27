@@ -26,7 +26,10 @@ function WebSocketProvider({ children }) {
       wsRef.current = null
     }
 
-    const ws = new WebSocket(backend.replace("http", "ws") + "/ws")
+    const baseWs = backend
+      ? backend.replace(/^http/, "ws")
+      : `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}`
+    const ws = new WebSocket(`${baseWs}/ws`)
     wsRef.current = ws
 
     ws.onopen = () => {

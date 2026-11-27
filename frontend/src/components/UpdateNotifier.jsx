@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
-import { checkFrontendUpdate, applyFrontendUpdate } from "../utils/updateManager";
-import { AuthContext } from "../context/auth";
+import { useContext, useEffect, useState } from "react"
+
+import { applyFrontendUpdate, checkFrontendUpdate } from "../utils/updateManager"
+import { AuthContext } from "../context/auth"
 
 export default function UpdateNotifier() {
   const { user, session_id } = useContext(AuthContext);
@@ -83,7 +84,8 @@ export default function UpdateNotifier() {
             <button
               onClick={handleUpdate}
               disabled={updating}
-              className="px-3 py-1.5 text-xs font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded transition"
+              style={{color: "#fff"}}
+              className="px-3 py-1.5 text-xs font-semibold bg-teal-600 hover:bg-teal-700 rounded transition"
             >
               {updating ? "Updating..." : "Update Now"}
             </button>

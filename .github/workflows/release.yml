@@ -10,6 +10,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   # ==========================================
   # Backend Release Job
@@ -56,6 +60,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Extract Tag Name
         id: tag_info
@@ -63,6 +69,9 @@ jobs:
 
       - name: Install & Build Frontend
         working-directory: ./frontend
+        env:
+          VITE_BACKEND: ""
+          VITE_FRONTEND: ""
         run: |
           npm ci
           npm run build
@@ -71,7 +80,7 @@ jobs:
         run: |
           mkdir -p release_assets
           cd frontend/dist
-          zip -r ../../release_assets/frontend-dist.zip .
+          zip -r ../../release_assets/dist.zip .
           cd ../..
 
       - name: Create GitHub Release and Upload Frontend Bundle
@@ -79,7 +88,7 @@ jobs:
         with:
           tag_name: ${{ steps.tag_info.outputs.TAG_NAME }}
           name: "Frontend Release ${{ steps.tag_info.outputs.TAG_NAME }}"
-          files: release_assets/frontend-dist.zip
+          files: release_assets/dist.zip
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -98,6 +107,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: mobile/obmms/package-lock.json
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4
@@ -108,16 +119,44 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('mobile/obmms/android/**/*.gradle*', 'mobile/obmms/android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
       - name: Extract Tag Name
         id: tag_info
         run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Download mr-wshandler-react
+        run: |
+          curl -sSL -o /tmp/wshandler.zip \
+            "https://github.com/moeezraza35/mr-wshandler-react/releases/download/v0.1.0/mr-wshandler-react.zip"
+          mkdir -p mobile/obmms/dist
+          unzip -q /tmp/wshandler.zip -d mobile/obmms/dist
+          # sanity check — the folder must now contain package.json
+          test -f mobile/obmms/dist/package.json || { echo "mr-wshandler-react extraction failed"; exit 1; }
 
       - name: Install Dependencies
         working-directory: ./mobile/obmms
         run: npm ci
 
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.OBMMS_KEYSTORE_BASE64 }}" | base64 -d \
+            > mobile/obmms/android/app/obmms-release.keystore
+
       - name: Build Android Release APK
         working-directory: ./mobile/obmms/android
+        env:
+          KEYSTORE_FILE: obmms-release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.OBMMS_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.OBMMS_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.OBMMS_KEY_PASSWORD }}
         run: |
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
